@@ -24,15 +24,14 @@ export class AuthService {
     private httpClient: HttpClient
   ) {
     this.token$.next(this.localStorageService.getItem(TOKEN_PREFIX));
-  }
 
-  public setToken(token: string): void {
-    if (token) {
-      this.localStorageService.setItem(TOKEN_PREFIX, token);
-      this.token$.next(token);
-      this.isAuthenticated$.next(true);
-    } else {
-      console.log('Token not found');
+    if (!this.isTokenExpired()) {
+      const tokenDecoded: any = this.decodeToken(this.token$.value);
+
+      if (tokenDecoded) {
+        this.username$.next(tokenDecoded.name);
+        this.isAuthenticated$.next(true);
+      }
     }
   }
 
@@ -44,8 +43,12 @@ export class AuthService {
     return this.token$.asObservable();
   }
 
-  public getUsername(): Observable<string> {
+  public getUsernameAsync(): Observable<string> {
     return this.username$.asObservable();
+  }
+
+  public getUsername(): string {
+    return this.username$.value;
   }
 
   public isAuthenticated(): Observable<boolean> {
@@ -60,15 +63,16 @@ export class AuthService {
     const tokenDecoded: any = this.decodeToken(token);
 
     if (tokenDecoded) {
-      this.username$.next(tokenDecoded.firstname);
+      this.username$.next(tokenDecoded.name);
+      this.localStorageService.setItem(TOKEN_PREFIX, token);
       this.isAuthenticated$.next(true);
     }
 
-    console.log(tokenDecoded);
   }
 
   public logout(): void {
-    console.log("logout");
+    this.localStorageService.removeItem(TOKEN_PREFIX);
+    this.isAuthenticated$.next(false);
   }
 
   private urlBase64Decode(str: string): string {

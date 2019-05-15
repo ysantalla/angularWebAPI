@@ -30,6 +30,8 @@ import { Menu } from '@app/core/models/menu.model';
 
         <app-nav-menu [items]="dashboard"></app-nav-menu>
 
+        <app-nav-menu [items]="adminMenu"></app-nav-menu>
+
       </mat-sidenav>
       <mat-sidenav-content>
         <mat-toolbar class="navbar" color="primary">
@@ -51,10 +53,12 @@ import { Menu } from '@app/core/models/menu.model';
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <a mat-menu-item *ngIf="isLoggedIn$ | async" target="_blank" href="https://clave.upr.edu.cu/iisadmpwd/">
-                <mat-icon>lock_open</mat-icon>
-                <span>Cambiar Contraseña</span>
-              </a>
+              <!--
+                <a mat-menu-item *ngIf="isLoggedIn$ | async" target="_blank" href="https://clave.upr.edu.cu/iisadmpwd/">
+                  <mat-icon>lock_open</mat-icon>
+                  <span>Cambiar Contraseña</span>
+                </a>
+              -->
 
               <button mat-menu-item *ngIf="isLoggedIn$ | async" routerLink="auth/profile">
                 <mat-icon>person</mat-icon>
@@ -173,6 +177,7 @@ export class LayoutComponent implements OnInit {
   username$: Observable<string>;
 
   dashboard: Menu;
+  adminMenu: Menu;
 
   envName = env.envName;
   appName = env.appName;
@@ -197,7 +202,7 @@ export class LayoutComponent implements OnInit {
       pages: []
     };
 
-    /*this.adminMenu = {
+    this.adminMenu = {
       heading: 'Administración',
       icon: 'settings',
       pages: [
@@ -217,12 +222,12 @@ export class LayoutComponent implements OnInit {
           icon: 'folder'
         }
       ]
-    };*/
+    };
   }
 
   ngOnInit(): void {
     this.isLoggedIn$ = this.authService.isAuthenticated();
-    this.username$ = this.authService.getUsername();
+    this.username$ = this.authService.getUsernameAsync();
   }
 
   logout(): void {

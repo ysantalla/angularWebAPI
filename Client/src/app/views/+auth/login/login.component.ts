@@ -20,8 +20,8 @@ import { environment as env } from '@env/environment';
       <mat-progress-bar color="warn"></mat-progress-bar>
     </div>
     <br />
-    <div class="container" fxLayout="column" fxLayoutAlign="center center">
-      <div class="item" fxFlex="50%" fxFlex.xs="90%" fxFlex.md="90%">
+    <div class="container">
+      <div class="item">
         <form [formGroup]="loginForm" #f="ngForm" (ngSubmit)="onLogin()" class="form">
           <mat-card class="card">
             <mat-card-header class="header-logo">
@@ -92,12 +92,6 @@ export class LoginComponent implements OnInit {
       email: ['', Validators.required],
       pass: ['', Validators.required]
     });
-
-
-    this.httpClient.get(`${env.serverUrl}/Books`).subscribe(data => {
-      console.log(data);
-    });
-
   }
 
   onLogin(): void {
@@ -106,10 +100,16 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.loginForm.disable();
 
-      this.httpClient.post(`${env.serverUrl}/auth/login`, {email: this.loginForm.value.email, password: this.loginForm.value.pass})
+      this.httpClient.post(`${env.serverUrl}/Account/SignIn`, {email: this.loginForm.value.email, password: this.loginForm.value.pass})
         .subscribe((data: any) => {
-          this.authService.login(data.token);
-          console.log(data);
+
+          if (data) {
+            this.authService.login(data);
+            this.snackBar.open(`Bienvenido ${this.authService.getUsername()}`, 'X', {duration: 3000});
+            this.router.navigate(['dashboard']);
+          }
+        }, (error: HttpErrorResponse) => {
+          this.snackBar.open(error.message, 'X', {duration: 3000});
         });
 
     } else {

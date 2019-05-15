@@ -43,7 +43,7 @@ Online API documentation is located on [/Swagger](http://ideashareapp.azurewebsi
 
 ### Run Mysql Database in Docker Container.
 
-* # docker-compose up -d
+* docker-compose up -d
 
 ## Built With
 

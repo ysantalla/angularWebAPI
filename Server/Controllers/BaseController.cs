@@ -2,9 +2,11 @@ using Server.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.AspNetCore.Cors;
 
 namespace Server.Controllers
 {
+    [EnableCors("_EnabledCORS")]
     public abstract class BaseController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

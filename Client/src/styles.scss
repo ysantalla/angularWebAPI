@@ -83,6 +83,17 @@ div.container > div.loading, div.loading {
   overflow-x: hidden!important;
 }
 
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}
+
+.item-1 {
+  width: 25%;
+}
+
 .table-footer {
   background-color: white;
   padding: 3px 3px 7px 7px;

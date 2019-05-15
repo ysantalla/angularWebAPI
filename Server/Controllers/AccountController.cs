@@ -52,7 +52,7 @@ namespace Server.Controllers
             if (!result)
                 return BadRequest("Wrong email or password");
             
-            return Ok(Json(_tokenService.Generate(user)));
+            return Ok(_tokenService.Generate(user));
         }
 
         [HttpPost]

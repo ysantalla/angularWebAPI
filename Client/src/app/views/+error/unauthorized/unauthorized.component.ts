@@ -4,8 +4,8 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-unauthorized',
   template: `
     <br />
-    <div class="container" fxLayout="row" fxLayoutAlign="center center">
-      <div class="item" fxFlex="60%" fxFlex.xs="98%" fxFlex.md="70%">
+    <div class="container">
+      <div class="item">
 
         <div class="mat-elevation-z8">
             <mat-card class="proyecto-card">

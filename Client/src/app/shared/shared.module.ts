@@ -21,8 +21,6 @@ import {
 
 } from '@angular/material';
 
-import { FlexLayoutModule } from '@angular/flex-layout';
-
 import { RouterModule } from '@angular/router';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { SizePipe } from './pipes/size.pipe';
@@ -44,7 +42,6 @@ import { SizePipe } from './pipes/size.pipe';
     MatTooltipModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    FlexLayoutModule,
     MatListModule,
     MatExpansionModule,
     MatGridListModule,
@@ -68,7 +65,6 @@ import { SizePipe } from './pipes/size.pipe';
     MatTooltipModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    FlexLayoutModule,
     MatListModule,
     MatExpansionModule,
     MatGridListModule,

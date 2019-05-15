@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
 
-import { Subscription, Observable } from 'rxjs';
+import {environment as env} from '@env/environment';
+import { AuthService } from '@app/core/services/auth.service';
 
 
 @Component({
@@ -53,20 +55,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
   loading = false;
   hide = true;
 
-  meQuerySubcription: Subscription;
-
   constructor(
     private snackBar: MatSnackBar,
+    private httpClient: HttpClient,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
 
     this.loading = true;
 
+    this.httpClient.get(`${env.serverUrl}/Profile/GetInfo`, {params: {userName: this.authService.getUsername()}}).subscribe(data => {
+      console.log(data);
+    });
+
   }
 
   ngOnDestroy(): void {
-    this.meQuerySubcription.unsubscribe();
+
   }
 
 }

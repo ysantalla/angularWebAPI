@@ -34,12 +34,14 @@ namespace Server
 
         public IConfiguration Configuration { get; }
 
+        private readonly string EnabledCORS = "_EnabledCORS";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-
+            
             services.AddIdentity<ApplicationUser, ApplicationRole>(options => 
                 {
                     options.Password.RequiredLength = 6;
@@ -80,6 +82,15 @@ namespace Server
 
             ConfigureCustomServices(services);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(EnabledCORS,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info 
@@ -111,7 +122,7 @@ namespace Server
 
             app.UseAuthentication();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            // app.UseSpaStaticFiles();
 
             app.UseMvc(routes =>
             {
@@ -120,6 +131,8 @@ namespace Server
                     template: "{controller}/{action=Index}/{id?}");
             });
 
+            app.UseCors(EnabledCORS);
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -127,18 +140,18 @@ namespace Server
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
+            // app.UseSpa(spa =>
+            // {
+            //     // To learn more about options for serving an Angular SPA from ASP.NET Core,
+            //     // see https://go.microsoft.com/fwlink/?linkid=864501
 
-                spa.Options.SourcePath = "ClientApp";
+            //     spa.Options.SourcePath = "Client";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
-            });
+            //     if (env.IsDevelopment())
+            //     {
+            //         spa.UseAngularCliServer(npmScript: "start");
+            //     }
+            // });
         }
 
         private void ConfigureCustomServices(IServiceCollection services)
