@@ -28,35 +28,11 @@ namespace Server.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(ProfileViewModel), 200)]
-        public async Task<IActionResult> GetInfo(string userName)
+        public async Task<IActionResult> GetInfo()
         {
-            var result = await _profileService.GetProfileAsync(userName);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            return Ok(result.Value);
-        }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(List<IdeaViewModel>), 200)]
-        public async Task<IActionResult> GetIdeaList(ProfileFilterViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _profileService.GetListAsync(model);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            return Ok(result.Value);
-        }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(List<PopularUserViewModel>), 200)]
-        public async Task<IActionResult> GetPopularUsers()
-        {
-            var result = await _profileService.GetPopularUsersAsync();
+            var result = await _profileService.GetProfileAsync();
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -69,6 +45,7 @@ namespace Server.Controllers
         public async Task<IActionResult> GetUserSettings()
         {
             var result = await _profileService.GetUserSettingsAsync();
+
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
                 

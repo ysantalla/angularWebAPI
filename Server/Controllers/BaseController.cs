@@ -20,6 +20,7 @@ namespace Server.Controllers
 
         private ApplicationUser GetCurrentUser()
         {
+            
             if (!User.Identity.IsAuthenticated)
                 return null;
 

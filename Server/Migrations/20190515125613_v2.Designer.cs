@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server;
 
 namespace server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190515125613_v2")]
+    partial class v2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,6 +130,8 @@ namespace server.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<string>("AvatarURL");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -151,6 +155,8 @@ namespace server.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<int>("Rating");
 
                     b.Property<string>("SecurityStamp");
 
@@ -198,7 +204,39 @@ namespace server.Migrations
 
                     b.HasIndex("CreatorUserId");
 
-                    b.ToTable("Citizenships");
+                    b.ToTable("citizenship");
+                });
+
+            modelBuilder.Entity("Server.Models.Comment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<long>("CreatorId");
+
+                    b.Property<int>("HVersion");
+
+                    b.Property<long>("IdeaId");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("LikeCount");
+
+                    b.Property<string>("Message");
+
+                    b.Property<long>("ModifierId");
+
+                    b.Property<DateTime>("ModifyDate");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("IdeaId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Server.Models.Country", b =>
@@ -228,7 +266,7 @@ namespace server.Migrations
 
                     b.HasIndex("CreatorUserId");
 
-                    b.ToTable("Countries");
+                    b.ToTable("country");
                 });
 
             modelBuilder.Entity("Server.Models.Currency", b =>
@@ -260,7 +298,7 @@ namespace server.Migrations
 
                     b.HasIndex("CreatorUserId");
 
-                    b.ToTable("Currency");
+                    b.ToTable("currency");
                 });
 
             modelBuilder.Entity("Server.Models.Guest", b =>
@@ -304,7 +342,191 @@ namespace server.Migrations
 
                     b.HasIndex("CreatorUserId");
 
-                    b.ToTable("Guets");
+                    b.ToTable("guets");
+                });
+
+            modelBuilder.Entity("Server.Models.Idea", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Article");
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<long>("CreatorId");
+
+                    b.Property<int>("HVersion");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("Language");
+
+                    b.Property<int>("LikeCount");
+
+                    b.Property<long>("ModifierId");
+
+                    b.Property<DateTime>("ModifyDate");
+
+                    b.Property<string>("Title");
+
+                    b.Property<int>("ViewCount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Ideas");
+                });
+
+            modelBuilder.Entity("Server.Models.Tag", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<long>("CreatorId");
+
+                    b.Property<int>("HVersion");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("Language");
+
+                    b.Property<long>("ModifierId");
+
+                    b.Property<DateTime>("ModifyDate");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("Server.Models.relCommentLike", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("CommentId");
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<long>("CreatorId");
+
+                    b.Property<int>("HVersion");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<long>("ModifierId");
+
+                    b.Property<DateTime>("ModifyDate");
+
+                    b.Property<int>("Vote");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("relCommentLikes");
+                });
+
+            modelBuilder.Entity("Server.Models.relIdeaFavorite", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<long>("CreatorId");
+
+                    b.Property<int>("HVersion");
+
+                    b.Property<long>("IdeaId");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<long>("ModifierId");
+
+                    b.Property<DateTime>("ModifyDate");
+
+                    b.Property<bool>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("IdeaId");
+
+                    b.ToTable("relIdeaFavorites");
+                });
+
+            modelBuilder.Entity("Server.Models.relIdeaLike", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<long>("CreatorId");
+
+                    b.Property<int>("HVersion");
+
+                    b.Property<long>("IdeaId");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<long>("ModifierId");
+
+                    b.Property<DateTime>("ModifyDate");
+
+                    b.Property<int>("Vote");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("IdeaId");
+
+                    b.ToTable("relIdeaLikes");
+                });
+
+            modelBuilder.Entity("Server.Models.relIdeaTag", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<long>("CreatorId");
+
+                    b.Property<int>("HVersion");
+
+                    b.Property<long>("IdeaId");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<long>("ModifierId");
+
+                    b.Property<DateTime>("ModifyDate");
+
+                    b.Property<long>("TagId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("IdeaId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("relIdeaTags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -359,6 +581,19 @@ namespace server.Migrations
                         .HasForeignKey("CreatorUserId");
                 });
 
+            modelBuilder.Entity("Server.Models.Comment", b =>
+                {
+                    b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
+                        .WithMany("Comments")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Idea", "Idea")
+                        .WithMany("Comments")
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Server.Models.Country", b =>
                 {
                     b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
@@ -386,6 +621,79 @@ namespace server.Migrations
                     b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
+                });
+
+            modelBuilder.Entity("Server.Models.Idea", b =>
+                {
+                    b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
+                        .WithMany("Ideas")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.Tag", b =>
+                {
+                    b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
+                        .WithMany("Tags")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.relCommentLike", b =>
+                {
+                    b.HasOne("Server.Models.Comment", "Comment")
+                        .WithMany("Likes")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
+                        .WithMany("relCommentLikes")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.relIdeaFavorite", b =>
+                {
+                    b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
+                        .WithMany("relIdeaFavorites")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Idea", "Idea")
+                        .WithMany("Favorites")
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.relIdeaLike", b =>
+                {
+                    b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
+                        .WithMany("relIdeaLikes")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Idea", "Idea")
+                        .WithMany("Likes")
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.relIdeaTag", b =>
+                {
+                    b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
+                        .WithMany("relIdeaTags")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Idea", "Idea")
+                        .WithMany("Tags")
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Tag", "Tag")
+                        .WithMany("IdeaTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

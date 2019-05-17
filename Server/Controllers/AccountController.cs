@@ -70,7 +70,7 @@ namespace Server.Controllers
             };
 
             var result = await _userManager.CreateAsync(newUser, model.Password);
-            if (!result.Succeeded)
+            if (result.Succeeded)
                 return BadRequest("Sorry, an unexpected error occured");
 
             #region Send confirmation email

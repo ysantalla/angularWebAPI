@@ -63,7 +63,8 @@ namespace Server
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
+                    // options.SaveToken = true;
+
                     options.TokenValidationParameters = new TokenValidationParameters
                                                             {
                                                                 ValidateIssuer = true,
@@ -157,12 +158,11 @@ namespace Server
         private void ConfigureCustomServices(IServiceCollection services)
         {
             services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<ICommentService, CommentService>();
-            services.AddTransient<ITagService, TagService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IFileService, FileService>();
+            services.AddTransient<ICountryService, CountryService>();
 
-            services.AddSingleton<ITokenService, TokenService>();
+            services.AddSingleton<ITokenService, TokenService>();            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }

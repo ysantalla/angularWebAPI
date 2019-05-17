@@ -25,7 +25,6 @@ namespace Server.Services
             {
                 new Claim("name", user.UserName),
                 new Claim("id", user.Id.ToString()),
-                new Claim("avatarUrl", String.IsNullOrEmpty(user.AvatarURL) ? "person.png" : user.AvatarURL)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

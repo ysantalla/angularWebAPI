@@ -1,7 +1,3 @@
-using Server;
-using Server.Models;
-using Server.Services.Interfaces;
-using Server.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,36 +5,48 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using Server.Services.Interfaces;
+using Server.Models;
+using Server.ViewModels;
 
 namespace Server.Services
 {
-    public class CommentService : BaseService, ICommentService
+    public class CountryService : BaseService, ICountryService
     {
-        public CommentService(UserManager<ApplicationUser> userManager,
+        public CountryService(UserManager<ApplicationUser> userManager,
                               IHttpContextAccessor contextAccessor, 
                               ApplicationDbContext context) 
             : base(userManager, contextAccessor, context)
         {
         }
 
-        public async Task<ProcessResult> CreateOrUpdateAsync(CommentNewViewModel model)
+        public async Task<ProcessResult> CreateOrUpdateAsync(CountryViewModel model)
         {
             Func<Task> action = async () =>
             {
-                var commentEntity = await GetOrCreateEntityAsync(context.Comments, x => x.Id == model.Id);
-                var comment = commentEntity.result;
-                if (!commentEntity.isCreated && CurrentUser.Id != comment.CreatorId)
-                    throw new InvalidOperationException("You're not owner of requested comment");
+                var countryEntity = await GetOrCreateEntityAsync(context.Countries, x => x.Id == model.Id);
+                var country = countryEntity.result;
+                if (!countryEntity.isCreated && CurrentUser.Id != country.CreatorId)
+                     throw new InvalidOperationException("You're not owner of requested comment");
 
-                comment.IdeaId = model.IdeaId;
-                comment.Message = model.Message;
+                country.Name = model.Name;
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<CommentViewModel>>> GetListAsync(long ideaId)
+        public Task<ProcessResult<List<CountryViewModel>>> GetListAsync(long ideaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ProcessResult> RemoveOrRestoreAsync(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*public async Task<ProcessResult<List<CommentViewModel>>> GetListAsync(long ideaId)
         {
             Func<Task<List<CommentViewModel>>> action = async () =>
             {
@@ -112,6 +120,6 @@ namespace Server.Services
             };
 
             return await Process.RunAsync(action);
-        }
+        }*/
     }
 }

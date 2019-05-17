@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server;
 
 namespace server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190515182409_v5")]
+    partial class v5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,8 +212,6 @@ namespace server.Migrations
 
                     b.Property<long>("CreatorId");
 
-                    b.Property<long?>("CreatorUserId");
-
                     b.Property<long>("CuntryId");
 
                     b.Property<int>("HVersion");
@@ -226,7 +226,7 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorUserId");
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Countries");
                 });
@@ -362,8 +362,9 @@ namespace server.Migrations
             modelBuilder.Entity("Server.Models.Country", b =>
                 {
                     b.HasOne("Server.Models.ApplicationUser", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId");
+                        .WithMany("Countries")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Currency", b =>
