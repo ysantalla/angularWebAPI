@@ -17,13 +17,21 @@ import {
   MatSnackBarModule,
   MatListModule,
   MatExpansionModule,
-  MatGridListModule
+  MatGridListModule,
+  MatTableModule,
+  MatPaginatorIntl,
+  MatSortModule,
+  MatPaginatorModule,
+  MatDialogModule
 
 } from '@angular/material';
 
 import { RouterModule } from '@angular/router';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { SizePipe } from './pipes/size.pipe';
+import { CdkTableModule } from '@angular/cdk/table';
+import { CustomMatPaginatorIntl } from './class/mat-paginator-intl';
+import { ConfirmComponent } from './components/confirm/confirm.component';
 
 @NgModule({
   imports: [
@@ -45,6 +53,11 @@ import { SizePipe } from './pipes/size.pipe';
     MatListModule,
     MatExpansionModule,
     MatGridListModule,
+    MatTableModule,
+    CdkTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatDialogModule,
 
     RouterModule
   ],
@@ -68,13 +81,23 @@ import { SizePipe } from './pipes/size.pipe';
     MatListModule,
     MatExpansionModule,
     MatGridListModule,
+    MatTableModule,
+    CdkTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatDialogModule,
 
     LayoutComponent,
-    SizePipe
+    SizePipe,
+    ConfirmComponent
   ],
-  declarations: [LayoutComponent, NavMenuComponent, SizePipe],
-  providers: [],
-  entryComponents: [],
+  declarations: [LayoutComponent, NavMenuComponent, SizePipe, ConfirmComponent],
+  providers: [
+    {provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl}
+  ],
+  entryComponents: [
+    ConfirmComponent
+  ],
 })
 export class SharedModule {
   static forRoot() {

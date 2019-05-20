@@ -7,7 +7,8 @@ namespace Server.Models
 {
     public class ApplicationUser : IdentityUser<long>
     {
-        
-        
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+                
     }
 }

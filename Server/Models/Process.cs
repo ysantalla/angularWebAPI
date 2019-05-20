@@ -45,12 +45,12 @@ namespace Server.Models
             }
         }
 
-        public static async Task<ProcessResult<T>> RunAsync<T>(Func<Task<T>> action)
+        public static async Task<ProcessResult<T>> RunAsync<T>(Func<Task<T>> action, int countItems = 0)
         {
             try
             {
                 var result = await action();
-                return ProcessResult<T>.Ok(result);
+                return ProcessResult<T>.Ok(result, countItems);
             }
             catch (Exception ex)
             {

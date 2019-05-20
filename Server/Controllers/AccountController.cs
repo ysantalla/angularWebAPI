@@ -18,16 +18,16 @@ namespace Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ITokenService _tokenService;
-        private readonly IEmailService _emailService;
-
+        private readonly IProfileService _profileService;
+        
         public AccountController(UserManager<ApplicationUser> userManager,
-                                ITokenService tokenService,
-                                IEmailService emailService)
+                                IProfileService profileService,
+                                ITokenService tokenService)
             : base (userManager)
         {
             this._userManager = userManager;
             this._tokenService = tokenService;
-            this._emailService = emailService;
+            this._profileService = profileService;
         }
 
 
@@ -42,17 +42,15 @@ namespace Server.Controllers
 
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
-                return BadRequest("Wrong email or password");
-
-            var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
-            if (!isEmailConfirmed)
-                return BadRequest("The email is not confirmed");
+                return BadRequest("Correo electrónico no encontrado");
 
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!result)
-                return BadRequest("Wrong email or password");
+                return BadRequest("Contraseña incorrecta");
             
-            return Ok(_tokenService.Generate(user));
+            var roles = await _userManager.GetRolesAsync(user);
+            
+            return Ok(_tokenService.Generate(user, roles.ToList()));
         }
 
         [HttpPost]
@@ -65,55 +63,34 @@ namespace Server.Controllers
 
             var newUser = new ApplicationUser 
             {
-                UserName = model.Name,
-                Email = model.Email
-            };
+                UserName = model.Username,
+                Email = model.Email,
+                Firstname = model.Firstname,
+                Lastname = model.Lastname             
+            };            
 
             var result = await _userManager.CreateAsync(newUser, model.Password);
-            if (result.Succeeded)
-                return BadRequest("Sorry, an unexpected error occured");
 
-            #region Send confirmation email
-            var confirmationCode = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
             
-            var callbackUrl = Url.Action("ConfirmEmail",
-                                        "Account", 
-                                        new { userId = newUser.Id, code = confirmationCode },
-                                        HttpContext.Request.Scheme);
-            var message = $"Follow the link to complete registration: <a href='{callbackUrl}'>link</a>";
-
-            Console.WriteLine(message);
-            // await _emailService.SendEmailAsync(model.Email, "Confirm your email", message, message);
-            #endregion
-
-            return Ok("We've sent you an email to verify that the address is correct");
+            ApplicationUser user = await _userManager.FindByEmailAsync(newUser.Email);
+            var roles = await _userManager.GetRolesAsync(user);
+            
+            return Ok(_tokenService.Generate(user, roles.ToList()));
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(string), 200)]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code)
-        {
-            if (userId == null || code == null)
-                return BadRequest("User or confirmation code is empty");
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return NotFound("User is not found");
-
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (!result.Succeeded)
-                return BadRequest(result);
-
-            return Ok("Email is confirmed");
-        }
-
-        [HttpPost]
         [Authorize]
-        [ProducesResponseType(typeof(string), 200)]
-        public IActionResult ExtendToken()
+        [ProducesResponseType(typeof(ProfileViewModel), 200)]
+        public async Task<IActionResult> Profile()
         {
-            return Ok(_tokenService.Generate(CurrentUser));
+
+            var result = await _profileService.GetProfileAsync();
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok(result.Value);
         }
 
     }

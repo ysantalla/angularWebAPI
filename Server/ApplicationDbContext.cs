@@ -10,7 +10,7 @@ namespace Server
         public ApplicationDbContext(DbContextOptions options)
             : base(options)
         {
-            
+
         }
 
         public DbSet<Guest> Guets { get; set; }
@@ -24,21 +24,6 @@ namespace Server
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            // builder.Entity<Country>()
-            //     .HasOne(x => x.CreatorUser)
-            //     .WithMany(x => x.Countries)
-            //     .HasForeignKey(x => x.CreatorId);
-            
-            // builder.Entity<Citizenship>()
-            //     .HasOne(x => x.CreatorUser);
-            
-            // builder.Entity<Currency>()
-            //     .HasOne(x => x.CreatorUser);
-
-            // builder.Entity<Guest>()
-            //     .HasOne(x => x.CreatorUser);
-
         }
     }
 }

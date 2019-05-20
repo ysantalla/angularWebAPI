@@ -18,6 +18,7 @@ export class AuthService {
   private isAuthenticated$ = new BehaviorSubject(false);
   private token$ = new BehaviorSubject('');
   private username$ = new BehaviorSubject('');
+  private role$ = new BehaviorSubject([]);
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -25,14 +26,23 @@ export class AuthService {
   ) {
     this.token$.next(this.localStorageService.getItem(TOKEN_PREFIX));
 
-    if (!this.isTokenExpired()) {
-      const tokenDecoded: any = this.decodeToken(this.token$.value);
+    this.token$.subscribe(token => {
 
-      if (tokenDecoded) {
+      if (!this.isTokenExpired(token)) {
+        this.localStorageService.setItem(TOKEN_PREFIX, token);
+        const tokenDecoded: any = this.decodeToken(this.token$.value);
+
+        this.role$.next(tokenDecoded.role);
+
         this.username$.next(tokenDecoded.name);
         this.isAuthenticated$.next(true);
+      } else {
+        this.localStorageService.clear();
+        this.isAuthenticated$.next(false);
+        this.username$.next('');
+        this.role$.next([]);
       }
-    }
+    });
   }
 
   public getToken(): string {
@@ -51,6 +61,14 @@ export class AuthService {
     return this.username$.value;
   }
 
+  public getRoleAsync(): Observable<string[]> {
+    return this.role$.asObservable();
+  }
+
+  public getRole(): string[] {
+    return this.role$.value;
+  }
+
   public isAuthenticated(): Observable<boolean> {
     return this.isAuthenticated$.asObservable();
   }
@@ -60,19 +78,15 @@ export class AuthService {
   }
 
   public login(token: string): void {
-    const tokenDecoded: any = this.decodeToken(token);
 
-    if (tokenDecoded) {
-      this.username$.next(tokenDecoded.name);
-      this.localStorageService.setItem(TOKEN_PREFIX, token);
-      this.isAuthenticated$.next(true);
+    if (token) {
+      this.token$.next(token);
     }
 
   }
 
   public logout(): void {
-    this.localStorageService.removeItem(TOKEN_PREFIX);
-    this.isAuthenticated$.next(false);
+    this.token$.next(null);
   }
 
   private urlBase64Decode(str: string): string {

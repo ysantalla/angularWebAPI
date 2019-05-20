@@ -19,13 +19,20 @@ namespace Server.Services
             _configuration = configuration;
         }
         
-        public string Generate(ApplicationUser user)
+        public string Generate(ApplicationUser user, List<string> roles)
         {
+
             var claims = new List<Claim>
             {
                 new Claim("name", user.UserName),
                 new Claim("id", user.Id.ToString()),
-            };
+            };            
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim("role", role));                
+            }
+            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JWT:ExpireDays"]));

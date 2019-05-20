@@ -6,7 +6,6 @@ namespace Server.Models
     {
         public long Id { get; set; }
 
-        public ApplicationUser CreatorUser { get; set; }
         public long CreatorId { get; set; }
 
         public long ModifierId { get; set; }

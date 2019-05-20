@@ -1,6 +1,6 @@
-# CyberPlus Angular-WebAPI project
+# Angular-WebAPI project
 
-This repository contains Web App built on Angular 7 that interacts with WebAPI which has MySQL database
+This repository contains Web App built on Angular 7 that interacts with WebAPI in .Net Core which has MySQL database
 
 ## Getting Started
 
@@ -16,7 +16,6 @@ Settings are located in [appsettings.json](WebApi/appsettings.json). Change `ins
  
 - ConnectionString
 - JWT SecretKey
-- Email/SendGridAPIKey [how to create SendGrid?](https://docs.microsoft.com/en-us/azure/sendgrid-dotnet-how-to-send-email)
 
 ### Code-first database migration
 
@@ -41,25 +40,15 @@ Run `ASPNETCORE_Environment=Development dotnet run` to build project.
 
 Online API documentation is located on [/Swagger](http://ideashareapp.azurewebsites.net/swagger/)
 
-### Run Mysql Database in Docker Container.
-
-* docker-compose up -d
-
 ## Built With
 
 * **ASP.NET Core 2.2 WebAPI**
 * **Angular 7**
 * **MySQL**
 
-## Roadmap
-
-- [ ] Localization
-- [ ] WebAPI.Tests
-- [ ] Angular Client App
-
 ## Authors
 
-* **Ing. Yasmany Santalla Pereda** - [ysantalla](https://github.com/ysantalla)
+* **Raydel Alvarez Ramirez**
 
 ## License
 

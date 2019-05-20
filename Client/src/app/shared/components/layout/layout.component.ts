@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '@app/core/services/auth.service';
 import { MatSnackBar } from '@angular/material';
@@ -24,13 +24,12 @@ import { Menu } from '@app/core/models/menu.model';
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
         [opened]="!(isHandset$ | async) && (isLoggedIn$ | async)">
         <mat-toolbar class="sidenav-navbar" color="primary">
-          <img class="logo" src="assets/logo_64x64.png" />
           <span>{{appName}}</span>
         </mat-toolbar>
 
         <app-nav-menu [items]="dashboard"></app-nav-menu>
 
-        <app-nav-menu [items]="adminMenu"></app-nav-menu>
+        <app-nav-menu [items]="adminMenu" *ngIf="isAdmin$.asObservable() | async"></app-nav-menu>
 
       </mat-sidenav>
       <mat-sidenav-content>
@@ -53,12 +52,6 @@ import { Menu } from '@app/core/models/menu.model';
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <!--
-                <a mat-menu-item *ngIf="isLoggedIn$ | async" target="_blank" href="https://clave.upr.edu.cu/iisadmpwd/">
-                  <mat-icon>lock_open</mat-icon>
-                  <span>Cambiar Contraseña</span>
-                </a>
-              -->
 
               <button mat-menu-item *ngIf="isLoggedIn$ | async" routerLink="auth/profile">
                 <mat-icon>person</mat-icon>
@@ -171,10 +164,15 @@ import { Menu } from '@app/core/models/menu.model';
   `],
   animations: [routerTransition]
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
 
   isLoggedIn$: Observable<boolean>;
   username$: Observable<string>;
+
+  public isAdmin$ = new BehaviorSubject(false);
+  public isManager$ = new BehaviorSubject(false);
+
+  subscription: Subscription;
 
   dashboard: Menu;
   adminMenu: Menu;
@@ -195,6 +193,8 @@ export class LayoutComponent implements OnInit {
     private snackBar: MatSnackBar,
     private router: Router
   ) {
+
+
     this.dashboard = {
       heading: 'Escritorio',
       icon: 'dashboard',
@@ -207,19 +207,14 @@ export class LayoutComponent implements OnInit {
       icon: 'settings',
       pages: [
         {
-          heading: 'Gestión de Usuario',
+          heading: 'Administrar Usuarios',
           link: '/admin/user',
           icon: 'person'
         },
         {
-          heading: 'Gestión de Roles',
-          link: '/admin/role',
-          icon: 'supervisor_account'
-        },
-        {
-          heading: 'Gestión de Archivos',
-          link: '/admin/file',
-          icon: 'folder'
+          heading: 'Administrar Países',
+          link: '/admin/country/list',
+          icon: 'translate'
         }
       ]
     };
@@ -228,12 +223,28 @@ export class LayoutComponent implements OnInit {
   ngOnInit(): void {
     this.isLoggedIn$ = this.authService.isAuthenticated();
     this.username$ = this.authService.getUsernameAsync();
+
+    this.subscription = this.authService.getRoleAsync().subscribe( (data: string[]) => {
+
+        if (data.some(x => x === 'Admin')) {
+          this.isAdmin$.next(true);
+        }
+
+        if (data.some(x => x === 'Manager')) {
+          this.isManager$.next(true);
+        }
+    });
+
   }
 
   logout(): void {
     this.authService.logout();
     this.snackBar.open('Usted a cerrado su sesión', 'X', {duration: 3000});
     this.router.navigate(['auth', 'login']);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

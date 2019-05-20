@@ -29,50 +29,19 @@ namespace Server.Services
             {
                 var user = await this.userManager.FindByIdAsync(CurrentUser.Id.ToString());
 
-                var userSettings =  new ProfileViewModel
+                var userView =  new ProfileViewModel
                                     {
-                                        Name = user.NormalizedUserName,
-                                        UserName = user.UserName
+                                        Email = user.Email,
+                                        UserName = user.UserName,
+                                        Firstname = user.Firstname,
+                                        Lastname = user.Lastname
                                     };
 
-                return userSettings;
+                return userView;
             };
             
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<UserSettingsViewModel>> GetUserSettingsAsync()
-        {
-            Func<Task<UserSettingsViewModel>> action = async () => 
-            {
-                var user = await this.userManager.FindByIdAsync(CurrentUser.Id.ToString());
-
-                Console.WriteLine(user);
-
-                var userSettings =  new UserSettingsViewModel
-                                    {
-                                        UserName = user.UserName
-                                    };
-
-                return userSettings;
-            };
-            
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult> UpdateUserSettingsAsync(UserSettingsViewModel model)
-        {
-            Func<Task> action = async () =>
-            {
-                var user = await this.userManager.FindByIdAsync(CurrentUser.Id.ToString());
-                
-                user.NormalizedUserName = model.UserName.ToUpper();
-                user.UserName = model.UserName;
-
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
     }
 }

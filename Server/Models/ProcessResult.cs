@@ -39,16 +39,18 @@ namespace Server.Models
         public bool Succeeded { get; private set; }
         public List<string> Errors { get; private set; }
         public T Value { get; private set; }
-        public ProcessResult(bool isSuccess, List<string> errors = null, T data = default(T))
+        public int CountItems {get; private set;}
+        public ProcessResult(bool isSuccess, List<string> errors = null, T data = default(T), int countItems = 0 )
         {
             this.Succeeded = isSuccess;
             this.Errors = errors ?? new List<string>();
             this.Value = data;
+            this.CountItems = countItems;
         }
 
-        public static ProcessResult<T> Ok(T result)
+        public static ProcessResult<T> Ok(T result, int countItems = 0)
         {
-            return new ProcessResult<T>(true, null, result);
+            return new ProcessResult<T>(true, null, result, countItems);
         }
 
         public static ProcessResult<T> Fail()

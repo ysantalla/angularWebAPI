@@ -27,6 +27,11 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
+    path: 'admin',
+    loadChildren: './views/+admin/admin.module#AdminModule',
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'error',
     loadChildren: './views/+error/error.module#ErrorModule',
   },

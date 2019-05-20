@@ -6,11 +6,14 @@ import {
 import { CommonModule } from '@angular/common';
 
 import {
-  HttpClientModule,
+  HttpClientModule, HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 
 import { AuthGuard } from '@app/core/guards/auth.guard';
 import { RoleGuard } from '@app/core/guards/role.guard';
+import { ApiInterceptor } from './interceptors/api.interceptor';
+import { LocalStorageService } from './services/local-storage.service';
+import { AuthService } from './services/auth.service';
 
 
 @NgModule({
@@ -20,7 +23,14 @@ import { RoleGuard } from '@app/core/guards/role.guard';
   ],
   providers: [
     AuthGuard,
-    RoleGuard
+    RoleGuard,
+    LocalStorageService,
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiInterceptor,
+      multi: true
+    }
   ],
   declarations: []
 })

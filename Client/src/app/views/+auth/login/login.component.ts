@@ -5,10 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '@app/core/services/auth.service';
 import { MatSnackBar } from '@angular/material';
 
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
-
 
 import { environment as env } from '@env/environment';
 
@@ -24,10 +21,12 @@ import { environment as env } from '@env/environment';
       <div class="item">
         <form [formGroup]="loginForm" #f="ngForm" (ngSubmit)="onLogin()" class="form">
           <mat-card class="card">
-            <mat-card-header class="header-logo">
-              <img mat-card-image class="logo" src="./assets/logo_150x150.png" alt="icon">
-            </mat-card-header>
-            <h1 class="mat-h1">Iniciar Sesión</h1>
+            <mat-toolbar color="primary">
+              <mat-card-header class="header-logo">
+                <h1 class="mat-h1">Iniciar Sesión</h1>
+              </mat-card-header>
+            </mat-toolbar>
+            <br />
             <mat-card-content>
               <mat-form-field class="full-width">
                 <input matInput required type="text" placeholder="Email" formControlName="email">
@@ -105,11 +104,14 @@ export class LoginComponent implements OnInit {
 
           if (data) {
             this.authService.login(data);
+            this.loading = false;
             this.snackBar.open(`Bienvenido ${this.authService.getUsername()}`, 'X', {duration: 3000});
             this.router.navigate(['dashboard']);
           }
         }, (error: HttpErrorResponse) => {
-          this.snackBar.open(error.message, 'X', {duration: 3000});
+          this.loading = false;
+          this.loginForm.enable();
+          this.snackBar.open(error.error, 'X', {duration: 3000});
         });
 
     } else {

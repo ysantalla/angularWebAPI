@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Server.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Server
 {
@@ -17,15 +19,28 @@ namespace Server
         public static void Main(string[] args)
         {
             var logger = LogManager.LoadConfiguration("nlog.config").GetCurrentClassLogger();
-            try
+
+            var host = BuildWebHost(args);
+            
+            using (var scope = host.Services.CreateScope())
             {
-                logger.Debug("init main");
-                BuildWebHost(args).Run(); 
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Stopped program because of exception");
-                throw;
+                var services = scope.ServiceProvider;
+            
+                try
+                {
+                    var serviceProvider = services.GetRequiredService<IServiceProvider>();
+                    var configuration = services.GetRequiredService<IConfiguration>();
+
+                    Seed.CreateRoles(serviceProvider, configuration).Wait();
+
+                    logger.Debug("init main");
+                    host.Run();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Stopped program because of exception");
+                    throw;
+                }
             }
         }
 

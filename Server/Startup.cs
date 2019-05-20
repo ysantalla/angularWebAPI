@@ -50,6 +50,7 @@ namespace Server
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
                     options.User.RequireUniqueEmail = true;
+
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -63,7 +64,6 @@ namespace Server
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
-                    // options.SaveToken = true;
 
                     options.TokenValidationParameters = new TokenValidationParameters
                                                             {
@@ -94,11 +94,19 @@ namespace Server
 
             services.AddSwaggerGen(c =>
             {
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                }); 
+                
                 c.SwaggerDoc("v1", new Info 
                 { 
-                    Title = "CyberPlus Systems API", 
+                    Title = "RestFull API", 
                     Version = "v1",
-                    Contact = new Contact { Name="Ing. Yasmany Santalla Pereda", Email="ysantalla88@gmail.com" }
+                    Contact = new Contact { Name="Raydel Alvarez Ramírez", Email="raydel@gmail.com" }
                 });
             });
 
@@ -116,14 +124,9 @@ namespace Server
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
 
             app.UseAuthentication();
             app.UseStaticFiles();
-            // app.UseSpaStaticFiles();
 
             app.UseMvc(routes =>
             {
@@ -141,23 +144,10 @@ namespace Server
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            // app.UseSpa(spa =>
-            // {
-            //     // To learn more about options for serving an Angular SPA from ASP.NET Core,
-            //     // see https://go.microsoft.com/fwlink/?linkid=864501
-
-            //     spa.Options.SourcePath = "Client";
-
-            //     if (env.IsDevelopment())
-            //     {
-            //         spa.UseAngularCliServer(npmScript: "start");
-            //     }
-            // });
         }
 
         private void ConfigureCustomServices(IServiceCollection services)
         {
-            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<ICountryService, CountryService>();

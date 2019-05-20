@@ -3,13 +3,10 @@ export interface User {
   firstname: string;
   lastname: string;
   email: string;
-  username: string;
-  employeeNumber: string;
-  roles: Role[];
+  userName: string;
 }
 
 export interface Role {
   id?: string;
   name: string;
-  description?: string;
 }
