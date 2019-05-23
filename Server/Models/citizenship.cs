@@ -6,7 +6,6 @@ namespace Server.Models
 {
     public class Citizenship : BaseModel
     {
-        public long CitizenshipId { get; set; }
         public string Name { get; set; }
     }
 }
