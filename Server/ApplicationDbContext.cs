@@ -13,7 +13,7 @@ namespace Server
 
         }
 
-        public DbSet<Guest> Guets { get; set; }
+        public DbSet<Guest> Guests { get; set; }
 
         public DbSet<Country> Countries { get; set; }
 
