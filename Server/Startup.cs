@@ -155,6 +155,7 @@ namespace Server
             services.AddTransient<ICurrencyService, CurrencyService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IGuestService, GuestService>();
 
             services.AddSingleton<ITokenService, TokenService>();            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

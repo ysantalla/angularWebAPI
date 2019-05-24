@@ -30,6 +30,7 @@ namespace Server.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody]CountryViewModel model)
         {
             if (!ModelState.IsValid)
@@ -45,6 +46,7 @@ namespace Server.Controllers
         [HttpPatch]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> Update([FromBody]CountryViewModel model)
         {
             if (!ModelState.IsValid)
@@ -75,6 +77,7 @@ namespace Server.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<CountryViewModel>), 200)]
         [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> List(CountryFilterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -83,8 +86,6 @@ namespace Server.Controllers
             var result = await _countryService.GetListAsync(model.sortOrder, model.searchString, model.pageIndex, model.pageSize);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
-            
-            var countItems = await _countryService.CountAsync(model.searchString);
 
             return Ok(result);
             
@@ -93,16 +94,15 @@ namespace Server.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(int), 200)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Count()
+        [AllowAnonymous]
+        public async Task<IActionResult> Count(CountryFilterViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _countryService.CountAsync("");
+            var result = await _countryService.CountAsync(model.searchString);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
-            
-            var countItems = await _countryService.CountAsync("");
             
             return Ok(result);
             
@@ -111,6 +111,7 @@ namespace Server.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(CountryViewModel), 200)]
         [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(CountryIdViewModel model)
         {
             if (!ModelState.IsValid)

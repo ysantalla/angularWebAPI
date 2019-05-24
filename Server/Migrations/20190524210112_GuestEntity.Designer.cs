@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server;
 
 namespace server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190524210112_GuestEntity")]
+    partial class GuestEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,40 +98,6 @@ namespace server.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Server.Models.Agency", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long?>("CountryId");
-
-                    b.Property<DateTime>("CreateDate");
-
-                    b.Property<long>("CreatorId");
-
-                    b.Property<string>("Email");
-
-                    b.Property<int>("HVersion");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<long>("ModifierId");
-
-                    b.Property<DateTime>("ModifyDate");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Phone");
-
-                    b.Property<string>("Represent");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.ToTable("Agencies");
                 });
 
             modelBuilder.Entity("Server.Models.ApplicationRole", b =>
@@ -321,144 +289,6 @@ namespace server.Migrations
                     b.ToTable("Guest");
                 });
 
-            modelBuilder.Entity("Server.Models.Invoice", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreateDate");
-
-                    b.Property<long>("CreatorId");
-
-                    b.Property<long?>("CurrencyId");
-
-                    b.Property<DateTime>("Date");
-
-                    b.Property<long?>("GuestId");
-
-                    b.Property<int>("HVersion");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<long>("ModifierId");
-
-                    b.Property<DateTime>("ModifyDate");
-
-                    b.Property<string>("Number");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
-
-                    b.HasIndex("GuestId");
-
-                    b.ToTable("Invoices");
-                });
-
-            modelBuilder.Entity("Server.Models.Package", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreateDate");
-
-                    b.Property<long>("CreatorId");
-
-                    b.Property<string>("Description");
-
-                    b.Property<int>("HVersion");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<long>("ModifierId");
-
-                    b.Property<DateTime>("ModifyDate");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Packages");
-                });
-
-            modelBuilder.Entity("Server.Models.Reservation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long?>("AgencyId");
-
-                    b.Property<DateTime>("CreateDate");
-
-                    b.Property<long>("CreatorId");
-
-                    b.Property<string>("Details");
-
-                    b.Property<DateTime>("EndDate");
-
-                    b.Property<long?>("GuestId");
-
-                    b.Property<int>("HVersion");
-
-                    b.Property<DateTime>("InitDate");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<long>("ModifierId");
-
-                    b.Property<DateTime>("ModifyDate");
-
-                    b.Property<long?>("PackageId");
-
-                    b.Property<long?>("RoomId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AgencyId");
-
-                    b.HasIndex("GuestId");
-
-                    b.HasIndex("PackageId");
-
-                    b.HasIndex("RoomId");
-
-                    b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("Server.Models.Room", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("BedCont");
-
-                    b.Property<int>("Capacity");
-
-                    b.Property<DateTime>("CreateDate");
-
-                    b.Property<long>("CreatorId");
-
-                    b.Property<string>("Description");
-
-                    b.Property<bool>("Enable");
-
-                    b.Property<int>("HVersion");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<long>("ModifierId");
-
-                    b.Property<DateTime>("ModifyDate");
-
-                    b.Property<string>("Number");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rooms");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
                     b.HasOne("Server.Models.ApplicationRole")
@@ -504,13 +334,6 @@ namespace server.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Server.Models.Agency", b =>
-                {
-                    b.HasOne("Server.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
-                });
-
             modelBuilder.Entity("Server.Models.Guest", b =>
                 {
                     b.HasOne("Server.Models.Citizenship", "Citizenship")
@@ -522,36 +345,6 @@ namespace server.Migrations
                         .WithMany()
                         .HasForeignKey("CountryID")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Server.Models.Invoice", b =>
-                {
-                    b.HasOne("Server.Models.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId");
-
-                    b.HasOne("Server.Models.Guest", "Guest")
-                        .WithMany()
-                        .HasForeignKey("GuestId");
-                });
-
-            modelBuilder.Entity("Server.Models.Reservation", b =>
-                {
-                    b.HasOne("Server.Models.Agency", "Agency")
-                        .WithMany()
-                        .HasForeignKey("AgencyId");
-
-                    b.HasOne("Server.Models.Guest", "Guest")
-                        .WithMany()
-                        .HasForeignKey("GuestId");
-
-                    b.HasOne("Server.Models.Package", "Package")
-                        .WithMany()
-                        .HasForeignKey("PackageId");
-
-                    b.HasOne("Server.Models.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId");
                 });
 #pragma warning restore 612, 618
         }

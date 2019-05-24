@@ -10,7 +10,11 @@ namespace Server.Models
         public string Phone { get; set; }
         public string Identification { get; set; }
         public string Birthday { get; set; }
+
+        public long CountryID { get; set; }
         public Country Country { get; set; }
+
+        public long CitizenshipID { get; set; }
         public Citizenship Citizenship { get; set; }
 
     }
