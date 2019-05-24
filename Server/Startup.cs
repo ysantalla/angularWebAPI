@@ -152,6 +152,7 @@ namespace Server
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<ICitizenshipService, CitizenshipService>();
+            services.AddTransient<ICurrencyService, CurrencyService>();
 
             services.AddSingleton<ITokenService, TokenService>();            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

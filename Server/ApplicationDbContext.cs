@@ -17,7 +17,7 @@ namespace Server
 
         public DbSet<Country> Countries { get; set; }
 
-        public DbSet<Currency> Currency { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
 
         public DbSet<Citizenship> Citizenships { get; set; }
 
