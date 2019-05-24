@@ -236,7 +236,7 @@ export class ListCountryComponent implements OnInit, OnDestroy {
       private dialog: MatDialog
     ) {
     this.searchForm = this.formBuilder.group({
-      name: ['']
+      name: ['', Validators.required]
     });
   }
 
