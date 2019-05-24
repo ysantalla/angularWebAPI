@@ -6,7 +6,6 @@ namespace Server.Models
 {
     public class Guest : BaseModel
     {
-        public long GuestId { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Identification { get; set; }

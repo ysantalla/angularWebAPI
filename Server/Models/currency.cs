@@ -6,8 +6,7 @@ namespace Server.Models
 {
     public class Currency : BaseModel
     {
-        public long CurrencyId { get; set; }
         public string Name { get; set; }
-        public string Simbol { get; set; }
+        public string Symbol { get; set; }
     }
 }
