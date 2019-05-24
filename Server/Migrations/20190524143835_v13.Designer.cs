@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server;
 
 namespace server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190524143835_v13")]
+    partial class v13
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -334,8 +336,6 @@ namespace server.Migrations
 
                     b.Property<long>("CreatorId");
 
-                    b.Property<long?>("CurrencyId");
-
                     b.Property<DateTime>("Date");
 
                     b.Property<long?>("GuestId");
@@ -351,8 +351,6 @@ namespace server.Migrations
                     b.Property<string>("Number");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
 
                     b.HasIndex("GuestId");
 
@@ -528,10 +526,6 @@ namespace server.Migrations
 
             modelBuilder.Entity("Server.Models.Invoice", b =>
                 {
-                    b.HasOne("Server.Models.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId");
-
                     b.HasOne("Server.Models.Guest", "Guest")
                         .WithMany()
                         .HasForeignKey("GuestId");

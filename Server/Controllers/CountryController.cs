@@ -42,7 +42,7 @@ namespace Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPatch]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromBody]CountryViewModel model)
@@ -57,7 +57,7 @@ namespace Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpDelete]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveOrRestore([FromBody]CountryIdViewModel model)
