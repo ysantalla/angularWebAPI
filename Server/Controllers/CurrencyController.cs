@@ -87,8 +87,6 @@ namespace Server.Controllers
             var result = await _CurrencyService.GetListAsync(model.sortOrder, model.searchString, model.pageIndex, model.pageSize);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
-            
-            // var countItems = await _CurrencyService.CountAsync(model.searchString);
 
             return Ok(result);
             
@@ -98,16 +96,14 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(int), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Count()
+        public async Task<IActionResult> Count(CurrencyFilterViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CurrencyService.CountAsync("");
+            var result = await _CurrencyService.CountAsync(model.searchString);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
-            
-            var countItems = await _CurrencyService.CountAsync("");
             
             return Ok(result);
             

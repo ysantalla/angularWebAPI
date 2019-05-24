@@ -21,6 +21,8 @@ namespace Server
 
         public DbSet<Citizenship> Citizenships { get; set; }
 
+        public DbSet<Guest> Guests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
