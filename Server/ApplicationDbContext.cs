@@ -21,7 +21,11 @@ namespace Server
 
         public DbSet<Citizenship> Citizenships { get; set; }
 
-        public DbSet<Guest> Guests { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Package> Packages { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<Agency> Agencies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

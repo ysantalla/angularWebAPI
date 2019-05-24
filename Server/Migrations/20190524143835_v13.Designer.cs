@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server;
 
 namespace server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190524143835_v13")]
+    partial class v13
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,6 +268,8 @@ namespace server.Migrations
 
                     b.Property<long>("CreatorId");
 
+                    b.Property<long>("CurrencyId");
+
                     b.Property<int>("HVersion");
 
                     b.Property<bool>("IsDeleted");
@@ -276,11 +280,11 @@ namespace server.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Symbol");
+                    b.Property<string>("Simbol");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currency");
                 });
 
             modelBuilder.Entity("Server.Models.Guest", b =>
@@ -290,13 +294,15 @@ namespace server.Migrations
 
                     b.Property<string>("Birthday");
 
-                    b.Property<long>("CitizenshipID");
+                    b.Property<long?>("CitizenshipId");
 
-                    b.Property<long>("CountryID");
+                    b.Property<long?>("CountryId");
 
                     b.Property<DateTime>("CreateDate");
 
                     b.Property<long>("CreatorId");
+
+                    b.Property<long>("GuestId");
 
                     b.Property<int>("HVersion");
 
@@ -314,11 +320,11 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CitizenshipID");
+                    b.HasIndex("CitizenshipId");
 
-                    b.HasIndex("CountryID");
+                    b.HasIndex("CountryId");
 
-                    b.ToTable("Guest");
+                    b.ToTable("Guets");
                 });
 
             modelBuilder.Entity("Server.Models.Invoice", b =>
@@ -329,8 +335,6 @@ namespace server.Migrations
                     b.Property<DateTime>("CreateDate");
 
                     b.Property<long>("CreatorId");
-
-                    b.Property<long?>("CurrencyId");
 
                     b.Property<DateTime>("Date");
 
@@ -347,8 +351,6 @@ namespace server.Migrations
                     b.Property<string>("Number");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
 
                     b.HasIndex("GuestId");
 
@@ -515,21 +517,15 @@ namespace server.Migrations
                 {
                     b.HasOne("Server.Models.Citizenship", "Citizenship")
                         .WithMany()
-                        .HasForeignKey("CitizenshipID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CitizenshipId");
 
                     b.HasOne("Server.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CountryId");
                 });
 
             modelBuilder.Entity("Server.Models.Invoice", b =>
                 {
-                    b.HasOne("Server.Models.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId");
-
                     b.HasOne("Server.Models.Guest", "Guest")
                         .WithMany()
                         .HasForeignKey("GuestId");
