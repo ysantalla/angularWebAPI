@@ -208,8 +208,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
       pages: [
         {
           heading: 'Administrar Usuarios',
-          link: '/admin/user',
+          link: '/admin/user/list',
           icon: 'person'
+        },
+        {
+          heading: 'Administrar Roles',
+          link: '/admin/role/list',
+          icon: 'supervisor_account'
         },
         {
           heading: 'Administrar Países',
@@ -224,14 +229,22 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isLoggedIn$ = this.authService.isAuthenticated();
     this.username$ = this.authService.getUsernameAsync();
 
-    this.subscription = this.authService.getRoleAsync().subscribe( (data: string[]) => {
+    this.subscription = this.authService.getRoleAsync().subscribe( (data: any) => {
 
-        if (data.some(x => x === 'Admin')) {
-          this.isAdmin$.next(true);
-        }
-
-        if (data.some(x => x === 'Manager')) {
-          this.isManager$.next(true);
+        if (data && typeof data === 'object' && data.constructor === Array)  {
+          if (data.some(x => x === 'Admin')) {
+            this.isAdmin$.next(true);
+          }
+          if (data.some(x => x === 'Manager')) {
+            this.isManager$.next(true);
+          }
+        } else {
+          if (data === 'Admin') {
+            this.isAdmin$.next(true);
+          }
+          if (data === 'Manager') {
+            this.isManager$.next(true);
+          }
         }
     });
 

@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmComponent } from '@app/shared/components/confirm/confirm.component';
 
 @Component({
-  selector: 'app-list-country',
+  selector: 'app-list-user',
   template: `
     <div *ngIf="loading">
       <mat-progress-bar color="warn"></mat-progress-bar>
@@ -31,7 +31,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               <input
                 matInput
                 type="text"
-                placeholder="Filtrado por nombre de país"
+                placeholder="Filtrado por parámetros"
                 formControlName="name"
               />
             </mat-form-field>
@@ -71,11 +71,11 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             mat-raised-button
             color="primary"
             type="button"
-            routerLink="/admin/country/add"
+            routerLink="/admin/user/add"
             aria-label="add"
           >
             <mat-icon>add</mat-icon>
-            <span> País </span>
+            <span> Usuario </span>
           </button>
 
 
@@ -108,11 +108,29 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
           </ng-container>
 
           <!-- Name Column -->
-          <ng-container matColumnDef="name">
+          <ng-container matColumnDef="firstname">
             <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
               Nombre
             </th>
-            <td mat-cell *matCellDef="let row">{{row.name}}</td>
+            <td mat-cell *matCellDef="let row">{{row.firstname}}</td>
+          </ng-container>
+
+
+          <!-- Lastname Column -->
+          <ng-container matColumnDef="lastname">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+              Apellidos
+            </th>
+            <td mat-cell *matCellDef="let row">{{row.lastname}}</td>
+          </ng-container>
+
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+              Correo
+            </th>
+            <td mat-cell *matCellDef="let row">{{row.email}}</td>
           </ng-container>
 
 
@@ -122,7 +140,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               Editar
             </th>
             <td mat-cell *matCellDef="let row">
-              <a mat-button color="accent" [routerLink]="['/admin','country', 'edit', row.id]">
+              <a mat-button color="accent" [routerLink]="['/admin','user', 'edit', row.id]">
                 <mat-icon>edit</mat-icon>
               </a>
             </td>
@@ -210,8 +228,8 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
     }
   `]
 })
-export class ListCountryComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'name', 'edit', 'delete'];
+export class ListUserComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['id', 'firstname', 'lastname', 'email', 'edit', 'delete'];
 
   data: any[] = [];
 
@@ -263,7 +281,7 @@ export class ListCountryComponent implements OnInit, OnDestroy {
                 .set('pageSize', this.paginator.pageSize.toString())
                 .set('sortOrder', `${this.sort.active}_${this.sort.direction}`);
 
-              return this.httpClient.get<any>(`${env.serverUrl}/Country/List`, {params: params});
+              return this.httpClient.get<any>(`${env.serverUrl}/User/List`, {params: params});
             }
           }),
           map(data => {
@@ -300,8 +318,8 @@ export class ListCountryComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       data: {
-        message: `¿Está seguro que desea eliminar el país "${
-          item.name
+        message: `¿Está seguro que desea eliminar el usuario "${
+          item.firstname
         }"?`
       }
     });
@@ -309,7 +327,7 @@ export class ListCountryComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loading = true;
-        this.httpClient.delete(`${env.serverUrl}/Country/RemoveOrRestore?id=${item.id}`).subscribe(data => {
+        this.httpClient.delete(`${env.serverUrl}/User/RemoveOrRestore?id=${item.id}`).subscribe(data => {
           console.log(data);
 
         this.load$.next('');

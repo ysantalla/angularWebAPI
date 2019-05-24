@@ -60,7 +60,7 @@ namespace Server.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RemoveOrRestore([FromBody]CountryIdViewModel model)
+        public async Task<IActionResult> RemoveOrRestore(CountryIdViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            

@@ -2,8 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Server.ViewModels
 {
-    public class SignUpViewModel
+    public class UserViewModel
     {
+        public long Id { get; set; } = 0;
         [Required]
         public string Firstname { get; set; }
         [Required]
@@ -13,6 +14,5 @@ namespace Server.ViewModels
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-
     }
 }

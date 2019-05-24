@@ -38,6 +38,8 @@ namespace Server.Services
                 Currency.Name = model.Name;
                 Currency.Symbol = model.Symbol;
                 await context.SaveChangesAsync();
+
+                
             };
 
             return await Process.RunAsync(action);

@@ -153,6 +153,8 @@ namespace Server
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<ICitizenshipService, CitizenshipService>();
             services.AddTransient<ICurrencyService, CurrencyService>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddSingleton<ITokenService, TokenService>();            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

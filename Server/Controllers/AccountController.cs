@@ -63,7 +63,6 @@ namespace Server.Controllers
 
             var newUser = new ApplicationUser 
             {
-                UserName = model.Username,
                 Email = model.Email,
                 Firstname = model.Firstname,
                 Lastname = model.Lastname             

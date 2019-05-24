@@ -8,7 +8,7 @@ import { environment as env } from '@env/environment';
 
 
 @Component({
-  selector: 'app-edit-country',
+  selector: 'app-edit-role',
   template: `
     <div class="container">
       <div class="loading">
@@ -37,21 +37,21 @@ import { environment as env } from '@env/environment';
                     matInput
                     required
                     type="text"
-                    placeholder="Nombre de país"
+                    placeholder="Nombre del rol"
                     formControlName="name"
                   />
                 </mat-form-field>
 
               </mat-card-content>
               <mat-card-actions>
-                <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid" aria-label="createMes">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid" aria-label="edit">
                   <mat-icon>mode_edit</mat-icon>
-                  <span>País</span>
+                  <span>Rol</span>
                 </button>
 
-                <button mat-raised-button color="accent" routerLink="/admin/country/list" routerLinkActive type="button" aria-label="list">
+                <button mat-raised-button color="accent" routerLink="/admin/role/list" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
-                  <span>Listado de paises</span>
+                  <span>Listado de roles</span>
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -67,7 +67,7 @@ import { environment as env } from '@env/environment';
     }
   `]
 })
-export class EditCountryComponent implements OnInit {
+export class EditRoleComponent implements OnInit {
 
   editForm: FormGroup;
   loading = false;
@@ -94,11 +94,11 @@ export class EditCountryComponent implements OnInit {
     const params = new HttpParams()
       .set('Id', this.itemId);
 
-    this.httpClient.get(`${env.serverUrl}/Country/GetById`, {params: params}).subscribe((data: any) => {
+    this.httpClient.get(`${env.serverUrl}/Role/GetById`, {params: params}).subscribe((data: any) => {
       this.loading = false;
 
       this.editForm.patchValue({
-        name: data.value.name
+        name: data.name
       });
 
     });
@@ -111,11 +111,11 @@ export class EditCountryComponent implements OnInit {
     if (this.editForm.valid) {
       this.editForm.disable();
 
-      this.httpClient.patch(`${env.serverUrl}/Country/Update`, {name: this.editForm.value.name, Id: this.itemId}).subscribe((data: any) => {
+      this.httpClient.patch(`${env.serverUrl}/Role/Update`, {name: this.editForm.value.name, Id: this.itemId}).subscribe((data: any) => {
 
         if (data.succeeded) {
-          this.snackBar.open(`País con nombre ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'country', 'list']);
+          this.snackBar.open(`Rol con nombre ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});
+          this.router.navigate(['admin', 'role', 'list']);
         }
         this.loading = false;
 
