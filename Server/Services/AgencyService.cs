@@ -184,7 +184,7 @@ namespace Server.Services
                     s.Represent.Contains(f.searchString) ||
                     s.Email.Contains(f.searchString) ||
                     s.Phone.Contains(f.searchString)
-                ) && !s.IsDeleted);
+                ));
             }
             if (f.countryID > 0) {
                 q = q.Where( s => s.CountryID == f.countryID );

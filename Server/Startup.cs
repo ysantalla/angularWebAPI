@@ -158,6 +158,8 @@ namespace Server
             services.AddTransient<IGuestService, GuestService>();
             services.AddTransient<IAgencyService, AgencyService>();
             services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<IPackageService, PackageService>();
+            services.AddTransient<IRoomService, RoomService>();
 
             services.AddSingleton<ITokenService, TokenService>();            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

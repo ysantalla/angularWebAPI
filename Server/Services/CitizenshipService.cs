@@ -170,7 +170,7 @@ namespace Server.Services
             }
             if (!String.IsNullOrEmpty(f.searchString))
             {
-                q = q.Where(s => s.Name.Contains(f.searchString) && !s.IsDeleted);
+                q = q.Where(s => s.Name.Contains(f.searchString));
             }
             return q;
         }
