@@ -103,7 +103,7 @@ namespace server.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("CountryId");
+                    b.Property<long>("CountryID");
 
                     b.Property<DateTime>("CreateDate");
 
@@ -127,7 +127,7 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("CountryID");
 
                     b.ToTable("Agencies");
                 });
@@ -318,7 +318,7 @@ namespace server.Migrations
 
                     b.HasIndex("CountryID");
 
-                    b.ToTable("Guest");
+                    b.ToTable("Guests");
                 });
 
             modelBuilder.Entity("Server.Models.Invoice", b =>
@@ -330,11 +330,11 @@ namespace server.Migrations
 
                     b.Property<long>("CreatorId");
 
-                    b.Property<long?>("CurrencyId");
+                    b.Property<long>("CurrencyID");
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<long?>("GuestId");
+                    b.Property<long>("GuestID");
 
                     b.Property<int>("HVersion");
 
@@ -348,9 +348,9 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CurrencyId");
+                    b.HasIndex("CurrencyID");
 
-                    b.HasIndex("GuestId");
+                    b.HasIndex("GuestID");
 
                     b.ToTable("Invoices");
                 });
@@ -388,7 +388,7 @@ namespace server.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("AgencyId");
+                    b.Property<long>("AgencyID");
 
                     b.Property<DateTime>("CreateDate");
 
@@ -398,7 +398,7 @@ namespace server.Migrations
 
                     b.Property<DateTime>("EndDate");
 
-                    b.Property<long?>("GuestId");
+                    b.Property<long>("GuestID");
 
                     b.Property<int>("HVersion");
 
@@ -410,19 +410,19 @@ namespace server.Migrations
 
                     b.Property<DateTime>("ModifyDate");
 
-                    b.Property<long?>("PackageId");
+                    b.Property<long>("PackageID");
 
-                    b.Property<long?>("RoomId");
+                    b.Property<long>("RoomID");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AgencyId");
+                    b.HasIndex("AgencyID");
 
-                    b.HasIndex("GuestId");
+                    b.HasIndex("GuestID");
 
-                    b.HasIndex("PackageId");
+                    b.HasIndex("PackageID");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("RoomID");
 
                     b.ToTable("Reservations");
                 });
@@ -508,7 +508,8 @@ namespace server.Migrations
                 {
                     b.HasOne("Server.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryId");
+                        .HasForeignKey("CountryID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Guest", b =>
@@ -528,30 +529,36 @@ namespace server.Migrations
                 {
                     b.HasOne("Server.Models.Currency", "Currency")
                         .WithMany()
-                        .HasForeignKey("CurrencyId");
+                        .HasForeignKey("CurrencyID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Server.Models.Guest", "Guest")
                         .WithMany()
-                        .HasForeignKey("GuestId");
+                        .HasForeignKey("GuestID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Reservation", b =>
                 {
                     b.HasOne("Server.Models.Agency", "Agency")
                         .WithMany()
-                        .HasForeignKey("AgencyId");
+                        .HasForeignKey("AgencyID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Server.Models.Guest", "Guest")
                         .WithMany()
-                        .HasForeignKey("GuestId");
+                        .HasForeignKey("GuestID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Server.Models.Package", "Package")
                         .WithMany()
-                        .HasForeignKey("PackageId");
+                        .HasForeignKey("PackageID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Server.Models.Room", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
