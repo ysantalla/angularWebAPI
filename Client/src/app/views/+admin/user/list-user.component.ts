@@ -133,6 +133,17 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <td mat-cell *matCellDef="let row">{{row.email}}</td>
           </ng-container>
 
+          <!-- role Column -->
+          <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef>
+              Adicionar
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <a mat-button color="primary" [routerLink]="['/admin','user', 'add_role', row.id]">
+                <mat-icon>supervisor_account</mat-icon>
+              </a>
+            </td>
+          </ng-container>
 
           <!-- edit Column -->
           <ng-container matColumnDef="edit">
@@ -152,7 +163,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               Eliminar
             </th>
             <td mat-cell *matCellDef="let row">
-              <a mat-icon-button (click)="onDelete(row)" color="warn"><mat-icon>delete_forever</mat-icon></a>
+              <a mat-button (click)="onDelete(row)" color="warn"><mat-icon>delete_forever</mat-icon></a>
             </td>
           </ng-container>
 
@@ -215,8 +226,10 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
 
     /* Column Widths */
     .mat-column-id,
-    .mat-column-edit {
-      max-width: 20px;
+    .mat-column-edit,
+    .mat-column-delete,
+    .mat-column-role {
+      max-width: 30px;
     }
 
     .mat-column-name {
@@ -229,7 +242,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
   `]
 })
 export class ListUserComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'firstname', 'lastname', 'email', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'firstname', 'lastname', 'email', 'role', 'edit', 'delete'];
 
   data: any[] = [];
 

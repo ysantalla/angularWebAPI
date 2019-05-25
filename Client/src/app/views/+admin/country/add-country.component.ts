@@ -20,7 +20,7 @@ import { environment as env } from '@env/environment';
       <div class="item">
 
         <div class="mat-elevation-z8">
-          <form [formGroup]="createForm" #f="ngForm" (ngSubmit)="onCreateMes()" class="form">
+          <form [formGroup]="createForm" #f="ngForm" (ngSubmit)="onCreateCountry()" class="form">
             <mat-card class="mes-card">
               <mat-toolbar>
                 <mat-card-header>
@@ -86,7 +86,7 @@ export class AddCountryComponent implements OnInit {
     });
   }
 
-  onCreateMes(): void {
+  onCreateCountry(): void {
     this.loading = true;
 
     if (this.createForm.valid) {

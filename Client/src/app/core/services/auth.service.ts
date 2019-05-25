@@ -66,7 +66,13 @@ export class AuthService {
   }
 
   public getRole(): string[] {
-    return this.role$.value;
+    const roles = this.role$.value;
+    if (roles && typeof roles === 'object' && roles.constructor === Array) {
+      return roles;
+    } else if (roles && typeof roles === 'string') {
+      return [roles];
+    }
+    return [];
   }
 
   public isAuthenticated(): Observable<boolean> {

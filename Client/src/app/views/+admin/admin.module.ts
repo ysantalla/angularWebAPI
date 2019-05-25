@@ -16,6 +16,7 @@ import { ListRoleComponent } from './role/list-role.component';
 import { EditUserComponent } from './user/edit-user.component';
 import { AddUserComponent } from './user/add-user.component';
 import { ListUserComponent } from './user/list-user.component';
+import { UserAddRoleComponent } from './user/user-add-role.component';
 
 import { CountryResolver } from './resolvers/country.resolver';
 import { RoleResolver } from './resolvers/role.resolver';
@@ -80,6 +81,12 @@ const routes: Routes = [
     canActivate: [RoleGuard],
   },
   {
+    path: 'user/add_role/:id',
+    component: UserAddRoleComponent,
+    data: {title: 'Adicionar Rol a Usuario', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+  },
+  {
     path: 'user/edit/:id',
     component: EditUserComponent,
     data: {title: 'Editar Usuario', expectedRole: ['Admin']},
@@ -98,7 +105,7 @@ const routes: Routes = [
   declarations: [
     ListCountryComponent, AddCountryComponent, EditCountryComponent,
     ListRoleComponent, AddRoleComponent, EditRoleComponent,
-    ListUserComponent, AddUserComponent, EditUserComponent
+    ListUserComponent, AddUserComponent, EditUserComponent, UserAddRoleComponent
   ],
   providers: [CountryResolver, RoleResolver, UserResolver]
 })

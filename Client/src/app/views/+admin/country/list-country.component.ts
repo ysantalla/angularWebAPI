@@ -115,7 +115,6 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <td mat-cell *matCellDef="let row">{{row.name}}</td>
           </ng-container>
 
-
           <!-- edit Column -->
           <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>
@@ -134,7 +133,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               Eliminar
             </th>
             <td mat-cell *matCellDef="let row">
-              <a mat-icon-button (click)="onDelete(row)" color="warn"><mat-icon>delete_forever</mat-icon></a>
+              <a mat-button (click)="onDelete(row)" color="warn"><mat-icon>delete_forever</mat-icon></a>
             </td>
           </ng-container>
 

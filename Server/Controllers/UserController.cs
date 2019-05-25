@@ -122,6 +122,20 @@ namespace Server.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(RoleViewModel), 200)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRolesByUser(UserIdViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user  = await _userManager.FindByIdAsync(model.Id.ToString()); 
+            var result = await _userManager.GetRolesAsync(user);
+            
+            return Ok(result);
+        }
+
     
         [HttpGet]
         [ProducesResponseType(typeof(List<RoleViewModel>), 200)]
@@ -172,9 +186,16 @@ namespace Server.Controllers
             if (user == null)
                 return BadRequest("No se encuentra el usuario");
             
+            var roles = await _userManager.GetRolesAsync(user);
+            
+            await _userManager.RemoveFromRolesAsync(user, roles);
+
             var result = await _userManager.AddToRolesAsync(user, model.roles);
 
-            return Ok(user);
+            if (!result.Succeeded)
+                return BadRequest("Error al adicionar rol");
+
+            return Ok(result);
             
         } 
     }

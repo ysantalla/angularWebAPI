@@ -23,7 +23,8 @@ import {
   MatSortModule,
   MatPaginatorModule,
   MatDialogModule,
-  MatChipsModule
+  MatChipsModule,
+  MatSelectModule
 
 } from '@angular/material';
 
@@ -86,6 +87,7 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
     CdkTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatSelectModule,
     MatDialogModule,
     MatChipsModule,
 
