@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace server.Migrations
 {
-    public partial class third_version : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,12 +43,114 @@ namespace server.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    Rating = table.Column<int>(nullable: false),
-                    AvatarURL = table.Column<string>(nullable: true)
+                    Firstname = table.Column<string>(nullable: true),
+                    Lastname = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Citizenships",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatorId = table.Column<long>(nullable: false),
+                    ModifierId = table.Column<long>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
+                    HVersion = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Citizenships", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatorId = table.Column<long>(nullable: false),
+                    ModifierId = table.Column<long>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
+                    HVersion = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Currencies",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatorId = table.Column<long>(nullable: false),
+                    ModifierId = table.Column<long>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
+                    HVersion = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Symbol = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Currencies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Packages",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatorId = table.Column<long>(nullable: false),
+                    ModifierId = table.Column<long>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
+                    HVersion = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Value = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Packages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatorId = table.Column<long>(nullable: false),
+                    ModifierId = table.Column<long>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
+                    HVersion = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Number = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Capacity = table.Column<int>(nullable: false),
+                    Enable = table.Column<bool>(nullable: false),
+                    BedCont = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,36 +260,7 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ideas",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatorId = table.Column<long>(nullable: false),
-                    ModifierId = table.Column<long>(nullable: false),
-                    CreateDate = table.Column<DateTime>(nullable: false),
-                    ModifyDate = table.Column<DateTime>(nullable: false),
-                    HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    Article = table.Column<string>(nullable: true),
-                    ViewCount = table.Column<int>(nullable: false),
-                    LikeCount = table.Column<int>(nullable: false),
-                    Language = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ideas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ideas_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tags",
+                name: "Agencies",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -199,21 +272,24 @@ namespace server.Migrations
                     HVersion = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    Language = table.Column<int>(nullable: false)
+                    Represent = table.Column<string>(nullable: true),
+                    CountryID = table.Column<long>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
+                    table.PrimaryKey("PK_Agencies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tags_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Agencies_Countries_CountryID",
+                        column: x => x.CountryID,
+                        principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
+                name: "Guests",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -224,29 +300,32 @@ namespace server.Migrations
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    IdeaId = table.Column<long>(nullable: false),
-                    Message = table.Column<string>(nullable: true),
-                    LikeCount = table.Column<int>(nullable: false)
+                    Name = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true),
+                    Identification = table.Column<string>(nullable: true),
+                    Birthday = table.Column<string>(nullable: true),
+                    CountryID = table.Column<long>(nullable: false),
+                    CitizenshipID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.PrimaryKey("PK_Guests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Guests_Citizenships_CitizenshipID",
+                        column: x => x.CitizenshipID,
+                        principalTable: "Citizenships",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comments_Ideas_IdeaId",
-                        column: x => x.IdeaId,
-                        principalTable: "Ideas",
+                        name: "FK_Guests_Countries_CountryID",
+                        column: x => x.CountryID,
+                        principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "relIdeaFavorites",
+                name: "Invoices",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -257,28 +336,30 @@ namespace server.Migrations
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    IdeaId = table.Column<long>(nullable: false),
-                    Value = table.Column<bool>(nullable: false)
+                    Number = table.Column<string>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    GuestID = table.Column<long>(nullable: false),
+                    CurrencyID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_relIdeaFavorites", x => x.Id);
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_relIdeaFavorites_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Invoices_Currencies_CurrencyID",
+                        column: x => x.CurrencyID,
+                        principalTable: "Currencies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_relIdeaFavorites_Ideas_IdeaId",
-                        column: x => x.IdeaId,
-                        principalTable: "Ideas",
+                        name: "FK_Invoices_Guests_GuestID",
+                        column: x => x.GuestID,
+                        principalTable: "Guests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "relIdeaLikes",
+                name: "Reservations",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -289,95 +370,47 @@ namespace server.Migrations
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    IdeaId = table.Column<long>(nullable: false),
-                    Vote = table.Column<int>(nullable: false)
+                    GuestID = table.Column<long>(nullable: false),
+                    Details = table.Column<string>(nullable: true),
+                    InitDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    AgencyID = table.Column<long>(nullable: false),
+                    RoomID = table.Column<long>(nullable: false),
+                    PackageID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_relIdeaLikes", x => x.Id);
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_relIdeaLikes_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Reservations_Agencies_AgencyID",
+                        column: x => x.AgencyID,
+                        principalTable: "Agencies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_relIdeaLikes_Ideas_IdeaId",
-                        column: x => x.IdeaId,
-                        principalTable: "Ideas",
+                        name: "FK_Reservations_Guests_GuestID",
+                        column: x => x.GuestID,
+                        principalTable: "Guests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Packages_PackageID",
+                        column: x => x.PackageID,
+                        principalTable: "Packages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Rooms_RoomID",
+                        column: x => x.RoomID,
+                        principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "relIdeaTags",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatorId = table.Column<long>(nullable: false),
-                    ModifierId = table.Column<long>(nullable: false),
-                    CreateDate = table.Column<DateTime>(nullable: false),
-                    ModifyDate = table.Column<DateTime>(nullable: false),
-                    HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    IdeaId = table.Column<long>(nullable: false),
-                    TagId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_relIdeaTags", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_relIdeaTags_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_relIdeaTags_Ideas_IdeaId",
-                        column: x => x.IdeaId,
-                        principalTable: "Ideas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_relIdeaTags_Tags_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "relCommentLikes",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatorId = table.Column<long>(nullable: false),
-                    ModifierId = table.Column<long>(nullable: false),
-                    CreateDate = table.Column<DateTime>(nullable: false),
-                    ModifyDate = table.Column<DateTime>(nullable: false),
-                    HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    CommentId = table.Column<long>(nullable: false),
-                    Vote = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_relCommentLikes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_relCommentLikes_Comments_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_relCommentLikes_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Agencies_CountryID",
+                table: "Agencies",
+                column: "CountryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -417,69 +450,44 @@ namespace server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_CreatorId",
-                table: "Comments",
-                column: "CreatorId");
+                name: "IX_Guests_CitizenshipID",
+                table: "Guests",
+                column: "CitizenshipID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_IdeaId",
-                table: "Comments",
-                column: "IdeaId");
+                name: "IX_Guests_CountryID",
+                table: "Guests",
+                column: "CountryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ideas_CreatorId",
-                table: "Ideas",
-                column: "CreatorId");
+                name: "IX_Invoices_CurrencyID",
+                table: "Invoices",
+                column: "CurrencyID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_relCommentLikes_CommentId",
-                table: "relCommentLikes",
-                column: "CommentId");
+                name: "IX_Invoices_GuestID",
+                table: "Invoices",
+                column: "GuestID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_relCommentLikes_CreatorId",
-                table: "relCommentLikes",
-                column: "CreatorId");
+                name: "IX_Reservations_AgencyID",
+                table: "Reservations",
+                column: "AgencyID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_relIdeaFavorites_CreatorId",
-                table: "relIdeaFavorites",
-                column: "CreatorId");
+                name: "IX_Reservations_GuestID",
+                table: "Reservations",
+                column: "GuestID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_relIdeaFavorites_IdeaId",
-                table: "relIdeaFavorites",
-                column: "IdeaId");
+                name: "IX_Reservations_PackageID",
+                table: "Reservations",
+                column: "PackageID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_relIdeaLikes_CreatorId",
-                table: "relIdeaLikes",
-                column: "CreatorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_relIdeaLikes_IdeaId",
-                table: "relIdeaLikes",
-                column: "IdeaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_relIdeaTags_CreatorId",
-                table: "relIdeaTags",
-                column: "CreatorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_relIdeaTags_IdeaId",
-                table: "relIdeaTags",
-                column: "IdeaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_relIdeaTags_TagId",
-                table: "relIdeaTags",
-                column: "TagId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_CreatorId",
-                table: "Tags",
-                column: "CreatorId");
+                name: "IX_Reservations_RoomID",
+                table: "Reservations",
+                column: "RoomID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -500,31 +508,37 @@ namespace server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "relCommentLikes");
+                name: "Invoices");
 
             migrationBuilder.DropTable(
-                name: "relIdeaFavorites");
-
-            migrationBuilder.DropTable(
-                name: "relIdeaLikes");
-
-            migrationBuilder.DropTable(
-                name: "relIdeaTags");
+                name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
-                name: "Tags");
-
-            migrationBuilder.DropTable(
-                name: "Ideas");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Currencies");
+
+            migrationBuilder.DropTable(
+                name: "Agencies");
+
+            migrationBuilder.DropTable(
+                name: "Guests");
+
+            migrationBuilder.DropTable(
+                name: "Packages");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
+
+            migrationBuilder.DropTable(
+                name: "Citizenships");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
         }
     }
 }
