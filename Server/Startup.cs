@@ -160,6 +160,7 @@ namespace Server
             services.AddTransient<IInvoiceService, InvoiceService>();
             services.AddTransient<IPackageService, PackageService>();
             services.AddTransient<IRoomService, RoomService>();
+            services.AddTransient<IReservationService, ReservationService>();
 
             services.AddSingleton<ITokenService, TokenService>();            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
