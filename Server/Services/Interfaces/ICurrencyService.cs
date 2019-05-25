@@ -7,11 +7,19 @@ namespace Server.Services.Interfaces
 {
     public interface ICurrencyService
     {
-         Task<ProcessResult> CreateAsync(CurrencyViewModel model);
-         Task<ProcessResult> UpdateAsync(CurrencyViewModel model);
-         Task<ProcessResult<Currency>> GetByIdAsync(long id);
-         Task<ProcessResult<List<Currency>>> GetListAsync(string sortOrder, string searchString, int pageIndex,  int pageSize);
-         Task<ProcessResult<int>> CountAsync(string searchString);
-         Task<ProcessResult> RemoveOrRestoreAsync(long id);
+         Task<ProcessResult> CreateAsync(Currency model);
+         
+         Task<ProcessResult<Currency>> RetrieveAsync(long id);
+
+         Task<ProcessResult> UpdateAsync(long id, Currency model);
+
+         Task<ProcessResult> DeleteAsync(long id);
+
+         Task<ProcessResult> RestoreAsync(long id);
+
+         Task<ProcessResult<List<Currency>>> ListAsync(GetListViewModel<CurrencyFilter> listModel);
+         
+         Task<ProcessResult<int>> CountAsync(CurrencyFilter filter);
+   
     }
 }

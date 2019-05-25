@@ -20,7 +20,7 @@ namespace Server.Services
         {
         }
 
-        public async Task<ProcessResult> CreateAsync(GuestViewModel model)
+        public async Task<ProcessResult> CreateAsync(Guest model)
         {
             Func<Task> action = async () =>
             {
@@ -47,9 +47,20 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-
-        public async Task<ProcessResult> UpdateAsync(GuestViewModel model)
+        public async Task<ProcessResult<Guest>> RetrieveAsync(long id)
         {
+            Func<Task<Guest>> action = async () =>
+            {
+                var result = await context.Guests.Where(x => x.Id == id).FirstAsync();
+                return result;
+            };
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> UpdateAsync(long id, Guest model)
+        {
+            model.Id = id;
 
             Func<Task> action = async () =>
             {
@@ -76,129 +87,117 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> RemoveOrRestoreAsync(long id)
+        public async Task<ProcessResult> DeleteAsync(long id)
         {
             Func<Task> action = async () =>
             {
                 var Guest = await context.Guests.Where(x => x.Id == id).SingleAsync();
 
-                Guest.IsDeleted = !Guest.IsDeleted;
+                Guest.IsDeleted = true;
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<Guest>> GetByIdAsync(long id)
+        public async Task<ProcessResult> RestoreAsync(long id)
         {
-            Func<Task<Guest>> action = async () =>
+            Func<Task> action = async () =>
             {
-                var result = await context.Guests.Where(x => x.Id == id).FirstAsync();
+                var Guest = await context.Guests.Where(x => x.Id == id).SingleAsync();
 
-                var resultView = new Guest
-                {
-                    Id = result.Id,
-                    Name = result.Name,
-                    Phone = result.Phone,
-                    Identification = result.Identification,
-                    Birthday = result.Birthday,
-                    CountryID = result.CountryID,
-                    CitizenshipID = result.CitizenshipID
-                };
-
-                return resultView;
+                Guest.IsDeleted = false;
+                await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<Guest>>> GetListAsync(string sortOrder, string searchString, long countryID, long citizenshipID, int pageIndex,  int pageSize)
+        public async Task<ProcessResult<List<Guest>>> ListAsync(GetListViewModel<GuestFilter> getListModel)
         {
-            IQueryable<Guest> GuestIQ = from s in context.Guests select s;
-            
-            GuestIQ = GuestIQ.Where(s => s.IsDeleted == false);
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                GuestIQ = GuestIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }
-            if (countryID != 0) {
-                GuestIQ = GuestIQ.Where(s => s.CountryID == countryID);
-            }
-            if (citizenshipID != 0) {
-                GuestIQ = GuestIQ.Where(s => s.CitizenshipID == citizenshipID);
-            }
-
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    GuestIQ = GuestIQ.OrderByDescending(s => s.Name);
-                    break;
-                case "name_asc":
-                    GuestIQ = GuestIQ.OrderBy(s => s.Name);
-                    break;
-                case "id_desc":
-                    GuestIQ = GuestIQ.OrderByDescending(s => s.Id);
-                    break;
-                case "id_asc":
-                    GuestIQ = GuestIQ.OrderBy(s => s.Id);
-                    break;
-                default:
-                    GuestIQ = GuestIQ.OrderBy(s => s.Name);
-                    break;
-            }
-
-            var countItems = await GuestIQ.CountAsync();
-
-            if (pageIndex != 0 && pageSize != 0) {
-                GuestIQ = GuestIQ.Skip((pageIndex - 1) * pageSize).Take(pageSize);                
-            }
+            IQueryable<Guest> q = context.Guests;
+            q = SetIncludes(q);
+            q = q.Where(s => !s.IsDeleted);
+            q = SetFilter(q, getListModel.filter);
+            q = SetPaginator(q, getListModel.paginator);
+            q = SetOrderBy(q, getListModel.orderBy);
 
             Func<Task<List<Guest>>> action = async () =>
             {
-                var result = await GuestIQ.Select(x => new Guest
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Phone = x.Phone,
-                    Identification = x.Identification,
-                    Birthday = x.Birthday,
-                    CountryID = x.CountryID,
-                    CitizenshipID = x.CitizenshipID,
-
-                    IsDeleted = x.IsDeleted
-                }).ToListAsync();
-
+                var result = await q.ToListAsync();
                 return result;
             };
 
-            return await Process.RunAsync(action, countItems);
+            return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<int>> CountAsync(string searchString, long countryID, long citizenshipID)
+        public async Task<ProcessResult<int>> CountAsync(GuestFilter filter)
         {
-            IQueryable<Guest> GuestIQ = from s in context.Guests select s;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                GuestIQ = GuestIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }
-            if (countryID != 0) {
-                GuestIQ = GuestIQ.Where(s => s.CountryID == countryID);
-            }
-            if (citizenshipID != 0) {
-                GuestIQ = GuestIQ.Where(s => s.CitizenshipID == citizenshipID);
-            }       
+            IQueryable<Guest> q = context.Guests;
+            q = q.Where(s => !s.IsDeleted);
+            q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>
             {
-                var countItems = await GuestIQ.CountAsync();
-
+                var countItems = await q.CountAsync();
                 return countItems;
             };
 
             return await Process.RunAsync(action);
         }
 
+        private IQueryable<Guest> SetIncludes(IQueryable<Guest> q){
+            q = q.Include(s => s.Country);
+            q = q.Include(s => s.Citizenship);
+            return q;
+        }
+
+        private IQueryable<Guest> SetOrderBy(IQueryable<Guest> q, OrderBy ob) {
+            if ( ob == null ) {
+                return q;
+            }
+
+            if ( !ob.desc ) {
+                if ( ob.by == "name" ) {
+                    q = q.OrderBy(s => s.Name);
+                } 
+                else {
+                    q = q.OrderBy(s => s.Id);
+                }
+            }
+            else {
+                if ( ob.by == "name" ) {
+                    q = q.OrderByDescending(s => s.Name);
+                } 
+                else {
+                    q = q.OrderByDescending(s => s.Id);
+                }
+            }
+            return q;
+        }
+
+        private IQueryable<Guest> SetFilter(IQueryable<Guest> q, GuestFilter f) {
+            if ( f == null ) {
+                return q;
+            }
+            if (!String.IsNullOrEmpty(f.searchString))
+            {
+                q = q.Where(s => s.Name.Contains(f.searchString) && !s.IsDeleted);
+            }
+            if (f.countryID != 0) {
+                q = q.Where(s => s.CountryID == f.countryID);
+            }
+            if (f.citizenshipID != 0) {
+                q = q.Where(s => s.CitizenshipID == f.citizenshipID);
+            }
+            return q;
+        }
+    
+        private IQueryable<Guest> SetPaginator(IQueryable<Guest> q, Paginator p) {
+            if ( p == null ) {
+                return q;
+            }
+            return q.Skip(p.offset).Take(p.limit);
+        }
     }
 }

@@ -7,11 +7,19 @@ namespace Server.Services.Interfaces
 {
     public interface ICitizenshipService
     {
-         Task<ProcessResult> CreateAsync(CitizenshipViewModel model);
-         Task<ProcessResult> UpdateAsync(CitizenshipViewModel model);
-         Task<ProcessResult<Citizenship>> GetByIdAsync(long id);
-         Task<ProcessResult<List<Citizenship>>> GetListAsync(string sortOrder, string searchString, int pageIndex,  int pageSize);
-         Task<ProcessResult<int>> CountAsync(string searchString);
-         Task<ProcessResult> RemoveOrRestoreAsync(long id);
+         Task<ProcessResult> CreateAsync(Citizenship model);
+         
+         Task<ProcessResult<Citizenship>> RetrieveAsync(long id);
+
+         Task<ProcessResult> UpdateAsync(long id, Citizenship model);
+
+         Task<ProcessResult> DeleteAsync(long id);
+
+         Task<ProcessResult> RestoreAsync(long id);
+
+         Task<ProcessResult<List<Citizenship>>> ListAsync(GetListViewModel<CitizenshipFilter> listModel);
+         
+         Task<ProcessResult<int>> CountAsync(CitizenshipFilter filter);
+   
     }
 }

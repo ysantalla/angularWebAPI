@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Server.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/citizenhips")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<string>), 400)]
     public class CitizenshipController : BaseController
@@ -31,7 +31,7 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create([FromBody]CitizenshipViewModel model)
+        public async Task<IActionResult> Create([FromBody]Citizenship model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
@@ -43,32 +43,64 @@ namespace Server.Controllers
             return Ok(result);
         }
 
-        [HttpPatch]
-        [ProducesResponseType(typeof(string), 200)]
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Citizenship), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Update([FromBody]CitizenshipViewModel model)
+        public async Task<IActionResult> Retrieve([FromRoute] long id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.UpdateAsync(model);
+            var result = await _CitizenshipService.RetrieveAsync(id);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
+        } 
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Update([FromRoute] long id, [FromBody]Citizenship model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _CitizenshipService.UpdateAsync(id, model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> RemoveOrRestore([FromBody]CitizenshipIdViewModel model)
+        public async Task<IActionResult> Delete([FromRoute] long id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.RemoveOrRestoreAsync(model.Id);
+            var result = await _CitizenshipService.DeleteAsync(id);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Restore([FromRoute] long id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _CitizenshipService.RestoreAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -76,15 +108,15 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<CitizenshipViewModel>), 200)]
+        [ProducesResponseType(typeof(List<Citizenship>), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> List(CitizenshipFilterViewModel model)
+        public async Task<IActionResult> List([FromQuery]GetListViewModel<CitizenshipFilter> listModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.GetListAsync(model.sortOrder, model.searchString, model.pageIndex, model.pageSize);
+            var result = await _CitizenshipService.ListAsync(listModel);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -92,37 +124,21 @@ namespace Server.Controllers
             
         }
         
-        [HttpGet]
+        [HttpGet("count")]
         [ProducesResponseType(typeof(int), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Count(CitizenshipFilterViewModel model)
+        public async Task<IActionResult> Count(CitizenshipFilter filter)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.CountAsync(model.searchString);
+            var result = await _CitizenshipService.CountAsync(filter);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
             return Ok(result);
             
         }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(CitizenshipViewModel), 200)]
-        [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetById(CitizenshipIdViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);            
-
-            var result = await _CitizenshipService.GetByIdAsync(model.Id);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-            
-            return Ok(result);
-        } 
     }
 }

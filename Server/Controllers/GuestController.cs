@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Server.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/guests")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<string>), 400)]
     public class GuestController : BaseController
@@ -31,7 +31,7 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create([FromBody]GuestViewModel model)
+        public async Task<IActionResult> Create([FromBody]Guest model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
@@ -43,32 +43,64 @@ namespace Server.Controllers
             return Ok(result);
         }
 
-        [HttpPatch]
-        [ProducesResponseType(typeof(string), 200)]
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Guest), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Update([FromBody]GuestViewModel model)
+        public async Task<IActionResult> Retrieve([FromRoute] long id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _GuestService.UpdateAsync(model);
+            var result = await _GuestService.RetrieveAsync(id);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
+        } 
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Update([FromRoute] long id, [FromBody]Guest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _GuestService.UpdateAsync(id, model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> RemoveOrRestore([FromBody]GuestIdViewModel model)
+        public async Task<IActionResult> Delete([FromRoute] long id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _GuestService.RemoveOrRestoreAsync(model.Id);
+            var result = await _GuestService.DeleteAsync(id);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Restore([FromRoute] long id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _GuestService.RestoreAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -76,15 +108,15 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<GuestViewModel>), 200)]
+        [ProducesResponseType(typeof(List<Guest>), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> List(GuestFilterViewModel model)
+        public async Task<IActionResult> List([FromQuery]GetListViewModel<GuestFilter> listModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _GuestService.GetListAsync(model.sortOrder, model.searchString, model.countryID, model.citizenshipID, model.pageIndex, model.pageSize);
+            var result = await _GuestService.ListAsync(listModel);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -92,37 +124,21 @@ namespace Server.Controllers
             
         }
         
-        [HttpGet]
+        [HttpGet("count")]
         [ProducesResponseType(typeof(int), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Count(GuestFilterViewModel model)
+        public async Task<IActionResult> Count(GuestFilter filter)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _GuestService.CountAsync(model.searchString, model.countryID, model.citizenshipID);
+            var result = await _GuestService.CountAsync(filter);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
             return Ok(result);
             
         }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(GuestViewModel), 200)]
-        [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetById(GuestIdViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);            
-
-            var result = await _GuestService.GetByIdAsync(model.Id);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-            
-            return Ok(result);
-        } 
     }
 }

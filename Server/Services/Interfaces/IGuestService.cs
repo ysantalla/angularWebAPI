@@ -7,11 +7,19 @@ namespace Server.Services.Interfaces
 {
     public interface IGuestService
     {
-         Task<ProcessResult> CreateAsync(GuestViewModel model);
-         Task<ProcessResult> UpdateAsync(GuestViewModel model);
-         Task<ProcessResult<Guest>> GetByIdAsync(long id);
-         Task<ProcessResult<List<Guest>>> GetListAsync(string sortOrder, string searchString, long countryID, long citizenshipID, int pageIndex,  int pageSize);
-         Task<ProcessResult<int>> CountAsync(string searchString, long countryID, long citizenshipID);
-         Task<ProcessResult> RemoveOrRestoreAsync(long id);
+         Task<ProcessResult> CreateAsync(Guest model);
+         
+         Task<ProcessResult<Guest>> RetrieveAsync(long id);
+
+         Task<ProcessResult> UpdateAsync(long id, Guest model);
+
+         Task<ProcessResult> DeleteAsync(long id);
+
+         Task<ProcessResult> RestoreAsync(long id);
+
+         Task<ProcessResult<List<Guest>>> ListAsync(GetListViewModel<GuestFilter> listModel);
+         
+         Task<ProcessResult<int>> CountAsync(GuestFilter filter);
+   
     }
 }

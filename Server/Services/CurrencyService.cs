@@ -20,7 +20,7 @@ namespace Server.Services
         {
         }
 
-        public async Task<ProcessResult> CreateAsync(CurrencyViewModel model)
+        public async Task<ProcessResult> CreateAsync(Currency model)
         {
             Func<Task> action = async () =>
             {
@@ -29,7 +29,7 @@ namespace Server.Services
 
                 if (CurrencyExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe una moneda con este nombre o con este símbolo");
+                    throw new InvalidOperationException("Ya existe una moneda con ese nombre o con ese símbolo");
                 }
 
                 var CurrencyEntity = await GetOrCreateEntityAsync(context.Currencies, x => x.Id == model.Id);
@@ -37,17 +37,26 @@ namespace Server.Services
 
                 Currency.Name = model.Name;
                 Currency.Symbol = model.Symbol;
-                await context.SaveChangesAsync();
 
-                
+                await context.SaveChangesAsync();
+            };
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<Currency>> RetrieveAsync(long id)
+        {
+            Func<Task<Currency>> action = async () =>
+            {
+                var result = await context.Currencies.Where(x => x.Id == id).FirstAsync();
+                return result;
             };
 
             return await Process.RunAsync(action);
         }
 
-
-        public async Task<ProcessResult> UpdateAsync(CurrencyViewModel model)
+        public async Task<ProcessResult> UpdateAsync(long id, Currency model)
         {
+            model.Id = id;
 
             Func<Task> action = async () =>
             {
@@ -55,7 +64,7 @@ namespace Server.Services
 
                 if (CurrencyExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe una moneda con este nombre o con este símbolo");
+                    throw new InvalidOperationException("Ya existe una moneda con ese nombre o con ese símbolo");
                 }
 
                 var CurrencyEntity = await GetOrCreateEntityAsync(context.Currencies, x => x.Id == model.Id);
@@ -63,114 +72,116 @@ namespace Server.Services
 
                 Currency.Name = model.Name;
                 Currency.Symbol = model.Symbol;
+
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> RemoveOrRestoreAsync(long id)
+        public async Task<ProcessResult> DeleteAsync(long id)
         {
             Func<Task> action = async () =>
             {
                 var Currency = await context.Currencies.Where(x => x.Id == id).SingleAsync();
 
-                Currency.IsDeleted = !Currency.IsDeleted;
+                Currency.IsDeleted = true;
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<Currency>> GetByIdAsync(long id)
+        public async Task<ProcessResult> RestoreAsync(long id)
         {
-            Func<Task<Currency>> action = async () =>
+            Func<Task> action = async () =>
             {
-                var result = await context.Currencies.Where(x => x.Id == id).FirstAsync();
+                var Currency = await context.Currencies.Where(x => x.Id == id).SingleAsync();
 
-                var resultView = new Currency
-                {
-                    Id = result.Id,
-                    Name = result.Name,
-                    Symbol = result.Symbol
-                };
-
-                return resultView;
+                Currency.IsDeleted = false;
+                await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<Currency>>> GetListAsync(string sortOrder, string searchString, int pageIndex,  int pageSize)
+        public async Task<ProcessResult<List<Currency>>> ListAsync(GetListViewModel<CurrencyFilter> getListModel)
         {
-            IQueryable<Currency> CurrencyIQ = from s in context.Currencies select s;
-            
-            CurrencyIQ = CurrencyIQ.Where(s => s.IsDeleted == false);
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                CurrencyIQ = CurrencyIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }
-
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    CurrencyIQ = CurrencyIQ.OrderByDescending(s => s.Name);
-                    break;
-                case "name_asc":
-                    CurrencyIQ = CurrencyIQ.OrderBy(s => s.Name);
-                    break;
-                case "id_desc":
-                    CurrencyIQ = CurrencyIQ.OrderByDescending(s => s.Id);
-                    break;
-                case "id_asc":
-                    CurrencyIQ = CurrencyIQ.OrderBy(s => s.Id);
-                    break;
-                default:
-                    CurrencyIQ = CurrencyIQ.OrderBy(s => s.Name);
-                    break;
-            }
-
-            var countItems = await CurrencyIQ.CountAsync();
-
-            if (pageIndex != 0 && pageSize != 0) {
-                CurrencyIQ = CurrencyIQ.Skip((pageIndex - 1) * pageSize).Take(pageSize);                
-            }
+            IQueryable<Currency> q = context.Currencies;
+            q = SetIncludes(q);
+            q = q.Where(s => !s.IsDeleted);
+            q = SetFilter(q, getListModel.filter);
+            q = SetPaginator(q, getListModel.paginator);
+            q = SetOrderBy(q, getListModel.orderBy);
 
             Func<Task<List<Currency>>> action = async () =>
             {
-                var result = await CurrencyIQ.Select(x => new Currency
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Symbol = x.Symbol,
-                    IsDeleted = x.IsDeleted
-                }).ToListAsync();
-
+                var result = await q.ToListAsync();
                 return result;
             };
 
-            return await Process.RunAsync(action, countItems);
+            return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<int>> CountAsync(string searchString = "")
+        public async Task<ProcessResult<int>> CountAsync(CurrencyFilter filter)
         {
-            IQueryable<Currency> CurrencyIQ = from s in context.Currencies select s;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                CurrencyIQ = CurrencyIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }           
+            IQueryable<Currency> q = context.Currencies;
+            q = q.Where(s => !s.IsDeleted);
+            q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>
             {
-                var countItems = await CurrencyIQ.CountAsync();
-
+                var countItems = await q.CountAsync();
                 return countItems;
             };
 
             return await Process.RunAsync(action);
         }
 
+        private IQueryable<Currency> SetIncludes(IQueryable<Currency> q){
+            return q;
+        }
+
+        private IQueryable<Currency> SetOrderBy(IQueryable<Currency> q, OrderBy ob) {
+            if ( ob == null ) {
+                return q;
+            }
+
+            if ( !ob.desc ) {
+                if ( ob.by == "name" ) {
+                    q = q.OrderBy(s => s.Name);
+                } 
+                else {
+                    q = q.OrderBy(s => s.Id);
+                }
+            }
+            else {
+                if ( ob.by == "name" ) {
+                    q = q.OrderByDescending(s => s.Name);
+                } 
+                else {
+                    q = q.OrderByDescending(s => s.Id);
+                }
+            }
+            return q;
+        }
+
+        private IQueryable<Currency> SetFilter(IQueryable<Currency> q, CurrencyFilter f) {
+            if ( f == null ) {
+                return q;
+            }
+            if (!String.IsNullOrEmpty(f.searchString))
+            {
+                q = q.Where(s => (s.Name.Contains(f.searchString) || s.Symbol.Contains(f.searchString)) && !s.IsDeleted);
+            }
+            return q;
+        }
+    
+        private IQueryable<Currency> SetPaginator(IQueryable<Currency> q, Paginator p) {
+            if ( p == null ) {
+                return q;
+            }
+            return q.Skip(p.offset).Take(p.limit);
+        }
     }
 }
