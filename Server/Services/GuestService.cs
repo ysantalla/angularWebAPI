@@ -112,7 +112,7 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<Guest>>> GetListAsync(string sortOrder, string searchString, long countryID, long citizenshipID,  int pageIndex,  int pageSize)
+        public async Task<ProcessResult<List<Guest>>> GetListAsync(string sortOrder, string searchString, long countryID, long citizenshipID, int pageIndex,  int pageSize)
         {
             IQueryable<Guest> GuestIQ = from s in context.Guests select s;
             
@@ -175,7 +175,7 @@ namespace Server.Services
             return await Process.RunAsync(action, countItems);
         }
 
-        public async Task<ProcessResult<int>> CountAsync(string searchString = "", long countryID = 0, long citizenshipID = 0)
+        public async Task<ProcessResult<int>> CountAsync(string searchString, long countryID, long citizenshipID)
         {
             IQueryable<Guest> GuestIQ = from s in context.Guests select s;
 
