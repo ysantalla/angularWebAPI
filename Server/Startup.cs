@@ -156,6 +156,8 @@ namespace Server
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IGuestService, GuestService>();
+            services.AddTransient<IAgencyService, AgencyService>();
+            services.AddTransient<IInvoiceService, InvoiceService>();
 
             services.AddSingleton<ITokenService, TokenService>();            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

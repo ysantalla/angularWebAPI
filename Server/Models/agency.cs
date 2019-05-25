@@ -1,6 +1,7 @@
 using Server.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.Models
 {
@@ -11,7 +12,11 @@ namespace Server.Models
 
         public long CountryID { get; set; }
         public Country Country { get; set; } 
-        public string Email { get; set; }  
+
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Phone]
         public string Phone { get; set; }
 
     }
