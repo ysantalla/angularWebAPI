@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Server.ViewModels
 {
-    public class GuestIdViewModel
+    public class CurrencyFilter
     {
-        public long Id { get; set; } = 0;
+        public string searchString { get; set; }
     }
 }

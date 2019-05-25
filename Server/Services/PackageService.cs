@@ -11,75 +11,69 @@ using Server.ViewModels;
 
 namespace Server.Services
 {
-    public class GuestService : BaseService, IGuestService
+    public class PackageService : BaseService, IPackageService
     {
-        public GuestService(UserManager<ApplicationUser> userManager,
+        public PackageService(UserManager<ApplicationUser> userManager,
                               IHttpContextAccessor contextAccessor,
                               ApplicationDbContext context)
             : base(userManager, contextAccessor, context)
         {
         }
 
-        public async Task<ProcessResult> CreateAsync(Guest model)
+        public async Task<ProcessResult> CreateAsync(Package model)
         {
             Func<Task> action = async () =>
             {
 
-                var GuestExist = await context.Guests.Where(x => x.Identification == model.Identification).CountAsync();
+                var PackageExist = await context.Packages.Where(x => x.Name == model.Name).CountAsync();
 
-                if (GuestExist > 0)
+                if (PackageExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe un invitado con esa identificación");
+                    throw new InvalidOperationException("Ya existe un pquete con el mismo nombre");
                 }
 
-                var GuestEntity = await GetOrCreateEntityAsync(context.Guests, x => x.Id == model.Id);
-                var Guest = GuestEntity.result;
+                var PackageEntity = await GetOrCreateEntityAsync(context.Packages, x => x.Id == model.Id);
+                var Package = PackageEntity.result;
 
-                Guest.Name = model.Name;
-                Guest.Phone = model.Phone;
-                Guest.Identification = model.Identification;
-                Guest.Birthday = model.Birthday;
-                Guest.CountryID = model.CountryID;
-                Guest.CitizenshipID = model.CitizenshipID;
+                Package.Name = model.Name;
+                Package.Description = model.Description;
+                Package.Value = model.Value;
 
                 await context.SaveChangesAsync();
             };
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<Guest>> RetrieveAsync(long id)
+        public async Task<ProcessResult<Package>> RetrieveAsync(long id)
         {
-            Func<Task<Guest>> action = async () =>
+            Func<Task<Package>> action = async () =>
             {
-                var result = await context.Guests.Where(x => x.Id == id).FirstAsync();
+                var result = await context.Packages.Where(x => x.Id == id).FirstAsync();
                 return result;
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> UpdateAsync(long id, Guest model)
+        public async Task<ProcessResult> UpdateAsync(long id, Package model)
         {
             model.Id = id;
 
             Func<Task> action = async () =>
             {
-                var GuestExist = await context.Guests.Where(x => x.Name == model.Name && x.Id != model.Id).CountAsync();
+                var PackageExist = await context.Packages.Where(x => x.Name == model.Name && x.Id != model.Id).CountAsync();
 
-                if (GuestExist > 0)
+                if (PackageExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe un invitado con esa identificación");
+                    throw new InvalidOperationException("Ya existe una paquete con el mismo nombre");
                 }
 
-                var GuestEntity = await GetOrCreateEntityAsync(context.Guests, x => x.Id == model.Id);
-                var Guest = GuestEntity.result;
+                var PackageEntity = await GetOrCreateEntityAsync(context.Packages, x => x.Id == model.Id);
+                var Package = PackageEntity.result;
 
-                Guest.Name = model.Name;
-                Guest.Phone = model.Phone;
-                Guest.Identification = model.Identification;
-                Guest.Birthday = model.Birthday;
-                Guest.CountryID = model.CountryID;
-                Guest.CitizenshipID = model.CitizenshipID;
+                Package.Name = model.Name;
+                Package.Description = model.Description;
+                Package.Value = model.Value;
 
                 await context.SaveChangesAsync();
             };
@@ -91,9 +85,9 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Guest = await context.Guests.Where(x => x.Id == id).SingleAsync();
+                var Package = await context.Packages.Where(x => x.Id == id).SingleAsync();
 
-                Guest.IsDeleted = true;
+                Package.IsDeleted = true;
                 await context.SaveChangesAsync();
             };
 
@@ -104,25 +98,25 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Guest = await context.Guests.Where(x => x.Id == id).SingleAsync();
+                var Package = await context.Packages.Where(x => x.Id == id).SingleAsync();
 
-                Guest.IsDeleted = false;
+                Package.IsDeleted = false;
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<Guest>>> ListAsync(GetListViewModel<GuestFilter> getListModel)
+        public async Task<ProcessResult<List<Package>>> ListAsync(GetListViewModel<PackageFilter> getListModel)
         {
-            IQueryable<Guest> q = context.Guests;
+            IQueryable<Package> q = context.Packages;
             q = SetIncludes(q);
             q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, getListModel.filter);
             q = SetPaginator(q, getListModel.paginator);
             q = SetOrderBy(q, getListModel.orderBy);
 
-            Func<Task<List<Guest>>> action = async () =>
+            Func<Task<List<Package>>> action = async () =>
             {
                 var result = await q.ToListAsync();
                 return result;
@@ -131,9 +125,9 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<int>> CountAsync(GuestFilter filter)
+        public async Task<ProcessResult<int>> CountAsync(PackageFilter filter)
         {
-            IQueryable<Guest> q = context.Guests;
+            IQueryable<Package> q = context.Packages;
             q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, filter);
 
@@ -146,13 +140,11 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-        private IQueryable<Guest> SetIncludes(IQueryable<Guest> q){
-            q = q.Include(s => s.Country);
-            q = q.Include(s => s.Citizenship);
+        private IQueryable<Package> SetIncludes(IQueryable<Package> q){
             return q;
         }
 
-        private IQueryable<Guest> SetOrderBy(IQueryable<Guest> q, OrderBy ob) {
+        private IQueryable<Package> SetOrderBy(IQueryable<Package> q, OrderBy ob) {
             if ( ob == null ) {
                 return q;
             }
@@ -160,6 +152,9 @@ namespace Server.Services
             if ( !ob.desc ) {
                 if ( ob.by == "name" ) {
                     q = q.OrderBy(s => s.Name);
+                }
+                if ( ob.by == "value" ) {
+                    q = q.OrderBy(s => s.Value);
                 } 
                 else {
                     q = q.OrderBy(s => s.Id);
@@ -169,6 +164,9 @@ namespace Server.Services
                 if ( ob.by == "name" ) {
                     q = q.OrderByDescending(s => s.Name);
                 } 
+                if ( ob.by == "value" ) {
+                    q = q.OrderByDescending(s => s.Value);
+                }
                 else {
                     q = q.OrderByDescending(s => s.Id);
                 }
@@ -176,24 +174,22 @@ namespace Server.Services
             return q;
         }
 
-        private IQueryable<Guest> SetFilter(IQueryable<Guest> q, GuestFilter f) {
+        private IQueryable<Package> SetFilter(IQueryable<Package> q, PackageFilter f) {
             if ( f == null ) {
                 return q;
             }
             if (!String.IsNullOrEmpty(f.searchString))
             {
-                q = q.Where(s => s.Name.Contains(f.searchString) && !s.IsDeleted);
-            }
-            if (f.countryID != 0) {
-                q = q.Where(s => s.CountryID == f.countryID);
-            }
-            if (f.citizenshipID != 0) {
-                q = q.Where(s => s.CitizenshipID == f.citizenshipID);
+                q = q.Where(s => (
+                    s.Name.Contains(f.searchString) ||
+                    s.Description.Contains(f.searchString) ||
+                    s.Value.Contains(f.searchString)
+                ));
             }
             return q;
         }
     
-        private IQueryable<Guest> SetPaginator(IQueryable<Guest> q, Paginator p) {
+        private IQueryable<Package> SetPaginator(IQueryable<Package> q, Paginator p) {
             if ( p == null ) {
                 return q;
             }

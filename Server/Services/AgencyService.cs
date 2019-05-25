@@ -11,75 +11,73 @@ using Server.ViewModels;
 
 namespace Server.Services
 {
-    public class GuestService : BaseService, IGuestService
+    public class AgencyService : BaseService, IAgencyService
     {
-        public GuestService(UserManager<ApplicationUser> userManager,
+        public AgencyService(UserManager<ApplicationUser> userManager,
                               IHttpContextAccessor contextAccessor,
                               ApplicationDbContext context)
             : base(userManager, contextAccessor, context)
         {
         }
 
-        public async Task<ProcessResult> CreateAsync(Guest model)
+        public async Task<ProcessResult> CreateAsync(Agency model)
         {
             Func<Task> action = async () =>
             {
 
-                var GuestExist = await context.Guests.Where(x => x.Identification == model.Identification).CountAsync();
+                var AgencyExist = await context.Agencies.Where(x => x.Name == model.Name || x.Email == model.Email).CountAsync();
 
-                if (GuestExist > 0)
+                if (AgencyExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe un invitado con esa identificación");
+                    throw new InvalidOperationException("Ya existe una agencia con ese nombre o con el mismo correo");
                 }
 
-                var GuestEntity = await GetOrCreateEntityAsync(context.Guests, x => x.Id == model.Id);
-                var Guest = GuestEntity.result;
+                var AgencyEntity = await GetOrCreateEntityAsync(context.Agencies, x => x.Id == model.Id);
+                var Agency = AgencyEntity.result;
 
-                Guest.Name = model.Name;
-                Guest.Phone = model.Phone;
-                Guest.Identification = model.Identification;
-                Guest.Birthday = model.Birthday;
-                Guest.CountryID = model.CountryID;
-                Guest.CitizenshipID = model.CitizenshipID;
+                Agency.Name = model.Name;
+                Agency.Represent = model.Represent;
+                Agency.CountryID = model.CountryID;
+                Agency.Email = model.Email;
+                Agency.Phone = model.Phone;
 
                 await context.SaveChangesAsync();
             };
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<Guest>> RetrieveAsync(long id)
+        public async Task<ProcessResult<Agency>> RetrieveAsync(long id)
         {
-            Func<Task<Guest>> action = async () =>
+            Func<Task<Agency>> action = async () =>
             {
-                var result = await context.Guests.Where(x => x.Id == id).FirstAsync();
+                var result = await context.Agencies.Where(x => x.Id == id).FirstAsync();
                 return result;
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> UpdateAsync(long id, Guest model)
+        public async Task<ProcessResult> UpdateAsync(long id, Agency model)
         {
             model.Id = id;
 
             Func<Task> action = async () =>
             {
-                var GuestExist = await context.Guests.Where(x => x.Name == model.Name && x.Id != model.Id).CountAsync();
+                var AgencyExist = await context.Agencies.Where(x => (x.Name == model.Name || x.Email == model.Email) && x.Id != model.Id).CountAsync();
 
-                if (GuestExist > 0)
+                if (AgencyExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe un invitado con esa identificación");
+                    throw new InvalidOperationException("Ya existe una agencia con el mismo nombre o con el mismo correo");
                 }
 
-                var GuestEntity = await GetOrCreateEntityAsync(context.Guests, x => x.Id == model.Id);
-                var Guest = GuestEntity.result;
+                var AgencyEntity = await GetOrCreateEntityAsync(context.Agencies, x => x.Id == model.Id);
+                var Agency = AgencyEntity.result;
 
-                Guest.Name = model.Name;
-                Guest.Phone = model.Phone;
-                Guest.Identification = model.Identification;
-                Guest.Birthday = model.Birthday;
-                Guest.CountryID = model.CountryID;
-                Guest.CitizenshipID = model.CitizenshipID;
+                Agency.Name = model.Name;
+                Agency.Represent = model.Represent;
+                Agency.CountryID = model.CountryID;
+                Agency.Email = model.Email;
+                Agency.Phone = model.Phone;
 
                 await context.SaveChangesAsync();
             };
@@ -91,9 +89,9 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Guest = await context.Guests.Where(x => x.Id == id).SingleAsync();
+                var Agency = await context.Agencies.Where(x => x.Id == id).SingleAsync();
 
-                Guest.IsDeleted = true;
+                Agency.IsDeleted = true;
                 await context.SaveChangesAsync();
             };
 
@@ -104,25 +102,25 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Guest = await context.Guests.Where(x => x.Id == id).SingleAsync();
+                var Agency = await context.Agencies.Where(x => x.Id == id).SingleAsync();
 
-                Guest.IsDeleted = false;
+                Agency.IsDeleted = false;
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<Guest>>> ListAsync(GetListViewModel<GuestFilter> getListModel)
+        public async Task<ProcessResult<List<Agency>>> ListAsync(GetListViewModel<AgencyFilter> getListModel)
         {
-            IQueryable<Guest> q = context.Guests;
+            IQueryable<Agency> q = context.Agencies;
             q = SetIncludes(q);
             q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, getListModel.filter);
             q = SetPaginator(q, getListModel.paginator);
             q = SetOrderBy(q, getListModel.orderBy);
 
-            Func<Task<List<Guest>>> action = async () =>
+            Func<Task<List<Agency>>> action = async () =>
             {
                 var result = await q.ToListAsync();
                 return result;
@@ -131,9 +129,9 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<int>> CountAsync(GuestFilter filter)
+        public async Task<ProcessResult<int>> CountAsync(AgencyFilter filter)
         {
-            IQueryable<Guest> q = context.Guests;
+            IQueryable<Agency> q = context.Agencies;
             q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, filter);
 
@@ -146,13 +144,12 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-        private IQueryable<Guest> SetIncludes(IQueryable<Guest> q){
-            q = q.Include(s => s.Country);
-            q = q.Include(s => s.Citizenship);
+        private IQueryable<Agency> SetIncludes(IQueryable<Agency> q){
+            q = q.Include( s => s.Country );
             return q;
         }
 
-        private IQueryable<Guest> SetOrderBy(IQueryable<Guest> q, OrderBy ob) {
+        private IQueryable<Agency> SetOrderBy(IQueryable<Agency> q, OrderBy ob) {
             if ( ob == null ) {
                 return q;
             }
@@ -176,24 +173,26 @@ namespace Server.Services
             return q;
         }
 
-        private IQueryable<Guest> SetFilter(IQueryable<Guest> q, GuestFilter f) {
+        private IQueryable<Agency> SetFilter(IQueryable<Agency> q, AgencyFilter f) {
             if ( f == null ) {
                 return q;
             }
             if (!String.IsNullOrEmpty(f.searchString))
             {
-                q = q.Where(s => s.Name.Contains(f.searchString) && !s.IsDeleted);
+                q = q.Where(s => (
+                    s.Name.Contains(f.searchString) ||
+                    s.Represent.Contains(f.searchString) ||
+                    s.Email.Contains(f.searchString) ||
+                    s.Phone.Contains(f.searchString)
+                ));
             }
-            if (f.countryID != 0) {
-                q = q.Where(s => s.CountryID == f.countryID);
-            }
-            if (f.citizenshipID != 0) {
-                q = q.Where(s => s.CitizenshipID == f.citizenshipID);
+            if (f.countryID > 0) {
+                q = q.Where( s => s.CountryID == f.countryID );
             }
             return q;
         }
     
-        private IQueryable<Guest> SetPaginator(IQueryable<Guest> q, Paginator p) {
+        private IQueryable<Agency> SetPaginator(IQueryable<Agency> q, Paginator p) {
             if ( p == null ) {
                 return q;
             }

@@ -10,20 +10,20 @@ using System.Collections.Generic;
 
 namespace Server.Controllers
 {
-    [Route("api/citizenhips")]
+    [Route("api/rooms")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<string>), 400)]
-    public class CitizenshipController : BaseController
+    public class RoomController : BaseController
     {
-        private readonly ICitizenshipService _CitizenshipService;
-        private readonly ILogger<CitizenshipController> _logger;
+        private readonly IRoomService _RoomService;
+        private readonly ILogger<RoomController> _logger;
         
-        public CitizenshipController(UserManager<ApplicationUser> userManager, 
-                              ICitizenshipService CitizenshipService,
-                              ILogger<CitizenshipController> logger) 
+        public RoomController(UserManager<ApplicationUser> userManager, 
+                              IRoomService RoomService,
+                              ILogger<RoomController> logger) 
             : base(userManager)
         {
-            this._CitizenshipService = CitizenshipService;
+            this._RoomService = RoomService;
             this._logger = logger;
         }
 
@@ -31,12 +31,12 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create([FromBody]Citizenship model)
+        public async Task<IActionResult> Create([FromBody]Room model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.CreateAsync(model);
+            var result = await _RoomService.CreateAsync(model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -44,7 +44,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Citizenship), 200)]
+        [ProducesResponseType(typeof(Room), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
         public async Task<IActionResult> Retrieve([FromRoute] long id)
@@ -52,7 +52,7 @@ namespace Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.RetrieveAsync(id);
+            var result = await _RoomService.RetrieveAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -63,12 +63,12 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Update([FromRoute] long id, [FromBody]Citizenship model)
+        public async Task<IActionResult> Update([FromRoute] long id, [FromBody]Room model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.UpdateAsync(id, model);
+            var result = await _RoomService.UpdateAsync(id, model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -84,7 +84,7 @@ namespace Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.DeleteAsync(id);
+            var result = await _RoomService.DeleteAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -100,7 +100,7 @@ namespace Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.RestoreAsync(id);
+            var result = await _RoomService.RestoreAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -108,15 +108,15 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Citizenship>), 200)]
+        [ProducesResponseType(typeof(List<Room>), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> List([FromQuery]GetListViewModel<CitizenshipFilter> listModel)
+        public async Task<IActionResult> List([FromQuery]GetListViewModel<RoomFilter> listModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.ListAsync(listModel);
+            var result = await _RoomService.ListAsync(listModel);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -128,12 +128,12 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(int), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Count(CitizenshipFilter filter)
+        public async Task<IActionResult> Count(RoomFilter filter)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.CountAsync(filter);
+            var result = await _RoomService.CountAsync(filter);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             

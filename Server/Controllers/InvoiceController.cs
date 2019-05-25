@@ -10,20 +10,20 @@ using System.Collections.Generic;
 
 namespace Server.Controllers
 {
-    [Route("api/citizenhips")]
+    [Route("api/invoices")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<string>), 400)]
-    public class CitizenshipController : BaseController
+    public class InvoiceController : BaseController
     {
-        private readonly ICitizenshipService _CitizenshipService;
-        private readonly ILogger<CitizenshipController> _logger;
+        private readonly IInvoiceService _InvoiceService;
+        private readonly ILogger<InvoiceController> _logger;
         
-        public CitizenshipController(UserManager<ApplicationUser> userManager, 
-                              ICitizenshipService CitizenshipService,
-                              ILogger<CitizenshipController> logger) 
+        public InvoiceController(UserManager<ApplicationUser> userManager, 
+                              IInvoiceService InvoiceService,
+                              ILogger<InvoiceController> logger) 
             : base(userManager)
         {
-            this._CitizenshipService = CitizenshipService;
+            this._InvoiceService = InvoiceService;
             this._logger = logger;
         }
 
@@ -31,12 +31,12 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create([FromBody]Citizenship model)
+        public async Task<IActionResult> Create([FromBody]Invoice model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.CreateAsync(model);
+            var result = await _InvoiceService.CreateAsync(model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -44,7 +44,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Citizenship), 200)]
+        [ProducesResponseType(typeof(Invoice), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
         public async Task<IActionResult> Retrieve([FromRoute] long id)
@@ -52,7 +52,7 @@ namespace Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.RetrieveAsync(id);
+            var result = await _InvoiceService.RetrieveAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -63,12 +63,12 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Update([FromRoute] long id, [FromBody]Citizenship model)
+        public async Task<IActionResult> Update([FromRoute] long id, [FromBody]Invoice model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.UpdateAsync(id, model);
+            var result = await _InvoiceService.UpdateAsync(id, model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -84,7 +84,7 @@ namespace Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.DeleteAsync(id);
+            var result = await _InvoiceService.DeleteAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -100,7 +100,7 @@ namespace Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.RestoreAsync(id);
+            var result = await _InvoiceService.RestoreAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -108,15 +108,15 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<Citizenship>), 200)]
+        [ProducesResponseType(typeof(List<Invoice>), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> List([FromQuery]GetListViewModel<CitizenshipFilter> listModel)
+        public async Task<IActionResult> List([FromQuery]GetListViewModel<InvoiceFilter> listModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.ListAsync(listModel);
+            var result = await _InvoiceService.ListAsync(listModel);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -128,12 +128,12 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(int), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Count(CitizenshipFilter filter)
+        public async Task<IActionResult> Count(InvoiceFilter filter)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CitizenshipService.CountAsync(filter);
+            var result = await _InvoiceService.CountAsync(filter);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Server.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/currencies")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<string>), 400)]
     public class CurrencyController : BaseController
@@ -31,7 +31,7 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create([FromBody]CurrencyViewModel model)
+        public async Task<IActionResult> Create([FromBody]Currency model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
@@ -43,32 +43,64 @@ namespace Server.Controllers
             return Ok(result);
         }
 
-        [HttpPatch]
-        [ProducesResponseType(typeof(string), 200)]
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Currency), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Update([FromBody]CurrencyViewModel model)
+        public async Task<IActionResult> Retrieve([FromRoute] long id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CurrencyService.UpdateAsync(model);
+            var result = await _CurrencyService.RetrieveAsync(id);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
+        } 
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Update([FromRoute] long id, [FromBody]Currency model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _CurrencyService.UpdateAsync(id, model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> RemoveOrRestore([FromBody]CurrencyIdViewModel model)
+        public async Task<IActionResult> Delete([FromRoute] long id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CurrencyService.RemoveOrRestoreAsync(model.Id);
+            var result = await _CurrencyService.DeleteAsync(id);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Restore([FromRoute] long id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _CurrencyService.RestoreAsync(id);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
@@ -76,15 +108,15 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<CurrencyViewModel>), 200)]
+        [ProducesResponseType(typeof(List<Currency>), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> List(CurrencyFilterViewModel model)
+        public async Task<IActionResult> List([FromQuery]GetListViewModel<CurrencyFilter> listModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CurrencyService.GetListAsync(model.sortOrder, model.searchString, model.pageIndex, model.pageSize);
+            var result = await _CurrencyService.ListAsync(listModel);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -92,37 +124,21 @@ namespace Server.Controllers
             
         }
         
-        [HttpGet]
+        [HttpGet("count")]
         [ProducesResponseType(typeof(int), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Count(CurrencyFilterViewModel model)
+        public async Task<IActionResult> Count(CurrencyFilter filter)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);            
 
-            var result = await _CurrencyService.CountAsync(model.searchString);
+            var result = await _CurrencyService.CountAsync(filter);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             
             return Ok(result);
             
         }
-
-        [HttpGet]
-        [ProducesResponseType(typeof(CurrencyViewModel), 200)]
-        [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetById(CurrencyIdViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);            
-
-            var result = await _CurrencyService.GetByIdAsync(model.Id);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-            
-            return Ok(result);
-        } 
     }
 }

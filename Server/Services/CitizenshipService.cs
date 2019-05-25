@@ -20,151 +20,166 @@ namespace Server.Services
         {
         }
 
-        public async Task<ProcessResult> CreateAsync(CitizenshipViewModel model)
+        public async Task<ProcessResult> CreateAsync(Citizenship model)
         {
             Func<Task> action = async () =>
             {
 
-                var citizenshipExist = await context.Citizenships.Where(x => x.Name == model.Name).CountAsync();
+                var CitizenshipExist = await context.Citizenships.Where(x => x.Name == model.Name).CountAsync();
 
-                if (citizenshipExist > 0)
+                if (CitizenshipExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe una ciudadanía con este nombre");
+                    throw new InvalidOperationException("Ya existe una ciudadanía con ese nombre");
                 }
 
-                var citizenshipEntity = await GetOrCreateEntityAsync(context.Citizenships, x => x.Id == model.Id);
-                var citizenship = citizenshipEntity.result;
+                var CitizenshipEntity = await GetOrCreateEntityAsync(context.Citizenships, x => x.Id == model.Id);
+                var Citizenship = CitizenshipEntity.result;
 
-                citizenship.Name = model.Name;
+                Citizenship.Name = model.Name;
+
                 await context.SaveChangesAsync();
             };
-
             return await Process.RunAsync(action);
         }
 
-
-        public async Task<ProcessResult> UpdateAsync(CitizenshipViewModel model)
-        {
-
-            Func<Task> action = async () =>
-            {
-                var citizenshipExist = await context.Citizenships.Where(x => x.Name == model.Name && x.Id != model.Id).CountAsync();
-
-                if (citizenshipExist > 0)
-                {
-                    throw new InvalidOperationException("Ya existe una ciudadanía con este nombre");
-                }
-
-                var citizenshipEntity = await GetOrCreateEntityAsync(context.Citizenships, x => x.Id == model.Id);
-                var citizenship = citizenshipEntity.result;
-
-                citizenship.Name = model.Name;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult> RemoveOrRestoreAsync(long id)
-        {
-            Func<Task> action = async () =>
-            {
-                var citizenship = await context.Citizenships.Where(x => x.Id == id).SingleAsync();
-
-                citizenship.IsDeleted = !citizenship.IsDeleted;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult<Citizenship>> GetByIdAsync(long id)
+        public async Task<ProcessResult<Citizenship>> RetrieveAsync(long id)
         {
             Func<Task<Citizenship>> action = async () =>
             {
                 var result = await context.Citizenships.Where(x => x.Id == id).FirstAsync();
-
-                var resultView = new Citizenship
-                {
-                    Id = result.Id,
-                    Name = result.Name
-                };
-
-                return resultView;
+                return result;
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<Citizenship>>> GetListAsync(string sortOrder, string searchString, int pageIndex,  int pageSize)
+        public async Task<ProcessResult> UpdateAsync(long id, Citizenship model)
         {
-            IQueryable<Citizenship> citizenshipIQ = from s in context.Citizenships select s;
-            
-            citizenshipIQ = citizenshipIQ.Where(s => s.IsDeleted == false);
+            model.Id = id;
 
-            if (!String.IsNullOrEmpty(searchString))
+            Func<Task> action = async () =>
             {
-                citizenshipIQ = citizenshipIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }
+                var CitizenshipExist = await context.Citizenships.Where(x => x.Name == model.Name && x.Id != model.Id).CountAsync();
 
-            switch (sortOrder)
+                if (CitizenshipExist > 0)
+                {
+                    throw new InvalidOperationException("Ya existe una ciudadanía con ese nombre");
+                }
+
+                var CitizenshipEntity = await GetOrCreateEntityAsync(context.Citizenships, x => x.Id == model.Id);
+                var Citizenship = CitizenshipEntity.result;
+
+                Citizenship.Name = model.Name;
+
+                await context.SaveChangesAsync();
+            };
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> DeleteAsync(long id)
+        {
+            Func<Task> action = async () =>
             {
-                case "name_desc":
-                    citizenshipIQ = citizenshipIQ.OrderByDescending(s => s.Name);
-                    break;
-                case "name_asc":
-                    citizenshipIQ = citizenshipIQ.OrderBy(s => s.Name);
-                    break;
-                case "id_desc":
-                    citizenshipIQ = citizenshipIQ.OrderByDescending(s => s.Id);
-                    break;
-                case "id_asc":
-                    citizenshipIQ = citizenshipIQ.OrderBy(s => s.Id);
-                    break;
-                default:
-                    citizenshipIQ = citizenshipIQ.OrderBy(s => s.Name);
-                    break;
-            }
+                var Citizenship = await context.Citizenships.Where(x => x.Id == id).SingleAsync();
 
-            var countItems = await citizenshipIQ.CountAsync();
+                Citizenship.IsDeleted = true;
+                await context.SaveChangesAsync();
+            };
 
-            if (pageIndex != 0 && pageSize != 0) {
-                citizenshipIQ = citizenshipIQ.Skip((pageIndex - 1) * pageSize).Take(pageSize);                
-            }
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> RestoreAsync(long id)
+        {
+            Func<Task> action = async () =>
+            {
+                var Citizenship = await context.Citizenships.Where(x => x.Id == id).SingleAsync();
+
+                Citizenship.IsDeleted = false;
+                await context.SaveChangesAsync();
+            };
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<List<Citizenship>>> ListAsync(GetListViewModel<CitizenshipFilter> getListModel)
+        {
+            IQueryable<Citizenship> q = context.Citizenships;
+            q = SetIncludes(q);
+            q = q.Where(s => !s.IsDeleted);
+            q = SetFilter(q, getListModel.filter);
+            q = SetPaginator(q, getListModel.paginator);
+            q = SetOrderBy(q, getListModel.orderBy);
 
             Func<Task<List<Citizenship>>> action = async () =>
             {
-                var result = await citizenshipIQ.Select(x => new Citizenship
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    IsDeleted = x.IsDeleted
-                }).ToListAsync();
-
+                var result = await q.ToListAsync();
                 return result;
             };
 
-            return await Process.RunAsync(action, countItems);
+            return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<int>> CountAsync(string searchString = "")
+        public async Task<ProcessResult<int>> CountAsync(CitizenshipFilter filter)
         {
-            IQueryable<Citizenship> citizenshipIQ = from s in context.Citizenships select s;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                citizenshipIQ = citizenshipIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }           
+            IQueryable<Citizenship> q = context.Citizenships;
+            q = q.Where(s => !s.IsDeleted);
+            q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>
             {
-                var countItems = await citizenshipIQ.CountAsync();
-
+                var countItems = await q.CountAsync();
                 return countItems;
             };
 
             return await Process.RunAsync(action);
         }
 
+        private IQueryable<Citizenship> SetIncludes(IQueryable<Citizenship> q){
+            return q;
+        }
+
+        private IQueryable<Citizenship> SetOrderBy(IQueryable<Citizenship> q, OrderBy ob) {
+            if ( ob == null ) {
+                return q;
+            }
+
+            if ( !ob.desc ) {
+                if ( ob.by == "name" ) {
+                    q = q.OrderBy(s => s.Name);
+                } 
+                else {
+                    q = q.OrderBy(s => s.Id);
+                }
+            }
+            else {
+                if ( ob.by == "name" ) {
+                    q = q.OrderByDescending(s => s.Name);
+                } 
+                else {
+                    q = q.OrderByDescending(s => s.Id);
+                }
+            }
+            return q;
+        }
+
+        private IQueryable<Citizenship> SetFilter(IQueryable<Citizenship> q, CitizenshipFilter f) {
+            if ( f == null ) {
+                return q;
+            }
+            if (!String.IsNullOrEmpty(f.searchString))
+            {
+                q = q.Where(s => s.Name.Contains(f.searchString));
+            }
+            return q;
+        }
+    
+        private IQueryable<Citizenship> SetPaginator(IQueryable<Citizenship> q, Paginator p) {
+            if ( p == null ) {
+                return q;
+            }
+            return q.Skip(p.offset).Take(p.limit);
+        }
     }
 }
