@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
 
 namespace Server.Controllers
 {
@@ -61,7 +62,7 @@ namespace Server.Controllers
         [HttpPatch]
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update([FromBody]UserViewModel model)
+        public async Task<IActionResult> Update([FromBody]UserUpdateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);  
@@ -78,7 +79,7 @@ namespace Server.Controllers
             user.Firstname = model.Firstname;
             user.Lastname = model.Lastname;             
 
-            if (model.Password != null) {
+            if (model.Password != "") {
                 var newPassword = _userManager.PasswordHasher.HashPassword(user, model.Password);
                 user.PasswordHash = newPassword;
             }            
@@ -155,6 +156,25 @@ namespace Server.Controllers
             var countItems = await _userService.CountAsync("");
             
             return Ok(result);
+            
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), 200)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddRole([FromBody]AddRoleToUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);       
+
+            var user = await _userManager.FindByIdAsync(model.UserId.ToString());            
+
+            if (user == null)
+                return BadRequest("No se encuentra el usuario");
+            
+            var result = await _userManager.AddToRolesAsync(user, model.roles);
+
+            return Ok(user);
             
         } 
     }

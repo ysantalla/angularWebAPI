@@ -97,7 +97,7 @@ import { environment as env } from '@env/environment';
                 </button>
 
                 <button mat-raised-button color="accent"
-                      routerLink="/admin/user/list" routerLinkActive type="button" aria-label="list">
+                      routerLink="/admin/user" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
                   <span>Listado de usuarios</span>
                 </button>
@@ -153,7 +153,7 @@ export class AddUserComponent implements OnInit {
 
         if (data.succeeded) {
           this.snackBar.open(`Usuario con nombre ${this.createForm.value.firstname} ha sido creado`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'user', 'list']);
+          this.router.navigate(['admin', 'user']);
         }
         this.loading = false;
 

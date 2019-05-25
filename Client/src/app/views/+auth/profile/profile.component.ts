@@ -36,6 +36,12 @@ import { User } from '@app/core/models/user.model';
               <mat-grid-tile><h3 class="mat-h3"> {{userProfile.email}}</h3></mat-grid-tile>
               <mat-grid-tile><h3 class="mat-h3">Usuario:</h3></mat-grid-tile>
               <mat-grid-tile><h3 class="mat-h3"> {{userProfile.userName}}</h3></mat-grid-tile>
+              <mat-grid-tile><h3 class="mat-h3">Roles:</h3></mat-grid-tile>
+              <mat-grid-tile>
+                <mat-chip-list *ngFor="let role of userProfile.roles">
+                  <mat-chip class="role" color="accent">{{role}}</mat-chip>
+                </mat-chip-list>
+              </mat-grid-tile>
             </mat-grid-list>
 
           </mat-card-content>
@@ -63,7 +69,6 @@ import { User } from '@app/core/models/user.model';
 export class ProfileComponent implements OnInit {
 
   loading = false;
-
   userProfile: User;
 
   constructor(

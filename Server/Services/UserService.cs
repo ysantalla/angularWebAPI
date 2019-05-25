@@ -35,7 +35,7 @@ namespace Server.Services
 
             switch (sortOrder)
             {
-                case "firstame_desc":
+                case "firstname_desc":
                     userIQ = userIQ.OrderByDescending(s => s.Firstname);
                     break;
                 case "firstname_asc":
@@ -45,13 +45,13 @@ namespace Server.Services
                     userIQ = userIQ.OrderByDescending(s => s.Lastname);
                     break;
                 case "lastname_asc":
-                    userIQ = userIQ.OrderBy(s => s.Firstname);
+                    userIQ = userIQ.OrderBy(s => s.Lastname);
                     break;
                 case "email_desc":
-                    userIQ = userIQ.OrderByDescending(s => s.Lastname);
+                    userIQ = userIQ.OrderByDescending(s => s.Email);
                     break;
                 case "email_asc":
-                    userIQ = userIQ.OrderBy(s => s.Firstname);
+                    userIQ = userIQ.OrderBy(s => s.Email);
                     break;
                 case "id_desc":
                     userIQ = userIQ.OrderByDescending(s => s.Id);

@@ -310,9 +310,8 @@ export class ListRoleComponent implements OnInit, OnDestroy {
       if (result) {
         this.loading = true;
         this.httpClient.delete(`${env.serverUrl}/Role/RemoveOrRestore?id=${item.id}`).subscribe(data => {
-          console.log(data);
 
-        this.load$.next('');
+          this.load$.next('');
 
         });
       }

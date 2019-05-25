@@ -27,7 +27,7 @@ import { Menu } from '@app/core/models/menu.model';
           <span>{{appName}}</span>
         </mat-toolbar>
 
-        <app-nav-menu [items]="dashboard"></app-nav-menu>
+        <app-nav-menu [items]="dashboard" *ngIf="isLoggedIn$ | async"></app-nav-menu>
 
         <app-nav-menu [items]="adminMenu" *ngIf="isAdmin$.asObservable() | async"></app-nav-menu>
 
@@ -208,17 +208,17 @@ export class LayoutComponent implements OnInit, OnDestroy {
       pages: [
         {
           heading: 'Administrar Usuarios',
-          link: '/admin/user/list',
+          link: '/admin/user/',
           icon: 'person'
         },
         {
           heading: 'Administrar Roles',
-          link: '/admin/role/list',
+          link: '/admin/role/',
           icon: 'supervisor_account'
         },
         {
           heading: 'Administrar Países',
-          link: '/admin/country/list',
+          link: '/admin/country/',
           icon: 'translate'
         }
       ]
@@ -251,6 +251,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    this.isAdmin$.next(false);
+    this.isManager$.next(false);
     this.authService.logout();
     this.snackBar.open('Usted a cerrado su sesión', 'X', {duration: 3000});
     this.router.navigate(['auth', 'login']);
