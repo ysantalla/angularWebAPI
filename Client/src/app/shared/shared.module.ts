@@ -22,7 +22,8 @@ import {
   MatPaginatorIntl,
   MatSortModule,
   MatPaginatorModule,
-  MatDialogModule
+  MatDialogModule,
+  MatChipsModule
 
 } from '@angular/material';
 
@@ -86,6 +87,7 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
+    MatChipsModule,
 
     LayoutComponent,
     SizePipe,

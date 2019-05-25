@@ -29,12 +29,15 @@ namespace Server.Services
             {
                 var user = await this.userManager.FindByIdAsync(CurrentUser.Id.ToString());
 
+                var roles = await this.userManager.GetRolesAsync(user);
+
                 var userView =  new ProfileViewModel
                                     {
                                         Email = user.Email,
                                         UserName = user.UserName,
                                         Firstname = user.Firstname,
-                                        Lastname = user.Lastname
+                                        Lastname = user.Lastname,
+                                        Roles = roles.ToList()
                                     };
 
                 return userView;

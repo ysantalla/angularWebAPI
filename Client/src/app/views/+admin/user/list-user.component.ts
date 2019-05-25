@@ -97,7 +97,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
       <div class="table-container">
 
         <table mat-table [dataSource]="data" class="table"
-              matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
+              matSort matSortActive="firstname" matSortDisableClear matSortDirection="asc">
 
           <!-- Id Column -->
           <ng-container matColumnDef="id">
@@ -328,9 +328,8 @@ export class ListUserComponent implements OnInit, OnDestroy {
       if (result) {
         this.loading = true;
         this.httpClient.delete(`${env.serverUrl}/User/RemoveOrRestore?id=${item.id}`).subscribe(data => {
-          console.log(data);
 
-        this.load$.next('');
+          this.load$.next('');
 
         });
       }

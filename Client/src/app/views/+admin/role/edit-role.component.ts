@@ -49,7 +49,7 @@ import { environment as env } from '@env/environment';
                   <span>Rol</span>
                 </button>
 
-                <button mat-raised-button color="accent" routerLink="/admin/role/list" routerLinkActive type="button" aria-label="list">
+                <button mat-raised-button color="accent" routerLink="/admin/role" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
                   <span>Listado de roles</span>
                 </button>
@@ -115,7 +115,7 @@ export class EditRoleComponent implements OnInit {
 
         if (data.succeeded) {
           this.snackBar.open(`Rol con nombre ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'role', 'list']);
+          this.router.navigate(['admin', 'role']);
         }
         this.loading = false;
 

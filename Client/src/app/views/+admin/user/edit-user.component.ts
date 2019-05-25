@@ -24,7 +24,7 @@ import { environment as env } from '@env/environment';
             <mat-card class="mes-card">
               <mat-toolbar>
                 <mat-card-header>
-                  <h1 class="mat-h1">Editar País</h1>
+                  <h1 class="mat-h1">Editar Usuario</h1>
                 </mat-card-header>
               </mat-toolbar>
 
@@ -32,26 +32,70 @@ import { environment as env } from '@env/environment';
 
               <mat-card-content>
 
+              <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    required
+                    type="text"
+                    placeholder="Nombre"
+                    formControlName="firstname"
+                  />
+                </mat-form-field>
+
                 <mat-form-field class="full-width">
                   <input
                     matInput
                     required
                     type="text"
-                    placeholder="Nombre del rol"
-                    formControlName="name"
+                    placeholder="Apellidos"
+                    formControlName="lastname"
                   />
                 </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    required
+                    type="text"
+                    placeholder="Correo"
+                    formControlName="email"
+                  />
+                </mat-form-field>
+
+
+                <mat-form-field class="full-width">
+                  <input matInput #password type ="password" placeholder="Contraseña" formControlName="password">
+                  <mat-hint align="end">6 / {{password.value.length}}</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    type="password"
+                    placeholder="Repetir contraseña"
+                    formControlName="repeat_password"
+                  />
+                  <mat-hint *ngIf="(editForm.value.password != editForm.value.repeat_password)
+                    || (editForm.value.password.length <= 6 && editForm.value.password.length > 1)">
+                    <span class="mat-warn">Las contraseñas no coinciden, debe poseer un mínimo de 6 carácteres</span>
+                  </mat-hint>
+                  <mat-hint *ngIf="(editForm.value.password == editForm.value.repeat_password)
+                  && (editForm.value.password.length > 6)">
+                    <span class="mat-accent">Las contraseñas coinciden</span>
+                  </mat-hint>
+                </mat-form-field>
+
 
               </mat-card-content>
               <mat-card-actions>
                 <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid" aria-label="edit">
                   <mat-icon>mode_edit</mat-icon>
-                  <span>Rol</span>
+                  <span>Usuario</span>
                 </button>
 
-                <button mat-raised-button color="accent" routerLink="/admin/role/list" routerLinkActive type="button" aria-label="list">
+                <button mat-raised-button color="accent" routerLink="/admin/user" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
-                  <span>Listado de roles</span>
+                  <span>Listado de usuarios</span>
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -85,7 +129,11 @@ export class EditUserComponent implements OnInit {
   ngOnInit() {
 
     this.editForm = this.formBuilder.group({
-      name: ['', Validators.required]
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: [''],
+      repeat_password: ['']
     });
 
     this.itemId = this.activatedRoute.snapshot.params['id'];
@@ -94,11 +142,13 @@ export class EditUserComponent implements OnInit {
     const params = new HttpParams()
       .set('Id', this.itemId);
 
-    this.httpClient.get(`${env.serverUrl}/Role/GetById`, {params: params}).subscribe((data: any) => {
+    this.httpClient.get(`${env.serverUrl}/User/GetById`, {params: params}).subscribe((data: any) => {
       this.loading = false;
 
       this.editForm.patchValue({
-        name: data.name
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email
       });
 
     });
@@ -111,11 +161,19 @@ export class EditUserComponent implements OnInit {
     if (this.editForm.valid) {
       this.editForm.disable();
 
-      this.httpClient.patch(`${env.serverUrl}/Role/Update`, {name: this.editForm.value.name, Id: this.itemId}).subscribe((data: any) => {
+      const editValues = {
+        Id: this.itemId,
+        firstname: this.editForm.value.firstname,
+        lastname: this.editForm.value.lastname,
+        email: this.editForm.value.email,
+        password: this.editForm.value.password
+      };
+
+      this.httpClient.patch(`${env.serverUrl}/User/Update`, editValues).subscribe((data: any) => {
 
         if (data.succeeded) {
-          this.snackBar.open(`Rol con nombre ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'role', 'list']);
+          this.snackBar.open(`User con nombre ${this.editForm.value.firstname} ha sido editado`, 'X', {duration: 3000});
+          this.router.navigate(['admin', 'user']);
         }
         this.loading = false;
 

@@ -23,7 +23,7 @@ import { UserResolver } from './resolvers/user.resolver';
 
 const routes: Routes = [
   {
-    path: 'country/list',
+    path: 'country',
     component: ListCountryComponent,
     data: {title: 'Listado de Paises', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
@@ -44,7 +44,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
   },
   {
-    path: 'role/list',
+    path: 'role',
     component: ListRoleComponent,
     data: {title: 'Listado de Roles', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
@@ -65,7 +65,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
   },
   {
-    path: 'user/list',
+    path: 'user',
     component: ListUserComponent,
     data: {title: 'Listado de Usuarios', expectedRole: ['Admin']},
     canActivate: [RoleGuard],

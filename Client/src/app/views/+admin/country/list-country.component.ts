@@ -310,9 +310,8 @@ export class ListCountryComponent implements OnInit, OnDestroy {
       if (result) {
         this.loading = true;
         this.httpClient.delete(`${env.serverUrl}/Country/RemoveOrRestore?id=${item.id}`).subscribe(data => {
-          console.log(data);
 
-        this.load$.next('');
+          this.load$.next('');
 
         });
       }

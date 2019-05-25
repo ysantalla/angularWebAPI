@@ -49,7 +49,7 @@ import { environment as env } from '@env/environment';
                   <span>País</span>
                 </button>
 
-                <button mat-raised-button color="accent" routerLink="/admin/country/list" routerLinkActive type="button" aria-label="list">
+                <button mat-raised-button color="accent" routerLink="/admin/country" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
                   <span>Listado de paises</span>
                 </button>
@@ -96,7 +96,7 @@ export class AddCountryComponent implements OnInit {
 
         if (data.succeeded) {
           this.snackBar.open(`País con nombre ${this.createForm.value.name} ha sido creado`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'country', 'list']);
+          this.router.navigate(['admin', 'country']);
         }
         this.loading = false;
 
