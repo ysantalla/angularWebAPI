@@ -21,6 +21,10 @@ import { UserAddRoleComponent } from './user/user-add-role.component';
 import { CountryResolver } from './resolvers/country.resolver';
 import { RoleResolver } from './resolvers/role.resolver';
 import { UserResolver } from './resolvers/user.resolver';
+import { AddAgencyComponent } from './agency/add-agency.component';
+import { EditAgencyComponent } from './agency/edit-agency.component';
+import { ListAgencyComponent } from './agency/list-agency.component';
+import { AgencyResolver } from './resolvers/agency.resolver';
 
 const routes: Routes = [
   {
@@ -91,7 +95,28 @@ const routes: Routes = [
     component: EditUserComponent,
     data: {title: 'Editar Usuario', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
-  }
+  },
+  {
+    path: 'agency',
+    component: ListAgencyComponent,
+    data: {title: 'Listado de Agencia', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+    resolve: {
+      data: AgencyResolver
+    }
+  },
+  {
+    path: 'agency/add',
+    component: AddAgencyComponent,
+    data: {title: 'Adicionar Agencia', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+  },
+  {
+    path: 'agency/edit/:id',
+    component: EditAgencyComponent,
+    data: {title: 'Editar Agencia', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+  },
 ];
 
 @NgModule({
@@ -103,10 +128,11 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [
+    ListAgencyComponent, AddAgencyComponent, EditAgencyComponent,
     ListCountryComponent, AddCountryComponent, EditCountryComponent,
     ListRoleComponent, AddRoleComponent, EditRoleComponent,
     ListUserComponent, AddUserComponent, EditUserComponent, UserAddRoleComponent
   ],
-  providers: [CountryResolver, RoleResolver, UserResolver]
+  providers: [CountryResolver, RoleResolver, UserResolver, AgencyResolver]
 })
 export class AdminModule { }

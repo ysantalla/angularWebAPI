@@ -37,7 +37,6 @@ namespace Server.Services
 
                 Agency.Name = model.Name;
                 Agency.Represent = model.Represent;
-                Agency.CountryID = model.CountryID;
                 Agency.Email = model.Email;
                 Agency.Phone = model.Phone;
 
@@ -75,7 +74,6 @@ namespace Server.Services
 
                 Agency.Name = model.Name;
                 Agency.Represent = model.Represent;
-                Agency.CountryID = model.CountryID;
                 Agency.Email = model.Email;
                 Agency.Phone = model.Phone;
 
@@ -114,11 +112,14 @@ namespace Server.Services
         public async Task<ProcessResult<List<Agency>>> ListAsync(GetListViewModel<AgencyFilter> getListModel)
         {
             IQueryable<Agency> q = context.Agencies;
-            q = SetIncludes(q);
             q = q.Where(s => !s.IsDeleted);
+
             q = SetFilter(q, getListModel.filter);
-            q = SetPaginator(q, getListModel.paginator);
             q = SetOrderBy(q, getListModel.orderBy);
+
+            var countItems = await q.CountAsync();
+
+            q = SetPaginator(q, getListModel.paginator);                        
 
             Func<Task<List<Agency>>> action = async () =>
             {
@@ -126,7 +127,7 @@ namespace Server.Services
                 return result;
             };
 
-            return await Process.RunAsync(action);
+            return await Process.RunAsync(action, countItems);
         }
 
         public async Task<ProcessResult<int>> CountAsync(AgencyFilter filter)
@@ -144,11 +145,6 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
-        private IQueryable<Agency> SetIncludes(IQueryable<Agency> q){
-            q = q.Include( s => s.Country );
-            return q;
-        }
-
         private IQueryable<Agency> SetOrderBy(IQueryable<Agency> q, OrderBy ob) {
             if ( ob == null ) {
                 return q;
@@ -157,6 +153,12 @@ namespace Server.Services
             if ( !ob.desc ) {
                 if ( ob.by == "name" ) {
                     q = q.OrderBy(s => s.Name);
+                } else if ( ob.by == "email" ) {
+                    q = q.OrderBy(s => s.Email);
+                } else if ( ob.by == "phone" ) {
+                    q = q.OrderBy(s => s.Phone);
+                } else if ( ob.by == "represent" ) {
+                    q = q.OrderBy(s => s.Represent);
                 } 
                 else {
                     q = q.OrderBy(s => s.Id);
@@ -165,7 +167,13 @@ namespace Server.Services
             else {
                 if ( ob.by == "name" ) {
                     q = q.OrderByDescending(s => s.Name);
-                } 
+                } else if ( ob.by == "email" ) {
+                    q = q.OrderByDescending(s => s.Email);
+                } else if ( ob.by == "phone" ) {
+                    q = q.OrderByDescending(s => s.Phone);
+                } else if ( ob.by == "represent" ) {
+                    q = q.OrderByDescending(s => s.Represent);
+                }
                 else {
                     q = q.OrderByDescending(s => s.Id);
                 }
@@ -186,9 +194,7 @@ namespace Server.Services
                     s.Phone.Contains(f.searchString)
                 ));
             }
-            if (f.countryID > 0) {
-                q = q.Where( s => s.CountryID == f.countryID );
-            }
+
             return q;
         }
     

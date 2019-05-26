@@ -6,6 +6,5 @@ namespace Server.ViewModels
     {
         public string searchString { get; set; }
         
-        public long countryID { get; set; }
     }
 }

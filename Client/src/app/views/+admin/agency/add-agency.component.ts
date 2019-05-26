@@ -8,7 +8,7 @@ import { environment as env } from '@env/environment';
 
 
 @Component({
-  selector: 'app-add-country',
+  selector: 'app-add-agency',
   template: `
     <div class="container">
       <div class="loading">
@@ -20,11 +20,11 @@ import { environment as env } from '@env/environment';
       <div class="item">
 
         <div class="mat-elevation-z8">
-          <form [formGroup]="createForm" #f="ngForm" (ngSubmit)="onCreateCountry()" class="form">
+          <form [formGroup]="createForm" #f="ngForm" (ngSubmit)="onCreateAgency()" class="form">
             <mat-card class="mes-card">
               <mat-toolbar>
                 <mat-card-header>
-                  <h1 class="mat-h1">Crear País</h1>
+                  <h1 class="mat-h1">Crear Agencia</h1>
                 </mat-card-header>
               </mat-toolbar>
 
@@ -37,21 +37,52 @@ import { environment as env } from '@env/environment';
                     matInput
                     required
                     type="text"
-                    placeholder="Nombre de país"
+                    placeholder="Nombre de la agencia"
                     formControlName="name"
                   />
                 </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    required
+                    type="text"
+                    placeholder="Correo electrónico"
+                    formControlName="email"
+                  />
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    required
+                    type="text"
+                    placeholder="Nombre del representante"
+                    formControlName="represent"
+                  />
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    required
+                    type="number"
+                    placeholder="Teléfono"
+                    formControlName="phone"
+                  />
+                </mat-form-field>
+
 
               </mat-card-content>
               <mat-card-actions>
                 <button mat-raised-button color="primary" type="submit" [disabled]="!createForm.valid" aria-label="create">
                   <mat-icon>add</mat-icon>
-                  <span>País</span>
+                  <span>Agencia</span>
                 </button>
 
-                <button mat-raised-button color="accent" routerLink="/admin/country" routerLinkActive type="button" aria-label="list">
+                <button mat-raised-button color="accent" routerLink="/admin/agency" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
-                  <span>Listado de países</span>
+                  <span>Listado de agencias</span>
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -67,7 +98,7 @@ import { environment as env } from '@env/environment';
     }
   `]
 })
-export class AddCountryComponent implements OnInit {
+export class AddAgencyComponent implements OnInit {
 
   createForm: FormGroup;
   loading = false;
@@ -80,23 +111,30 @@ export class AddCountryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.createForm = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      represent: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required]
     });
   }
 
-  onCreateCountry(): void {
+  onCreateAgency(): void {
     this.loading = true;
 
     if (this.createForm.valid) {
       this.createForm.disable();
 
-      this.httpClient.post(`${env.serverUrl}/Country/Create`, {name: this.createForm.value.name}).subscribe((data: any) => {
+      this.httpClient.post(`${env.serverUrl}/Agencies`, {
+        name: this.createForm.value.name,
+        represent: this.createForm.value.represent,
+        email: this.createForm.value.email,
+        phone: this.createForm.value.phone
+      }).subscribe((data: any) => {
 
         if (data.succeeded) {
-          this.snackBar.open(`País con nombre ${this.createForm.value.name} ha sido creado`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'country']);
+          this.snackBar.open(`Agencia con nombre ${this.createForm.value.name} ha sido creado`, 'X', {duration: 3000});
+          this.router.navigate(['admin', 'agency']);
         }
         this.loading = false;
 
