@@ -91,10 +91,8 @@ export class EditCountryComponent implements OnInit {
     this.itemId = this.activatedRoute.snapshot.params['id'];
 
     this.loading = true;
-    const params = new HttpParams()
-      .set('Id', this.itemId);
 
-    this.httpClient.get(`${env.serverUrl}/Country/GetById`, {params: params}).subscribe((data: any) => {
+    this.httpClient.get(`${env.serverUrl}/countries/${this.itemId}`).subscribe((data: any) => {
       this.loading = false;
 
       this.editForm.patchValue({
@@ -111,7 +109,9 @@ export class EditCountryComponent implements OnInit {
     if (this.editForm.valid) {
       this.editForm.disable();
 
-      this.httpClient.patch(`${env.serverUrl}/Country/Update`, {name: this.editForm.value.name, Id: this.itemId}).subscribe((data: any) => {
+      this.httpClient.patch(`${env.serverUrl}/countries/${this.itemId}`, {
+        name: this.editForm.value.name
+      }).subscribe((data: any) => {
 
         if (data.succeeded) {
           this.snackBar.open(`País con nombre ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});

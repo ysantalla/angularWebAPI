@@ -148,13 +148,13 @@ export class EditAgencyComponent implements OnInit {
       this.editForm.disable();
 
       this.httpClient.patch(`${env.serverUrl}/agencies/${this.itemId}`,
-                {
-                  name: this.editForm.value.name,
-                  email: this.editForm.value.email,
-                  phone: this.editForm.value.phone,
-                  represent: this.editForm.value.represent,
-                }
-                ).subscribe((data: any) => {
+      {
+        name: this.editForm.value.name,
+        email: this.editForm.value.email,
+        phone: this.editForm.value.phone,
+        represent: this.editForm.value.represent,
+      }
+      ).subscribe((data: any) => {
 
         if (data.succeeded) {
           this.snackBar.open(`Agencia con nombre ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});

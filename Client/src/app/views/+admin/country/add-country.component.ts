@@ -92,7 +92,9 @@ export class AddCountryComponent implements OnInit {
     if (this.createForm.valid) {
       this.createForm.disable();
 
-      this.httpClient.post(`${env.serverUrl}/Country/Create`, {name: this.createForm.value.name}).subscribe((data: any) => {
+      this.httpClient.post(`${env.serverUrl}/countries`, {
+        name: this.createForm.value.name
+      }).subscribe((data: any) => {
 
         if (data.succeeded) {
           this.snackBar.open(`País con nombre ${this.createForm.value.name} ha sido creado`, 'X', {duration: 3000});

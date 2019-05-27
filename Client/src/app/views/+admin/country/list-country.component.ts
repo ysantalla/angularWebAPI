@@ -143,7 +143,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
         </table>
       </div>
 
-      <mat-paginator [length]="resultsLength" [pageSize]="20"></mat-paginator>
+      <mat-paginator [length]="resultsLength" [pageSize]="2"></mat-paginator>
     </div>
 
   `,
@@ -257,12 +257,13 @@ export class ListCountryComponent implements OnInit, OnDestroy {
 
             } else {
               const params = new HttpParams()
-                .set('searchString', this.searchForm.value.name || '')
-                .set('pageIndex', (this.paginator.pageIndex + 1).toString())
-                .set('pageSize', this.paginator.pageSize.toString())
-                .set('sortOrder', `${this.sort.active}_${this.sort.direction}`);
+              .set('filter.searchString', this.searchForm.value.name || '')
+              .set('paginator.offset', (this.paginator.pageIndex * this.paginator.pageSize).toString())
+              .set('paginator.limit', this.paginator.pageSize.toString())
+              .set('orderBy.by', this.sort.active)
+              .set('orderBy.desc', (this.sort.direction === 'desc').toString());
 
-              return this.httpClient.get<any>(`${env.serverUrl}/Country/List`, {params: params});
+              return this.httpClient.get<any>(`${env.serverUrl}/countries`, {params: params});
             }
           }),
           map(data => {
@@ -308,7 +309,7 @@ export class ListCountryComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loading = true;
-        this.httpClient.delete(`${env.serverUrl}/Country/RemoveOrRestore?id=${item.id}`).subscribe(data => {
+        this.httpClient.delete(`${env.serverUrl}/countries/${item.id}`).subscribe(data => {
 
           this.load$.next('');
 

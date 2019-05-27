@@ -284,11 +284,11 @@ export class ListAgencyComponent implements OnInit, OnDestroy {
               const desc = this.sort.direction === 'desc' ? 'true' : 'false';
 
               const params = new HttpParams()
-                .set('filter.searchString', this.searchForm.value.name || '')
-                .set('paginator.offset', (this.paginator.pageIndex + 1).toString())
-                .set('paginator.limit', this.paginator.pageSize.toString())
-                .set('orderBy.by', `${this.sort.active}`)
-                .set('orderBy.desc', desc);
+              .set('filter.searchString', this.searchForm.value.name || '')
+              .set('paginator.offset', (this.paginator.pageIndex * this.paginator.pageSize).toString())
+              .set('paginator.limit', this.paginator.pageSize.toString())
+              .set('orderBy.by', this.sort.active)
+              .set('orderBy.desc', (this.sort.direction === 'desc').toString());
 
               return this.httpClient.get<any>(`${env.serverUrl}/agencies`, {params: params});
             }

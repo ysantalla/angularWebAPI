@@ -183,7 +183,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
         </table>
       </div>
 
-      <mat-paginator [length]="resultsLength" [pageSize]="20"></mat-paginator>
+      <mat-paginator [length]="resultsLength" [pageSize]="1"></mat-paginator>
     </div>
 
   `,

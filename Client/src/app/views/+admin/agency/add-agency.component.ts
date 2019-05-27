@@ -125,7 +125,7 @@ export class AddAgencyComponent implements OnInit {
     if (this.createForm.valid) {
       this.createForm.disable();
 
-      this.httpClient.post(`${env.serverUrl}/Agencies`, {
+      this.httpClient.post(`${env.serverUrl}/agencies`, {
         name: this.createForm.value.name,
         represent: this.createForm.value.represent,
         email: this.createForm.value.email,
