@@ -18,6 +18,11 @@ import { AuthGuard } from '@app/core/guards/auth.guard';
 
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
+  },
+  {
     path: 'auth',
     loadChildren: './views/+auth/auth.module#AuthModule',
   },

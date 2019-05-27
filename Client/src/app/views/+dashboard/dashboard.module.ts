@@ -11,8 +11,7 @@ const routes: Routes = [
   {
     path: '',
     component: IndexComponent,
-    data: {title: 'Escritorio', expectedRole: ['ADMIN', 'ESPECIALISTA', 'JPROYECTO', 'PROFESOR']},
-    // canActivate: [RoleGuard]
+    data: {title: 'Escritorio', expectedRole: ['Admin', 'Manager']},
   }
 ];
 
