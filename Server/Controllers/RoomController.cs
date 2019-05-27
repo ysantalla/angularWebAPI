@@ -91,21 +91,6 @@ namespace Server.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(string), 200)]
-        [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Restore([FromRoute] long id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);            
-
-            var result = await _RoomService.RestoreAsync(id);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-            
-            return Ok(result);
-        }
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Room>), 200)]

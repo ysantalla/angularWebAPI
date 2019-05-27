@@ -15,8 +15,6 @@ namespace Server.Services.Interfaces
 
          Task<ProcessResult> DeleteAsync(long id);
 
-         Task<ProcessResult> RestoreAsync(long id);
-
          Task<ProcessResult<List<Reservation>>> ListAsync(GetListViewModel<ReservationFilter> listModel);
          
          Task<ProcessResult<int>> CountAsync(ReservationFilter filter);

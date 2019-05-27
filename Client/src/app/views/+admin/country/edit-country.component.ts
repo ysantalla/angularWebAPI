@@ -51,7 +51,7 @@ import { environment as env } from '@env/environment';
 
                 <button mat-raised-button color="accent" routerLink="/admin/country" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
-                  <span>Listado de paises</span>
+                  <span>Listado de países</span>
                 </button>
               </mat-card-actions>
             </mat-card>

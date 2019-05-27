@@ -87,22 +87,8 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Agency = await context.Agencies.Where(x => x.Id == id).SingleAsync();
-
-                Agency.IsDeleted = true;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult> RestoreAsync(long id)
-        {
-            Func<Task> action = async () =>
-            {
-                var Agency = await context.Agencies.Where(x => x.Id == id).SingleAsync();
-
-                Agency.IsDeleted = false;
+                var o = await context.Agencies.Where(x => x.Id == id).SingleAsync();
+                context.Remove(o);
                 await context.SaveChangesAsync();
             };
 
@@ -112,13 +98,12 @@ namespace Server.Services
         public async Task<ProcessResult<List<Agency>>> ListAsync(GetListViewModel<AgencyFilter> getListModel)
         {
             IQueryable<Agency> q = context.Agencies;
-            q = q.Where(s => !s.IsDeleted);
-
+            q = SetIncludes(q);
             q = SetFilter(q, getListModel.filter);
-            q = SetOrderBy(q, getListModel.orderBy);
-
+            
             var countItems = await q.CountAsync();
 
+            q = SetOrderBy(q, getListModel.orderBy);
             q = SetPaginator(q, getListModel.paginator);                        
 
             Func<Task<List<Agency>>> action = async () =>
@@ -133,7 +118,6 @@ namespace Server.Services
         public async Task<ProcessResult<int>> CountAsync(AgencyFilter filter)
         {
             IQueryable<Agency> q = context.Agencies;
-            q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>
@@ -143,6 +127,10 @@ namespace Server.Services
             };
 
             return await Process.RunAsync(action);
+        }
+
+        private IQueryable<Agency> SetIncludes(IQueryable<Agency> q) {
+            return q;
         }
 
         private IQueryable<Agency> SetOrderBy(IQueryable<Agency> q, OrderBy ob) {

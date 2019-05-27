@@ -10,6 +10,10 @@ import { ListCountryComponent } from './country/list-country.component';
 import { AddCountryComponent } from './country/add-country.component';
 import { EditCountryComponent } from './country/edit-country.component';
 
+import { ListRoomComponent } from './room/list-room.component';
+import { AddRoomComponent } from './room/add-room.component';
+import { EditRoomComponent } from './room/edit-room.component';
+
 import { EditRoleComponent } from './role/edit-role.component';
 import { AddRoleComponent } from './role/add-role.component';
 import { ListRoleComponent } from './role/list-role.component';
@@ -25,6 +29,7 @@ import { AddAgencyComponent } from './agency/add-agency.component';
 import { EditAgencyComponent } from './agency/edit-agency.component';
 import { ListAgencyComponent } from './agency/list-agency.component';
 import { AgencyResolver } from './resolvers/agency.resolver';
+import { RoomResolver } from './resolvers/room.resolver';
 
 const routes: Routes = [
   {
@@ -117,6 +122,27 @@ const routes: Routes = [
     data: {title: 'Editar Agencia', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
   },
+  {
+    path: 'rooms',
+    component: ListRoomComponent,
+    data: {title: 'Listado de Cuartos', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+    resolve: {
+      data: RoomResolver
+    }
+  },
+  {
+    path: 'room/add',
+    component: AddRoomComponent,
+    data: {title: 'Adicionar Cuarto', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+  },
+  {
+    path: 'room/edit/:id',
+    component: EditRoomComponent,
+    data: {title: 'Editar Cuarto', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+  },
 ];
 
 @NgModule({
@@ -128,11 +154,18 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [
+    ListRoleComponent, AddRoleComponent, EditRoleComponent,
+    ListUserComponent, AddUserComponent, EditUserComponent, UserAddRoleComponent,
     ListAgencyComponent, AddAgencyComponent, EditAgencyComponent,
     ListCountryComponent, AddCountryComponent, EditCountryComponent,
-    ListRoleComponent, AddRoleComponent, EditRoleComponent,
-    ListUserComponent, AddUserComponent, EditUserComponent, UserAddRoleComponent
+    ListRoomComponent, AddRoomComponent, EditRoomComponent
   ],
-  providers: [CountryResolver, RoleResolver, UserResolver, AgencyResolver]
+  providers: [
+    RoleResolver,
+    UserResolver,
+    AgencyResolver,
+    CountryResolver,
+    RoomResolver,
+  ]
 })
 export class AdminModule { }

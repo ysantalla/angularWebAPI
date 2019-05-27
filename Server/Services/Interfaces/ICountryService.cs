@@ -7,11 +7,17 @@ namespace Server.Services.Interfaces
 {
     public interface ICountryService
     {
-         Task<ProcessResult> CreateAsync(CountryViewModel model);
-         Task<ProcessResult> UpdateAsync(CountryViewModel model);
-         Task<ProcessResult<CountryViewModel>> GetByIdAsync(long id);
-         Task<ProcessResult<List<CountryViewModel>>> GetListAsync(string sortOrder, string searchString, int pageIndex,  int pageSize);
-         Task<ProcessResult<int>> CountAsync(string searchString);
-         Task<ProcessResult> RemoveOrRestoreAsync(long id);
+         Task<ProcessResult> CreateAsync(Country model);
+         
+         Task<ProcessResult<Country>> RetrieveAsync(long id);
+
+         Task<ProcessResult> UpdateAsync(long id, Country model);
+
+         Task<ProcessResult> DeleteAsync(long id);
+
+         Task<ProcessResult<List<Country>>> ListAsync(GetListViewModel<CountryFilter> listModel);
+         
+         Task<ProcessResult<int>> CountAsync(CountryFilter filter);
+   
     }
 }

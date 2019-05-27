@@ -20,153 +20,154 @@ namespace Server.Services
         {
         }
 
-        public async Task<ProcessResult> CreateAsync(CountryViewModel model)
+        public async Task<ProcessResult> CreateAsync(Country model)
         {
             Func<Task> action = async () =>
             {
 
-                var countryExist = await context.Countries.Where(x => x.Name == model.Name).CountAsync();
+                var CountryExist = await context.Countries.Where(x => x.Name == model.Name).CountAsync();
 
-                if (countryExist > 0)
+                if (CountryExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe un país con este nombre");
+                    throw new InvalidOperationException("Ya existe una país con ese nombre");
                 }
 
-                var countryEntity = await GetOrCreateEntityAsync(context.Countries, x => x.Id == model.Id);
-                var country = countryEntity.result;
+                var CountryEntity = await GetOrCreateEntityAsync(context.Countries, x => x.Id == model.Id);
+                var Country = CountryEntity.result;
 
-                country.Name = model.Name;
+                Country.Name = model.Name;
+
                 await context.SaveChangesAsync();
             };
-
             return await Process.RunAsync(action);
         }
 
-
-        public async Task<ProcessResult> UpdateAsync(CountryViewModel model)
+        public async Task<ProcessResult<Country>> RetrieveAsync(long id)
         {
-
-            Func<Task> action = async () =>
-            {
-                var countryExist = await context.Countries.Where(x => x.Name == model.Name && x.Id != model.Id).CountAsync();
-
-                if (countryExist > 0)
-                {
-                    throw new InvalidOperationException("Ya existe un país con este nombre");
-                }
-
-                var countryEntity = await GetOrCreateEntityAsync(context.Countries, x => x.Id == model.Id);
-                var country = countryEntity.result;
-
-                country.Name = model.Name;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult> RemoveOrRestoreAsync(long id)
-        {
-            Func<Task> action = async () =>
-            {
-                var country = await context.Countries.Where(x => x.Id == id).SingleAsync();
-
-                country.IsDeleted = !country.IsDeleted;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult<CountryViewModel>> GetByIdAsync(long id)
-        {
-            Func<Task<CountryViewModel>> action = async () =>
+            Func<Task<Country>> action = async () =>
             {
                 var result = await context.Countries.Where(x => x.Id == id).FirstAsync();
-
-                var resultView = new CountryViewModel
-                {
-                    Id = result.Id,
-                    Name = result.Name
-                };
-
-                return resultView;
+                return result;
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult<List<CountryViewModel>>> GetListAsync(string sortOrder, string searchString, int pageIndex,  int pageSize)
+        public async Task<ProcessResult> UpdateAsync(long id, Country model)
         {
-            IQueryable<Country> countryIQ = from s in context.Countries
-                                            select s;
-            
-            countryIQ = countryIQ.Where(s => s.IsDeleted == false);
+            model.Id = id;
 
-            if (!String.IsNullOrEmpty(searchString))
+            Func<Task> action = async () =>
             {
-                countryIQ = countryIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }
+                var CountryExist = await context.Countries.Where(x => x.Name == model.Name && x.Id != model.Id).CountAsync();
 
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    countryIQ = countryIQ.OrderByDescending(s => s.Name);
-                    break;
-                case "name_asc":
-                    countryIQ = countryIQ.OrderBy(s => s.Name);
-                    break;
-                case "id_desc":
-                    countryIQ = countryIQ.OrderByDescending(s => s.Id);
-                    break;
-                case "id_asc":
-                    countryIQ = countryIQ.OrderBy(s => s.Id);
-                    break;
-                default:
-                    countryIQ = countryIQ.OrderBy(s => s.Name);
-                    break;
-            }
-
-            var countItems = await countryIQ.CountAsync();
-
-            if (pageIndex != 0 && pageSize != 0) {
-                countryIQ = countryIQ.Skip((pageIndex - 1) * pageSize).Take(pageSize);                
-            }
-
-            Func<Task<List<CountryViewModel>>> action = async () =>
-            {
-                var result = await countryIQ.Select(x => new CountryViewModel
+                if (CountryExist > 0)
                 {
-                    Id = x.Id,
-                    Name = x.Name,
-                    IsDeleted = x.IsDeleted
-                }).ToListAsync();
+                    throw new InvalidOperationException("Ya existe una país con ese nombre");
+                }
 
+                var CountryEntity = await GetOrCreateEntityAsync(context.Countries, x => x.Id == model.Id);
+                var Country = CountryEntity.result;
+
+                Country.Name = model.Name;
+
+                await context.SaveChangesAsync();
+            };
+
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> DeleteAsync(long id)
+        {
+            Func<Task> action = async () =>
+            {
+                var o = await context.Countries.Where(x => x.Id == id).SingleAsync();
+                context.Countries.Remove(o);
+                await context.SaveChangesAsync();
+            };
+
+            return await Process.RunAsync(action);
+        }
+
+
+        public async Task<ProcessResult<List<Country>>> ListAsync(GetListViewModel<CountryFilter> getListModel)
+        {
+            IQueryable<Country> q = context.Countries;
+            q = SetIncludes(q);
+            q = SetFilter(q, getListModel.filter);
+
+            var countItems = await q.CountAsync();
+
+            q = SetPaginator(q, getListModel.paginator);
+            q = SetOrderBy(q, getListModel.orderBy);
+
+            Func<Task<List<Country>>> action = async () =>
+            {
+                var result = await q.ToListAsync();
                 return result;
             };
 
             return await Process.RunAsync(action, countItems);
         }
 
-        public async Task<ProcessResult<int>> CountAsync(string searchString = "")
+        public async Task<ProcessResult<int>> CountAsync(CountryFilter filter)
         {
-            IQueryable<Country> countryIQ = from s in context.Countries
-                                            select s;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                countryIQ = countryIQ.Where(s => s.Name.Contains(searchString) && s.IsDeleted == false);
-            }           
+            IQueryable<Country> q = context.Countries;
+            q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>
             {
-                var countItems = await countryIQ.CountAsync();
-
+                var countItems = await q.CountAsync();
                 return countItems;
             };
 
             return await Process.RunAsync(action);
         }
 
+        private IQueryable<Country> SetIncludes(IQueryable<Country> q){
+            return q;
+        }
+
+        private IQueryable<Country> SetOrderBy(IQueryable<Country> q, OrderBy ob) {
+            if ( ob == null ) {
+                return q;
+            }
+
+            if ( !ob.desc ) {
+                if ( ob.by == "name" ) {
+                    q = q.OrderBy(s => s.Name);
+                } 
+                else {
+                    q = q.OrderBy(s => s.Id);
+                }
+            }
+            else {
+                if ( ob.by == "name" ) {
+                    q = q.OrderByDescending(s => s.Name);
+                } 
+                else {
+                    q = q.OrderByDescending(s => s.Id);
+                }
+            }
+            return q;
+        }
+
+        private IQueryable<Country> SetFilter(IQueryable<Country> q, CountryFilter f) {
+            if ( f == null ) {
+                return q;
+            }
+            if (!String.IsNullOrEmpty(f.searchString))
+            {
+                q = q.Where(s => s.Name.Contains(f.searchString));
+            }
+            return q;
+        }
+    
+        private IQueryable<Country> SetPaginator(IQueryable<Country> q, Paginator p) {
+            if ( p == null ) {
+                return q;
+            }
+            return q.Skip(p.offset).Take(p.limit);
+        }
     }
 }

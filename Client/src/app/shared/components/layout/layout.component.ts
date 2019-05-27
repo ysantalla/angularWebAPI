@@ -225,6 +225,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
           heading: 'Administrar Agencias',
           link: '/admin/agency/',
           icon: 'location_city'
+        },
+        {
+          heading: 'Administrar Cuartos',
+          link: '/admin/rooms',
+          icon: 'location_city'
         }
       ]
     };

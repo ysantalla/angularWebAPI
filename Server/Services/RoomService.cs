@@ -89,34 +89,23 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Room = await context.Rooms.Where(x => x.Id == id).SingleAsync();
-
-                Room.IsDeleted = true;
+                var o = await context.Rooms.Where(x => x.Id == id).SingleAsync();
+                context.Remove(o);
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> RestoreAsync(long id)
-        {
-            Func<Task> action = async () =>
-            {
-                var Room = await context.Rooms.Where(x => x.Id == id).SingleAsync();
-
-                Room.IsDeleted = false;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
 
         public async Task<ProcessResult<List<Room>>> ListAsync(GetListViewModel<RoomFilter> getListModel)
         {
             IQueryable<Room> q = context.Rooms;
             q = SetIncludes(q);
-            q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, getListModel.filter);
+
+            var countItems = await q.CountAsync();
+
             q = SetPaginator(q, getListModel.paginator);
             q = SetOrderBy(q, getListModel.orderBy);
 
@@ -126,13 +115,12 @@ namespace Server.Services
                 return result;
             };
 
-            return await Process.RunAsync(action);
+            return await Process.RunAsync(action, countItems);
         }
 
         public async Task<ProcessResult<int>> CountAsync(RoomFilter filter)
         {
             IQueryable<Room> q = context.Rooms;
-            q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>

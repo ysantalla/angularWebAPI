@@ -15,8 +15,6 @@ namespace Server.Services.Interfaces
 
          Task<ProcessResult> DeleteAsync(long id);
 
-         Task<ProcessResult> RestoreAsync(long id);
-
          Task<ProcessResult<List<Currency>>> ListAsync(GetListViewModel<CurrencyFilter> listModel);
          
          Task<ProcessResult<int>> CountAsync(CurrencyFilter filter);

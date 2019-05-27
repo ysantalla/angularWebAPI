@@ -83,22 +83,8 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Currency = await context.Currencies.Where(x => x.Id == id).SingleAsync();
-
-                Currency.IsDeleted = true;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
-
-        public async Task<ProcessResult> RestoreAsync(long id)
-        {
-            Func<Task> action = async () =>
-            {
-                var Currency = await context.Currencies.Where(x => x.Id == id).SingleAsync();
-
-                Currency.IsDeleted = false;
+                var o = await context.Currencies.Where(x => x.Id == id).SingleAsync();
+                context.Remove(o);
                 await context.SaveChangesAsync();
             };
 
@@ -109,8 +95,10 @@ namespace Server.Services
         {
             IQueryable<Currency> q = context.Currencies;
             q = SetIncludes(q);
-            q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, getListModel.filter);
+
+            var countItems = await q.CountAsync();
+
             q = SetPaginator(q, getListModel.paginator);
             q = SetOrderBy(q, getListModel.orderBy);
 
@@ -120,13 +108,12 @@ namespace Server.Services
                 return result;
             };
 
-            return await Process.RunAsync(action);
+            return await Process.RunAsync(action, countItems);
         }
 
         public async Task<ProcessResult<int>> CountAsync(CurrencyFilter filter)
         {
             IQueryable<Currency> q = context.Currencies;
-            q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>

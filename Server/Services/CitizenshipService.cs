@@ -81,34 +81,23 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
-                var Citizenship = await context.Citizenships.Where(x => x.Id == id).SingleAsync();
-
-                Citizenship.IsDeleted = true;
+                var o = await context.Citizenships.Where(x => x.Id == id).SingleAsync();
+                context.Citizenships.Remove(o);
                 await context.SaveChangesAsync();
             };
 
             return await Process.RunAsync(action);
         }
 
-        public async Task<ProcessResult> RestoreAsync(long id)
-        {
-            Func<Task> action = async () =>
-            {
-                var Citizenship = await context.Citizenships.Where(x => x.Id == id).SingleAsync();
-
-                Citizenship.IsDeleted = false;
-                await context.SaveChangesAsync();
-            };
-
-            return await Process.RunAsync(action);
-        }
 
         public async Task<ProcessResult<List<Citizenship>>> ListAsync(GetListViewModel<CitizenshipFilter> getListModel)
         {
             IQueryable<Citizenship> q = context.Citizenships;
             q = SetIncludes(q);
-            q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, getListModel.filter);
+
+            var countItems = await q.CountAsync();
+
             q = SetPaginator(q, getListModel.paginator);
             q = SetOrderBy(q, getListModel.orderBy);
 
@@ -118,13 +107,12 @@ namespace Server.Services
                 return result;
             };
 
-            return await Process.RunAsync(action);
+            return await Process.RunAsync(action, countItems);
         }
 
         public async Task<ProcessResult<int>> CountAsync(CitizenshipFilter filter)
         {
             IQueryable<Citizenship> q = context.Citizenships;
-            q = q.Where(s => !s.IsDeleted);
             q = SetFilter(q, filter);
 
             Func<Task<int>> action = async () =>

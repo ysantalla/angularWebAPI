@@ -13,7 +13,5 @@ namespace Server.Models
         public DateTime ModifyDate { get; set; }
         // HVersion gets +1 whenever a record is updated
         public int HVersion { get; set; }
-        // Mark a record as deleted instead of deletion
-        public bool IsDeleted { get; set; }
     }
 }
