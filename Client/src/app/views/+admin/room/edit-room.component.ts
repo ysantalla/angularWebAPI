@@ -74,15 +74,10 @@ import { environment as env } from '@env/environment';
                   />
                 </mat-form-field>
 
-                <mat-form-field class="full-width">
-                  <input
-                    matInput
-                    required
-                    type="checkbox"
-                    placeholder="Disponible"
-                    formControlName="enable"
-                  />
-                </mat-form-field>
+                <mat-checkbox class="full-width"
+                  formControlName="enable">
+                  Disponible
+                </mat-checkbox>
 
               </mat-card-content>
               <mat-card-actions>
@@ -129,9 +124,9 @@ export class EditRoomComponent implements OnInit {
     this.editForm = this.formBuilder.group({
       number: ['', Validators.required],
       description: ['', Validators.required],
-      capacity: [1, Validators.required, Validators.min(1)],
+      capacity: [1, [Validators.required, Validators.min(1)]],
       enable: [false, Validators.required],
-      bedCont: [1, Validators.required, Validators.min(1)]
+      bedCont: [1,[Validators.required, Validators.min(1)]]
     });
 
     this.itemId = this.activatedRoute.snapshot.params['id'];
@@ -165,7 +160,7 @@ export class EditRoomComponent implements OnInit {
         description: this.editForm.value.description,
         capacity: this.editForm.value.capacity,
         enable: this.editForm.value.enable,
-        bedCont: this.editForm.value.enable,
+        bedCont: this.editForm.value.bedCont,
       }).subscribe((data: any) => {
 
         if (data.succeeded) {

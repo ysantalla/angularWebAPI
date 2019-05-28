@@ -12,6 +12,6 @@ export class CountryResolver implements Resolve<any[]> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<any[]> {
     return this.httpClient.get<any>(
-      `${env.serverUrl}/countries?filter.SearchString=&paginator.offset=0&paginator.limit=2&orderBy.by=name&orderBy.desc=false`);
+      `${env.serverUrl}/countries?filter.SearchString=&paginator.offset=0&paginator.limit=20&orderBy.by=name&orderBy.desc=false`);
   }
 }

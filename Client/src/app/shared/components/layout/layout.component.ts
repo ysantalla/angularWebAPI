@@ -221,6 +221,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           link: '/admin/country/',
           icon: 'public'
         },
+
+        {
+          heading: 'Administrar Ciudadanía',
+          link: '/admin/citizenhips/',
+          icon: 'public'
+        },
         {
           heading: 'Administrar Agencias',
           link: '/admin/agency/',
@@ -229,7 +235,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         {
           heading: 'Administrar Cuartos',
           link: '/admin/rooms',
-          icon: 'location_city'
+          icon: 'hotel'
         }
       ]
     };

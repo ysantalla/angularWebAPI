@@ -97,7 +97,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
       <div class="table-container">
 
         <table mat-table [dataSource]="data" class="table"
-              matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
+              matSort matSortActive="number" matSortDisableClear matSortDirection="asc">
 
           <!-- Id Column -->
           <ng-container matColumnDef="id">
@@ -144,7 +144,12 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <th mat-header-cell *matHeaderCellDef>
               Disponible
             </th>
-            <td mat-cell *matCellDef="let row">{{row.enable}}</td>
+            <td mat-cell *matCellDef="let row">
+              <mat-chip-list>
+                <mat-chip *ngIf="row.enable" color="primary">Habilitado</mat-chip>
+                <mat-chip *ngIf="!row.enable" color="warn">Deshabilitado</mat-chip>
+              </mat-chip-list>
+            </td>
           </ng-container>
 
           <!-- BedCont Column -->
@@ -183,7 +188,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
         </table>
       </div>
 
-      <mat-paginator [length]="resultsLength" [pageSize]="1"></mat-paginator>
+      <mat-paginator [length]="resultsLength" [pageSize]="20"></mat-paginator>
     </div>
 
   `,

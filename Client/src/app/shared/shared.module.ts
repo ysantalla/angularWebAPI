@@ -24,7 +24,8 @@ import {
   MatPaginatorModule,
   MatDialogModule,
   MatChipsModule,
-  MatSelectModule
+  MatSelectModule,
+  MatCheckboxModule
 
 } from '@angular/material';
 
@@ -88,6 +89,7 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
     MatPaginatorModule,
     MatSortModule,
     MatSelectModule,
+    MatCheckboxModule,
     MatDialogModule,
     MatChipsModule,
 

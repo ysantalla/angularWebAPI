@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmComponent } from '@app/shared/components/confirm/confirm.component';
 
 @Component({
-  selector: 'app-list-country',
+  selector: 'app-list-citizenhips',
   template: `
     <div *ngIf="loading">
       <mat-progress-bar color="warn"></mat-progress-bar>
@@ -31,7 +31,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               <input
                 matInput
                 type="text"
-                placeholder="Filtrado por nombre de país"
+                placeholder="Filtrado por nombre de ciudadanía"
                 formControlName="name"
               />
             </mat-form-field>
@@ -71,11 +71,11 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             mat-raised-button
             color="primary"
             type="button"
-            routerLink="/admin/country/add"
+            routerLink="/admin/citizenhips/add"
             aria-label="add"
           >
             <mat-icon>add</mat-icon>
-            <span> País </span>
+            <span> Ciudadanía </span>
           </button>
 
 
@@ -121,7 +121,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               Editar
             </th>
             <td mat-cell *matCellDef="let row">
-              <a mat-button color="accent" [routerLink]="['/admin','country', 'edit', row.id]">
+              <a mat-button color="accent" [routerLink]="['/admin','citizenhips', 'edit', row.id]">
                 <mat-icon>edit</mat-icon>
               </a>
             </td>
@@ -209,7 +209,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
     }
   `]
 })
-export class ListCountryComponent implements OnInit, OnDestroy {
+export class ListCitizenhipsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'edit', 'delete'];
 
   data: any[] = [];
@@ -263,7 +263,7 @@ export class ListCountryComponent implements OnInit, OnDestroy {
               .set('orderBy.by', this.sort.active)
               .set('orderBy.desc', (this.sort.direction === 'desc').toString());
 
-              return this.httpClient.get<any>(`${env.serverUrl}/countries`, {params: params});
+              return this.httpClient.get<any>(`${env.serverUrl}/citizenhips`, {params: params});
             }
           }),
           map(data => {
@@ -300,7 +300,7 @@ export class ListCountryComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       data: {
-        message: `¿Está seguro que desea eliminar el país "${
+        message: `¿Está seguro que desea eliminar el ciudadanía "${
           item.name
         }"?`
       }
@@ -309,7 +309,7 @@ export class ListCountryComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loading = true;
-        this.httpClient.delete(`${env.serverUrl}/countries/${item.id}`).subscribe(data => {
+        this.httpClient.delete(`${env.serverUrl}/citizenhips/${item.id}`).subscribe(data => {
 
           this.load$.next('');
 
