@@ -74,15 +74,15 @@ import { environment as env } from '@env/environment';
                   />
                 </mat-form-field>
 
-                <mat-form-field class="full-width">
-                  <input
-                    matInput
-                    required
-                    type="checkbox"
-                    placeholder="Disponible"
-                    formControlName="enable"
-                  />
-                </mat-form-field>
+                <div class="full-width">
+                  <mat-checkbox
+                        type="checkbox"
+                        placeholder="Disponible"
+                        formControlName="enable"
+                        [labelPosition]="'before'"
+                      > Disponible
+                  </mat-checkbox>
+                </div>
 
               </mat-card-content>
               <mat-card-actions>
@@ -129,9 +129,9 @@ export class EditRoomComponent implements OnInit {
     this.editForm = this.formBuilder.group({
       number: ['', Validators.required],
       description: ['', Validators.required],
-      capacity: [1, Validators.required, Validators.min(1)],
-      enable: [false, Validators.required],
-      bedCont: [1, Validators.required, Validators.min(1)]
+      capacity: [false, [Validators.required, Validators.min(1)]],
+      bedCont: [1, [Validators.required, Validators.min(1)]],
+      enable: [false],
     });
 
     this.itemId = this.activatedRoute.snapshot.params['id'];
@@ -169,7 +169,7 @@ export class EditRoomComponent implements OnInit {
       }).subscribe((data: any) => {
 
         if (data.succeeded) {
-          this.snackBar.open(`Cuarto con número ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});
+          this.snackBar.open(`Cuarto con número ${this.editForm.value.number} ha sido editado`, 'X', {duration: 3000});
           this.router.navigate(['admin', 'rooms']);
         }
         this.loading = false;
