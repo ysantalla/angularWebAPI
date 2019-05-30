@@ -15,16 +15,12 @@ import { ListRoomComponent } from './room/list-room.component';
 import { AddRoomComponent } from './room/add-room.component';
 import { EditRoomComponent } from './room/edit-room.component';
 
-import { EditRoleComponent } from './role/edit-role.component';
-import { AddRoleComponent } from './role/add-role.component';
-import { ListRoleComponent } from './role/list-role.component';
 import { EditUserComponent } from './user/edit-user.component';
 import { AddUserComponent } from './user/add-user.component';
 import { ListUserComponent } from './user/list-user.component';
 import { UserAddRoleComponent } from './user/user-add-role.component';
 
 import { CountryResolver } from './resolvers/country.resolver';
-import { RoleResolver } from './resolvers/role.resolver';
 import { UserResolver } from './resolvers/user.resolver';
 import { AddAgencyComponent } from './agency/add-agency.component';
 import { EditAgencyComponent } from './agency/edit-agency.component';
@@ -44,6 +40,10 @@ import {
   Paginator,
   ReservationFilter
 } from '@app/core/models/core';
+import { EditCurrencyComponent } from './currency/edit-currency.component';
+import { AddCurrencyComponent } from './currency/add-currency.component';
+import { ListCurrencyComponent } from './currency/list-currency.component';
+import { CurrencyResolver } from './resolvers/currency.resolver';
 
 const routes: Routes = [
   {
@@ -68,24 +68,24 @@ const routes: Routes = [
     canActivate: [RoleGuard],
   },
   {
-    path: 'role',
-    component: ListRoleComponent,
-    data: {title: 'Listado de Roles', expectedRole: ['Admin']},
+    path: 'currency',
+    component: ListCurrencyComponent,
+    data: {title: 'Listado de Monedas', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
     resolve: {
-      data: RoleResolver
+      data: CurrencyResolver
     }
   },
   {
-    path: 'role/add',
-    component: AddRoleComponent,
-    data: {title: 'Adicionar Rol', expectedRole: ['Admin']},
+    path: 'currency/add',
+    component: AddCurrencyComponent,
+    data: {title: 'Adicionar Moneda', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
   },
   {
-    path: 'role/edit/:id',
-    component: EditRoleComponent,
-    data: {title: 'Editar Rol', expectedRole: ['Admin']},
+    path: 'currency/edit/:id',
+    component: EditCurrencyComponent,
+    data: {title: 'Editar Moneda', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
   },
   {
@@ -215,23 +215,23 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [
-    ListRoleComponent, AddRoleComponent, EditRoleComponent,
     ListUserComponent, AddUserComponent, EditUserComponent, UserAddRoleComponent,
     ListAgencyComponent, AddAgencyComponent, EditAgencyComponent,
     ListCountryComponent, AddCountryComponent, EditCountryComponent,
+    ListCurrencyComponent, AddCurrencyComponent, EditCurrencyComponent,
     ListCitizenhipsComponent, AddCitizenhipsComponent, EditCitizenhipsComponent,
     ListRoomComponent, AddRoomComponent, EditRoomComponent,
     ListReservationComponent, AddReservationComponent
   ],
   providers: [
-    RoleResolver,
     UserResolver,
     AgencyResolver,
     CountryResolver,
     RoomResolver,
     CitizenhipsResolver,
     ReservationListResolver,
-    AddReservationResolver
+    AddReservationResolver,
+    CurrencyResolver
   ]
 })
 export class AdminModule { }

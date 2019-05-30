@@ -9,6 +9,7 @@ export class Room {
               public number: string,
               public capacity: number,
               public bedCont: number,
+              public VPN: number,
               public enable: boolean) {}
 }
 
@@ -16,6 +17,7 @@ export class RoomFilter extends BaseFilter {
   constructor(public searchString: string,
               public capacity: number,
               public bedCont: number,
+              public VPN: number,
               p: Paginator,
               ob: OrderBy) {
     super(p, ob);
@@ -32,6 +34,9 @@ export class RoomFilter extends BaseFilter {
     }
     if ( !isNullOrUndefined(this.bedCont) ) {
       hp = hp.set('filter.bedCont', this.bedCont.toString());
+    }
+    if ( !isNullOrUndefined(this.VPN) ) {
+      hp = hp.set('filter.VPN', this.VPN.toString());
     }
     return hp;
   }

@@ -162,12 +162,10 @@ namespace Server
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<ICitizenshipService, CitizenshipService>();
             services.AddTransient<ICurrencyService, CurrencyService>();
-            services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IGuestService, GuestService>();
             services.AddTransient<IAgencyService, AgencyService>();
             services.AddTransient<IInvoiceService, InvoiceService>();
-            services.AddTransient<IPackageService, PackageService>();
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IReservationService, ReservationService>();
 

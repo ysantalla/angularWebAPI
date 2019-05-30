@@ -14,5 +14,7 @@ namespace Server.Models
 
         public int BedCont { get; set; }
 
+        public double VPN { get; set; }
+
     }
 }

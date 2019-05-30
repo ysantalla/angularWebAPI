@@ -7,10 +7,11 @@ import { environment as env } from '@env/environment';
 
 
 @Injectable()
-export class RoleResolver implements Resolve<any[]> {
+export class CurrencyResolver implements Resolve<any[]> {
   constructor(private httpClient: HttpClient) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any[]> {
-    return this.httpClient.get<any>(`${env.serverUrl}/Role/List?searchString=&pageIndex=1&pageSize=20&sortOrder=name_asc`);
+    return this.httpClient.get<any>(
+      `${env.serverUrl}/currencies?filter.SearchString=&paginator.offset=0&paginator.limit=20&orderBy.by=name&orderBy.desc=false`);
   }
 }

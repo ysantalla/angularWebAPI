@@ -126,7 +126,6 @@ namespace Server.Services
             q = q.Include( s => s.Guest );
             q = q.Include( s => s.Agency );
             q = q.Include( s => s.Room );
-            q = q.Include( s => s.Package );
             return q;
         }
 
@@ -178,9 +177,6 @@ namespace Server.Services
             }
             if (f.roomID > 0) {
                 q = q.Where( s => s.RoomID == f.roomID );
-            }
-            if (f.packageID > 0) {
-                q = q.Where( s => s.PackageID == f.packageID );
             }
             return q;
         }

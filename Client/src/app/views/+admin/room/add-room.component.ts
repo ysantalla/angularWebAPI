@@ -74,6 +74,17 @@ import { environment as env } from '@env/environment';
                 />
               </mat-form-field>
 
+              <mat-form-field class="full-width">
+                <input
+                  matInput
+                  required
+                  min="1"
+                  type="number"
+                  placeholder="Valor por noche"
+                  formControlName="VPN"
+                />
+              </mat-form-field>
+
               <mat-checkbox class="full-width"
                 formControlName="enable">
                 Disponible
@@ -124,7 +135,8 @@ export class AddRoomComponent implements OnInit {
       description: ['', Validators.required],
       enable: [false, Validators.required],
       capacity: [1, [Validators.required, Validators.min(1)]],
-      bedCont: [1, [Validators.required, Validators.min(1)]]
+      bedCont: [1, [Validators.required, Validators.min(1)]],
+      VPN: [1, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -139,7 +151,8 @@ export class AddRoomComponent implements OnInit {
         description: this.createForm.value.description,
         enable: this.createForm.value.enable,
         capacity: this.createForm.value.capacity,
-        bedCont: this.createForm.value.bedCont
+        bedCont: this.createForm.value.bedCont,
+        VPN: this.createForm.value.VPN
       }).subscribe((data: any) => {
 
         if (data.succeeded) {

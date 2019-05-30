@@ -74,6 +74,17 @@ import { environment as env } from '@env/environment';
                   />
                 </mat-form-field>
 
+                <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    required
+                    min="1"
+                    type="number"
+                    placeholder="Valor por noche"
+                    formControlName="VPN"
+                  />
+                </mat-form-field>
+
                 <div class="full-width">
                   <mat-checkbox
                         type="checkbox"
@@ -131,6 +142,7 @@ export class EditRoomComponent implements OnInit {
       description: ['', Validators.required],
       capacity: [false, [Validators.required, Validators.min(1)]],
       bedCont: [1, [Validators.required, Validators.min(1)]],
+      VPN: [1, [Validators.required, Validators.min(1)]],
       enable: [false],
     });
 
@@ -146,7 +158,8 @@ export class EditRoomComponent implements OnInit {
         description: data.value.description,
         capacity: data.value.capacity,
         enable: data.value.enable,
-        bedCont: data.value.bedCont
+        bedCont: data.value.bedCont,
+        VPN: data.value.vpn
       });
 
     });
@@ -166,6 +179,7 @@ export class EditRoomComponent implements OnInit {
         capacity: this.editForm.value.capacity,
         enable: this.editForm.value.enable,
         bedCont: this.editForm.value.bedCont,
+        VPN: this.editForm.value.VPN,
       }).subscribe((data: any) => {
 
         if (data.succeeded) {

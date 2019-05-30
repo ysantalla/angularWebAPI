@@ -160,6 +160,14 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <td mat-cell *matCellDef="let row">{{row.bedCont}}</td>
           </ng-container>
 
+          <!-- BedCont Column -->
+          <ng-container matColumnDef="VPN">
+            <th mat-header-cell *matHeaderCellDef>
+              Valor x Noche
+            </th>
+            <td mat-cell *matCellDef="let row">{{row.vpn}}</td>
+          </ng-container>
+
           <!-- edit Column -->
           <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>
@@ -255,7 +263,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
   `]
 })
 export class ListRoomComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'number', 'description', 'capacity', 'bedcont', 'enable', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'number', 'description', 'capacity', 'bedcont', 'VPN', 'enable', 'edit', 'delete'];
 
   data: any[] = [];
 

@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmComponent } from '@app/shared/components/confirm/confirm.component';
 
 @Component({
-  selector: 'app-list-role',
+  selector: 'app-list-currency',
   template: `
     <div *ngIf="loading">
       <mat-progress-bar color="warn"></mat-progress-bar>
@@ -31,7 +31,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               <input
                 matInput
                 type="text"
-                placeholder="Filtrado por nombre de rol"
+                placeholder="Filtrado por nombre de moneda"
                 formControlName="name"
               />
             </mat-form-field>
@@ -71,11 +71,11 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             mat-raised-button
             color="primary"
             type="button"
-            routerLink="/admin/role/add"
+            routerLink="/admin/currency/add"
             aria-label="add"
           >
             <mat-icon>add</mat-icon>
-            <span> Rol </span>
+            <span> Moneda </span>
           </button>
 
 
@@ -115,6 +115,13 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <td mat-cell *matCellDef="let row">{{row.name}}</td>
           </ng-container>
 
+          <!-- Simbol Column -->
+          <ng-container matColumnDef="symbol">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+              Símbolo
+            </th>
+            <td mat-cell *matCellDef="let row">{{row.symbol}}</td>
+          </ng-container>
 
           <!-- edit Column -->
           <ng-container matColumnDef="edit">
@@ -122,7 +129,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               Editar
             </th>
             <td mat-cell *matCellDef="let row">
-              <a mat-button color="accent" [routerLink]="['/admin','role', 'edit', row.id]">
+              <a mat-button color="accent" [routerLink]="['/admin','currency', 'edit', row.id]">
                 <mat-icon>edit</mat-icon>
               </a>
             </td>
@@ -210,8 +217,8 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
     }
   `]
 })
-export class ListRoleComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'name', 'edit', 'delete'];
+export class ListCurrencyComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['id', 'name', 'symbol', 'edit', 'delete'];
 
   data: any[] = [];
 
@@ -258,12 +265,13 @@ export class ListRoleComponent implements OnInit, OnDestroy {
 
             } else {
               const params = new HttpParams()
-                .set('searchString', this.searchForm.value.name || '')
-                .set('pageIndex', (this.paginator.pageIndex + 1).toString())
-                .set('pageSize', this.paginator.pageSize.toString())
-                .set('sortOrder', `${this.sort.active}_${this.sort.direction}`);
+              .set('filter.searchString', this.searchForm.value.name || '')
+              .set('paginator.offset', (this.paginator.pageIndex * this.paginator.pageSize).toString())
+              .set('paginator.limit', this.paginator.pageSize.toString())
+              .set('orderBy.by', this.sort.active)
+              .set('orderBy.desc', (this.sort.direction === 'desc').toString());
 
-              return this.httpClient.get<any>(`${env.serverUrl}/Role/List`, {params: params});
+              return this.httpClient.get<any>(`${env.serverUrl}/currencies`, {params: params});
             }
           }),
           map(data => {
@@ -300,7 +308,7 @@ export class ListRoleComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       data: {
-        message: `¿Está seguro que desea eliminar el rol "${
+        message: `¿Está seguro que desea eliminar la moneda "${
           item.name
         }"?`
       }
@@ -309,7 +317,7 @@ export class ListRoleComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loading = true;
-        this.httpClient.delete(`${env.serverUrl}/Role/RemoveOrRestore?id=${item.id}`).subscribe(data => {
+        this.httpClient.delete(`${env.serverUrl}/currencies/${item.id}`).subscribe(data => {
 
           this.load$.next('');
 

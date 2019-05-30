@@ -17,6 +17,5 @@ namespace Server.Models
         public long RoomID { get; set; }
         public Room Room {get; set;}
         public long PackageID { get; set; }
-        public Package Package {get; set;}
     }
 }

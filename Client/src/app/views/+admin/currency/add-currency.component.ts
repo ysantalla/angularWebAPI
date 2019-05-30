@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { environment as env } from '@env/environment';
 
 
 @Component({
-  selector: 'app-edit-role',
+  selector: 'app-add-currency',
   template: `
     <div class="container">
       <div class="loading">
@@ -20,11 +20,11 @@ import { environment as env } from '@env/environment';
       <div class="item">
 
         <div class="mat-elevation-z8">
-          <form [formGroup]="editForm" #f="ngForm" (ngSubmit)="onEdit()" class="form">
+          <form [formGroup]="createForm" #f="ngForm" (ngSubmit)="onCreateCurrency()" class="form">
             <mat-card class="mes-card">
               <mat-toolbar>
                 <mat-card-header>
-                  <h1 class="mat-h1">Editar País</h1>
+                  <h1 class="mat-h1">Crear Moneda</h1>
                 </mat-card-header>
               </mat-toolbar>
 
@@ -37,21 +37,31 @@ import { environment as env } from '@env/environment';
                     matInput
                     required
                     type="text"
-                    placeholder="Nombre del rol"
+                    placeholder="Nombre de moneda"
                     formControlName="name"
+                  />
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                  <input
+                    matInput
+                    required
+                    type="text"
+                    placeholder="Símbolo de la moneda"
+                    formControlName="symbol"
                   />
                 </mat-form-field>
 
               </mat-card-content>
               <mat-card-actions>
-                <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid" aria-label="edit">
-                  <mat-icon>mode_edit</mat-icon>
-                  <span>Rol</span>
+                <button mat-raised-button color="primary" type="submit" [disabled]="!createForm.valid" aria-label="create">
+                  <mat-icon>add</mat-icon>
+                  <span>Moneda</span>
                 </button>
 
-                <button mat-raised-button color="accent" routerLink="/admin/role" routerLinkActive type="button" aria-label="list">
+                <button mat-raised-button color="accent" routerLink="/admin/currency" routerLinkActive type="button" aria-label="list">
                   <mat-icon>list</mat-icon>
-                  <span>Listado de roles</span>
+                  <span>Listado de monedas</span>
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -67,61 +77,46 @@ import { environment as env } from '@env/environment';
     }
   `]
 })
-export class EditRoleComponent implements OnInit {
+export class AddCurrencyComponent implements OnInit {
 
-  editForm: FormGroup;
+  createForm: FormGroup;
   loading = false;
-
-  itemId: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private snackBar: MatSnackBar,
     private httpClient: HttpClient
   ) { }
 
   ngOnInit() {
 
-    this.editForm = this.formBuilder.group({
-      name: ['', Validators.required]
+    this.createForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      symbol: ['', Validators.required]
     });
-
-    this.itemId = this.activatedRoute.snapshot.params['id'];
-
-    this.loading = true;
-    const params = new HttpParams()
-      .set('Id', this.itemId);
-
-    this.httpClient.get(`${env.serverUrl}/Role/GetById`, {params: params}).subscribe((data: any) => {
-      this.loading = false;
-
-      this.editForm.patchValue({
-        name: data.name
-      });
-
-    });
-
   }
 
-  onEdit(): void {
+  onCreateCurrency(): void {
     this.loading = true;
 
-    if (this.editForm.valid) {
-      this.editForm.disable();
+    if (this.createForm.valid) {
+      this.createForm.disable();
 
-      this.httpClient.patch(`${env.serverUrl}/Role/Update`, {name: this.editForm.value.name, Id: this.itemId}).subscribe((data: any) => {
+      this.httpClient.post(`${env.serverUrl}/currencies`, {
+        name: this.createForm.value.name,
+        symbol: this.createForm.value.symbol,
+      }).subscribe((data: any) => {
 
         if (data.succeeded) {
-          this.snackBar.open(`Rol con nombre ${this.editForm.value.name} ha sido editado`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'role']);
+          this.snackBar.open(`Moneda con nombre ${this.createForm.value.name} ha sido creado`, 'X', {duration: 3000});
+          this.router.navigate(['admin', 'currency']);
         }
         this.loading = false;
 
       }, (error: HttpErrorResponse) => {
         this.loading = false;
-        this.editForm.enable();
+        this.createForm.enable();
         this.snackBar.open(error.error, 'X', {duration: 3000});
       });
 
