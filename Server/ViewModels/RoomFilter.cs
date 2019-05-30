@@ -9,5 +9,7 @@ namespace Server.ViewModels
         public int Capacity { get; set; }
 
         public int BedCont { get; set; }
+
+        public double VPN { get; set; }
     }
 }

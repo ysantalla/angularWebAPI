@@ -212,11 +212,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
           icon: 'person'
         },
         {
-          heading: 'Administrar Roles',
-          link: '/admin/role/',
-          icon: 'supervisor_account'
-        },
-        {
           heading: 'Administrar Países',
           link: '/admin/country/',
           icon: 'public'
@@ -240,7 +235,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
         {
           heading: 'Administrar Reservaciones',
           link: '/admin/reservations',
-          icon: 'hotel'
+          icon: 'room_service'
+        },
+        {
+          heading: 'Administrar de Monedas',
+          link: '/admin/currency',
+          icon: 'monetization_on'
         }
       ]
     };

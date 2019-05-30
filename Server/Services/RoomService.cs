@@ -40,6 +40,7 @@ namespace Server.Services
                 Room.Capacity = model.Capacity;
                 Room.Enable = model.Enable;
                 Room.BedCont = model.BedCont;
+                Room.VPN = model.VPN;
 
                 await context.SaveChangesAsync();
             };
@@ -78,6 +79,7 @@ namespace Server.Services
                 Room.Capacity = model.Capacity;
                 Room.Enable = model.Enable;
                 Room.BedCont = model.BedCont;
+                Room.VPN = model.VPN;
 
                 await context.SaveChangesAsync();
             };
@@ -150,6 +152,9 @@ namespace Server.Services
                 } 
                 else if ( ob.by == "bedCont" ) {
                     q = q.OrderBy(s => s.BedCont);
+                }
+                else if ( ob.by == "VPN" ) {
+                    q = q.OrderBy(s => s.VPN);
                 } 
                 else {
                     q = q.OrderBy(s => s.Id);
@@ -164,6 +169,9 @@ namespace Server.Services
                 } 
                 else if ( ob.by == "bedCont" ) {
                     q = q.OrderByDescending(s => s.BedCont);
+                }
+                else if ( ob.by == "VPN" ) {
+                    q = q.OrderByDescending(s => s.VPN);
                 } 
                 else {
                     q = q.OrderByDescending(s => s.Id);
@@ -188,6 +196,9 @@ namespace Server.Services
             }
             if (f.BedCont > 0) {
                 q = q.Where( s => s.BedCont == f.BedCont );
+            }
+            if (f.VPN > 0) {
+                q = q.Where( s => s.VPN == f.VPN );
             }
             return q;
         }

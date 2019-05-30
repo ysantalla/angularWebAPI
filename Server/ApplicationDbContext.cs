@@ -23,7 +23,6 @@ namespace Server
 
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<Package> Packages { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Agency> Agencies { get; set; }
 

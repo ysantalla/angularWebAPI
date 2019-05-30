@@ -25,7 +25,7 @@ namespace Server.Services
             Func<Task> action = async () =>
             {
 
-                var CurrencyExist = await context.Currencies.Where(x => x.Name == model.Name || x.Symbol == model.Symbol).CountAsync();
+                var CurrencyExist = await context.Currencies.Where(x => x.Name == model.Name).CountAsync();
 
                 if (CurrencyExist > 0)
                 {
@@ -60,7 +60,7 @@ namespace Server.Services
 
             Func<Task> action = async () =>
             {
-                var CurrencyExist = await context.Currencies.Where(x => (x.Name == model.Name || x.Symbol == model.Symbol) && x.Id != model.Id).CountAsync();
+                var CurrencyExist = await context.Currencies.Where(x => (x.Name == model.Name) && x.Id != model.Id).CountAsync();
 
                 if (CurrencyExist > 0)
                 {

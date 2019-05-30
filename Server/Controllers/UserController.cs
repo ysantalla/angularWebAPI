@@ -17,13 +17,13 @@ namespace Server.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService _userService;
-        private readonly ILogger<RoleController> _logger;
+        private readonly ILogger<UserController> _logger;
 
         private readonly UserManager<ApplicationUser> _userManager;
         
         public UserController(UserManager<ApplicationUser> userManager,
                               IUserService userService,
-                              ILogger<RoleController> logger) 
+                              ILogger<UserController> logger) 
             : base(userManager)
         {
             this._userService = userService;
