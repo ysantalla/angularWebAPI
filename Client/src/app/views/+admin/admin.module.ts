@@ -201,7 +201,7 @@ const routes: Routes = [
     data: {title: 'Adicionar Reservación', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
     resolve: {
-      data: AddReservationResolver
+      resolverData: AddReservationResolver
     }
   }
 ];
