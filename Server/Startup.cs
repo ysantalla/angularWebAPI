@@ -128,13 +128,13 @@ namespace Server
             }
 
             app.UseAuthentication();
-            app.UseStaticFiles(new StaticFileOptions
+            /*app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "../Client", "dist", "browser")),
                     RequestPath = ""
                 });
-
+            */
 
 
             app.UseMvc(routes =>
