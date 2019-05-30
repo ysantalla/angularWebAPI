@@ -8,7 +8,8 @@ import { ReservationFilter, Paginator } from '@app/core/models/core';
 
 @Injectable()
 export class ReservationListResolver implements Resolve<any[]> {
-  constructor(private api: ApiReservationService) {}
+  constructor(private httpClient: HttpClient,
+              private api: ApiReservationService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
     return this.api.List(route.data.filter);

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { environment as env } from '@env/environment';
+import { Agency, Guest, Room } from '@app/core/models/core';
 
 
 @Component({
@@ -72,14 +73,29 @@ export class AddReservationComponent implements OnInit {
   createForm: FormGroup;
   loading = false;
 
+  agencies: Agency[] = [];
+  guests: Guest[] = [];
+  rooms: Room[] = [];
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private httpClient: HttpClient
   ) { }
 
   ngOnInit() {
+    const rd = this.route.snapshot.data.resolverData;
+    console.log('data = ', rd);
+
+    this.agencies = rd.agencies;
+    this.guests = rd.guests;
+    this.rooms = rd.rooms;
+
+    console.log('agencies = ', this.agencies);
+    console.log('guests = ', this.guests);
+    console.log('rooms = ', this.rooms);
 
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required]
@@ -87,29 +103,6 @@ export class AddReservationComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.loading = true;
-
-    if (this.createForm.valid) {
-      this.createForm.disable();
-
-      this.httpClient.post(`${env.serverUrl}/countries`, {
-        name: this.createForm.value.name
-      }).subscribe((data: any) => {
-
-        if (data.succeeded) {
-          this.snackBar.open(`La reservación ha sido creada`, 'X', {duration: 3000});
-          this.router.navigate(['admin', 'reservations']);
-        }
-        this.loading = false;
-
-      }, (error: HttpErrorResponse) => {
-        this.loading = false;
-        this.createForm.enable();
-        this.snackBar.open(error.error, 'X', {duration: 3000});
-      });
-
-    } else {
-      console.log('Form not valid');
-    }
+    console.log('onCreate');
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Observable, forkJoin, of as observableOf } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import {
   ApiAgencyService,
   ApiGuestService,
@@ -11,65 +11,29 @@ import {
 
 @Injectable()
 export class AddReservationResolver implements Resolve<any[]> {
-  $valueSubject = new BehaviorSubject<any>({});
-
-  $completedSubject = new BehaviorSubject<any>({});
 
   constructor(private apiAgency: ApiAgencyService,
               private apiGuest: ApiGuestService,
-              private apiRoom: ApiRoomService) {
-    this.$valueSubject.asObservable().subscribe(
-      (v) => {
-        if ( v.agencies && v.guests && v.rooms ) {
-          console.log('agencies && guests && rooms');
-          this.$completedSubject.next(v);
-        }
-      }
-    );
-  }
+              private apiRoom: ApiRoomService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    console.log('begin to load add-reservations data');
-
-    this.apiAgency.List().subscribe(
-      (agencies) => {
-        console.log('loaded agencies');
-
-        const value = this.$valueSubject.value;
-        value.agencies = agencies;
-        this.$valueSubject.next(value);
-      },
-      (e) => {
-        this.$completedSubject.next(e);
-      }
+    return forkJoin ([
+        this.apiAgency.List(),
+        this.apiGuest.List(),
+        this.apiRoom.List(),
+    ])
+    .pipe(
+        map(([agencies, guests, rooms]) => {
+          return {
+            agencies: agencies,
+            guests: guests,
+            rooms: rooms
+          };
+        }),
+        catchError((e) => {
+          console.log('error =', e);
+          return observableOf({});
+        })
     );
-
-    this.apiGuest.List().subscribe(
-      (guests) => {
-        console.log('loaded guests');
-
-        const value = this.$valueSubject.value;
-        value.guests = guests;
-        this.$valueSubject.next(value);
-      },
-      (e) => {
-        this.$completedSubject.next(e);
-      }
-    );
-
-    this.apiRoom.List().subscribe(
-      (rooms) => {
-        console.log('loaded rooms');
-
-        const value = this.$valueSubject.value;
-        value.rooms = rooms;
-        this.$valueSubject.next(value);
-      },
-      (e) => {
-        this.$completedSubject.next(e);
-      }
-    );
-
-    return this.$completedSubject.asObservable();
   }
 }
