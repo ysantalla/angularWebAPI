@@ -56,17 +56,6 @@ import { environment as env } from '@env/environment';
                 <input
                   matInput
                   required
-                  type="checkbox"
-                  placeholder="Disponible"
-                  formControlName="enable"
-                />
-              </mat-form-field>
-
-              <!--
-              <mat-form-field class="full-width">
-                <input
-                  matInput
-                  required
                   min="1"
                   type="number"
                   placeholder="Capacidad"
@@ -85,7 +74,11 @@ import { environment as env } from '@env/environment';
                 />
               </mat-form-field>
 
-              -->
+              <mat-checkbox class="full-width"
+                formControlName="enable">
+                Disponible
+              </mat-checkbox>
+
 
               </mat-card-content>
               <mat-card-actions>
@@ -130,8 +123,8 @@ export class AddRoomComponent implements OnInit {
       number: ['', Validators.required],
       description: ['', Validators.required],
       enable: [false, Validators.required],
-      /*capacity: [1, Validators.required, Validators.min(1)],
-      bedCont: [1, Validators.required, Validators.min(1)]*/
+      capacity: [1, [Validators.required, Validators.min(1)]],
+      bedCont: [1, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -145,9 +138,8 @@ export class AddRoomComponent implements OnInit {
         number: this.createForm.value.number,
         description: this.createForm.value.description,
         enable: this.createForm.value.enable,
-        /*
         capacity: this.createForm.value.capacity,
-        bedCont: this.createForm.value.enable,*/
+        bedCont: this.createForm.value.bedCont
       }).subscribe((data: any) => {
 
         if (data.succeeded) {

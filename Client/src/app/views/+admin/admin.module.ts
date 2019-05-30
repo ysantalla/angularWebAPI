@@ -1,3 +1,4 @@
+import { CitizenhipsResolver } from './resolvers/citizenhips.resolver';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
@@ -30,6 +31,9 @@ import { EditAgencyComponent } from './agency/edit-agency.component';
 import { ListAgencyComponent } from './agency/list-agency.component';
 import { AgencyResolver } from './resolvers/agency.resolver';
 import { RoomResolver } from './resolvers/room.resolver';
+import { EditCitizenhipsComponent } from './citizenhips/edit-citizenhips.component';
+import { AddCitizenhipsComponent } from './citizenhips/add-citizenhips.component';
+import { ListCitizenhipsComponent } from './citizenhips/list-citizenhips.component';
 
 const routes: Routes = [
   {
@@ -143,6 +147,28 @@ const routes: Routes = [
     data: {title: 'Editar Cuarto', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
   },
+
+  {
+    path: 'citizenhips',
+    component: ListCitizenhipsComponent,
+    data: {title: 'Listado de Ciudadanía', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+    resolve: {
+      data: CitizenhipsResolver
+    }
+  },
+  {
+    path: 'citizenhips/add',
+    component: AddCitizenhipsComponent,
+    data: {title: 'Adicionar Ciudadanía', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+  },
+  {
+    path: 'citizenhips/edit/:id',
+    component: EditCitizenhipsComponent,
+    data: {title: 'Editar Ciudadanía', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+  },
 ];
 
 @NgModule({
@@ -158,6 +184,7 @@ const routes: Routes = [
     ListUserComponent, AddUserComponent, EditUserComponent, UserAddRoleComponent,
     ListAgencyComponent, AddAgencyComponent, EditAgencyComponent,
     ListCountryComponent, AddCountryComponent, EditCountryComponent,
+    ListCitizenhipsComponent, AddCitizenhipsComponent, EditCitizenhipsComponent,
     ListRoomComponent, AddRoomComponent, EditRoomComponent
   ],
   providers: [
@@ -166,6 +193,7 @@ const routes: Routes = [
     AgencyResolver,
     CountryResolver,
     RoomResolver,
+    CitizenhipsResolver
   ]
 })
 export class AdminModule { }

@@ -7,11 +7,11 @@ import { environment as env } from '@env/environment';
 
 
 @Injectable()
-export class RoomResolver implements Resolve<any[]> {
+export class CitizenhipsResolver implements Resolve<any[]> {
   constructor(private httpClient: HttpClient) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any[]> {
     return this.httpClient.get<any>(
-      `${env.serverUrl}/rooms?filter.searchString=&paginator.offset=0&paginator.limit=20&orderBy.by=number&orderBy.desc=true`);
+      `${env.serverUrl}/citizenhips?filter.SearchString=&paginator.offset=0&paginator.limit=20&orderBy.by=name&orderBy.desc=false`);
   }
 }

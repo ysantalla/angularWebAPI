@@ -22,6 +22,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace Server
 {
@@ -126,7 +128,14 @@ namespace Server
             }
 
             app.UseAuthentication();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "../Client", "dist", "browser")),
+                    RequestPath = ""
+                });
+
+
 
             app.UseMvc(routes =>
             {

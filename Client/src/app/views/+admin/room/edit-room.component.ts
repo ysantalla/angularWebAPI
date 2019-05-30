@@ -165,7 +165,7 @@ export class EditRoomComponent implements OnInit {
         description: this.editForm.value.description,
         capacity: this.editForm.value.capacity,
         enable: this.editForm.value.enable,
-        bedCont: this.editForm.value.enable,
+        bedCont: this.editForm.value.bedCont,
       }).subscribe((data: any) => {
 
         if (data.succeeded) {
