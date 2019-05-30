@@ -6,14 +6,21 @@ import {
 import { CommonModule } from '@angular/common';
 
 import {
-  HttpClientModule, HTTP_INTERCEPTORS,
+  HttpClientModule, HTTP_INTERCEPTORS, HttpClient,
 } from '@angular/common/http';
 
-import { AuthGuard } from '@app/core/guards/auth.guard';
-import { RoleGuard } from '@app/core/guards/role.guard';
+import { AuthGuard, RoleGuard } from '@app/core/guards/core';
 import { ApiInterceptor } from './interceptors/api.interceptor';
-import { LocalStorageService } from './services/local-storage.service';
-import { AuthService } from './services/auth.service';
+import {
+  LocalStorageService,
+  AuthService,
+  ApiCrudService,
+  ApiReservationService,
+  ApiAgencyService,
+  ApiGuestService,
+  ApiRoomService,
+} from './services/core';
+import { Reservation, ReservationFilter } from './models/core';
 
 
 @NgModule({
@@ -30,7 +37,11 @@ import { AuthService } from './services/auth.service';
       provide: HTTP_INTERCEPTORS,
       useClass: ApiInterceptor,
       multi: true
-    }
+    },
+    ApiAgencyService,
+    ApiGuestService,
+    ApiReservationService,
+    ApiRoomService,
   ],
   declarations: []
 })

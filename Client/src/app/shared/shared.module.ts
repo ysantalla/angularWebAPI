@@ -25,7 +25,8 @@ import {
   MatDialogModule,
   MatChipsModule,
   MatSelectModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatAutocompleteModule
 
 } from '@angular/material';
 
@@ -35,6 +36,8 @@ import { SizePipe } from './pipes/size.pipe';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CustomMatPaginatorIntl } from './class/mat-paginator-intl';
 import { ConfirmComponent } from './components/confirm/confirm.component';
+import { GuestSelectorComponent } from './components/guest-selector/guest-selector.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -61,8 +64,11 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
+    MatAutocompleteModule,
 
-    RouterModule
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [
     LayoutModule,
@@ -92,12 +98,20 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
     MatCheckboxModule,
     MatDialogModule,
     MatChipsModule,
+    MatAutocompleteModule,
 
     LayoutComponent,
     SizePipe,
-    ConfirmComponent
+    ConfirmComponent,
+    GuestSelectorComponent
   ],
-  declarations: [LayoutComponent, NavMenuComponent, SizePipe, ConfirmComponent],
+  declarations: [
+    LayoutComponent,
+    NavMenuComponent,
+    SizePipe,
+    ConfirmComponent,
+    GuestSelectorComponent
+  ],
   providers: [
     {provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl}
   ],

@@ -58,7 +58,7 @@ import { GuestSelectorComponent } from '@app/shared/components/guest-selector/gu
             mat-raised-button
             color="primary"
             type="button"
-            routerLink="/admin/reservation/add"
+            routerLink="/admin/reservations/add"
             aria-label="add"
           >
             <mat-icon>add</mat-icon>

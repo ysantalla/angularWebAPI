@@ -34,6 +34,16 @@ import { RoomResolver } from './resolvers/room.resolver';
 import { EditCitizenhipsComponent } from './citizenhips/edit-citizenhips.component';
 import { AddCitizenhipsComponent } from './citizenhips/add-citizenhips.component';
 import { ListCitizenhipsComponent } from './citizenhips/list-citizenhips.component';
+import {
+  ListReservationComponent,
+  ReservationListResolver,
+  AddReservationComponent,
+  AddReservationResolver
+} from './reservation/core';
+import {
+  Paginator,
+  ReservationFilter
+} from '@app/core/models/core';
 
 const routes: Routes = [
   {
@@ -169,6 +179,31 @@ const routes: Routes = [
     data: {title: 'Editar Ciudadanía', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
   },
+  {
+    path: 'reservations',
+    component: ListReservationComponent,
+    data: {
+      title: 'Listado de Reservaciones', expectedRole: ['Admin'],
+      filter: new ReservationFilter(
+        '',
+        new Paginator(0, 20),
+        null
+      )
+    },
+    canActivate: [RoleGuard],
+    resolve: {
+      data: ReservationListResolver
+    }
+  },
+  {
+    path: 'reservations/add',
+    component: AddReservationComponent,
+    data: {title: 'Adicionar Reservación', expectedRole: ['Admin']},
+    canActivate: [RoleGuard],
+    resolve: {
+      data: AddReservationResolver
+    }
+  }
 ];
 
 @NgModule({
@@ -185,7 +220,8 @@ const routes: Routes = [
     ListAgencyComponent, AddAgencyComponent, EditAgencyComponent,
     ListCountryComponent, AddCountryComponent, EditCountryComponent,
     ListCitizenhipsComponent, AddCitizenhipsComponent, EditCitizenhipsComponent,
-    ListRoomComponent, AddRoomComponent, EditRoomComponent
+    ListRoomComponent, AddRoomComponent, EditRoomComponent,
+    ListReservationComponent, AddReservationComponent
   ],
   providers: [
     RoleResolver,
@@ -193,7 +229,9 @@ const routes: Routes = [
     AgencyResolver,
     CountryResolver,
     RoomResolver,
-    CitizenhipsResolver
+    CitizenhipsResolver,
+    ReservationListResolver,
+    AddReservationResolver
   ]
 })
 export class AdminModule { }
