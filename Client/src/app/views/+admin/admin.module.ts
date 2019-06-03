@@ -186,6 +186,7 @@ const routes: Routes = [
       title: 'Listado de Reservaciones', expectedRole: ['Admin'],
       filter: new ReservationFilter(
         '',
+        null, null, null, null,
         new Paginator(0, 20),
         null
       )

@@ -14,6 +14,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from '@app/core/core.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { AuthGuard } from '@app/core/guards/auth.guard';
+import { ServerTimeResolver } from './views/common/server-time.resolver';
 
 
 const routes: Routes = [
@@ -37,6 +38,11 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
+    path: 'reception',
+    loadChildren: './views/+reception/reception.module#ReceptionModule',
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'error',
     loadChildren: './views/+error/error.module#ErrorModule',
   },
@@ -47,7 +53,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -59,7 +65,10 @@ const routes: Routes = [
         preloadingStrategy: PreloadAllModules
       })
   ],
-  providers: [ { provide: LOCALE_ID, useValue: 'es-CU' } ],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'es-CU' },
+    ServerTimeResolver
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

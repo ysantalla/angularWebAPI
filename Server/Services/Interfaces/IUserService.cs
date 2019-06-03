@@ -9,7 +9,5 @@ namespace Server.Services.Interfaces
     {
          Task<ProcessResult<List<UserViewModel>>> GetListAsync(string sortOrder, string searchString, int pageIndex,  int pageSize);
          Task<ProcessResult<int>> CountAsync(string searchString);
-
-        
     }
 }

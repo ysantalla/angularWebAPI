@@ -33,7 +33,15 @@ import { Menu } from '@app/core/models/menu.model';
 
         <app-nav-menu [items]="managerMenu" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
 
-      </mat-sidenav>
+        <app-nav-menu [items]="reservations" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+
+        <app-nav-menu [items]="newReservation" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+
+        <app-nav-menu [items]="checkIn" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+
+        <app-nav-menu [items]="checkOut" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+
+        </mat-sidenav>
       <mat-sidenav-content>
         <mat-toolbar class="navbar" color="primary">
           <mat-toolbar-row>
@@ -76,7 +84,7 @@ import { Menu } from '@app/core/models/menu.model';
         </mat-toolbar>
 
         <div class="layout">
-          <div class="router">
+          <div class="router" style="background-color: white;">
             <div class="item" [@routerTransition]="o.isActivated && o.activatedRoute.routeConfig.path">
               <router-outlet #o="outlet"></router-outlet>
             </div>
@@ -179,6 +187,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   dashboard: Menu;
   adminMenu: Menu;
   managerMenu: Menu;
+  reservations: Menu;
+  checkIn: Menu;
+  checkOut: Menu;
+  newReservation: Menu;
 
   envName = env.envName;
   appName = env.appName;
@@ -202,6 +214,34 @@ export class LayoutComponent implements OnInit, OnDestroy {
       heading: 'Escritorio',
       icon: 'dashboard',
       link: '/dashboard',
+      pages: []
+    };
+
+    this.checkIn = {
+      heading: 'Check-In',
+      icon: 'room_service',
+      link: '/reception/check-in',
+      pages: []
+    };
+
+    this.checkOut = {
+      heading: 'Check-Out',
+      icon: 'room_service',
+      link: '/reception/check-out',
+      pages: []
+    };
+
+    this.newReservation = {
+      heading: 'Nueva Reservación',
+      icon: 'room_service',
+      link: '/reception/new-reservation',
+      pages: []
+    };
+
+    this.reservations = {
+      heading: 'Reservaciones',
+      icon: 'room_service',
+      link: '/reception/reservations',
       pages: []
     };
 

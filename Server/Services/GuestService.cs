@@ -29,7 +29,7 @@ namespace Server.Services
 
                 if (GuestExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe un invitado con esa identificación");
+                    throw new InvalidOperationException("Ya existe un huésped con esa identificación");
                 }
 
                 var GuestEntity = await GetOrCreateEntityAsync(context.Guests, x => x.Id == model.Id);
@@ -38,7 +38,6 @@ namespace Server.Services
                 Guest.Name = model.Name;
                 Guest.Phone = model.Phone;
                 Guest.Identification = model.Identification;
-                Guest.Birthday = model.Birthday;
                 Guest.CountryID = model.CountryID;
                 Guest.CitizenshipID = model.CitizenshipID;
 
@@ -51,7 +50,8 @@ namespace Server.Services
         {
             Func<Task<Guest>> action = async () =>
             {
-                var result = await context.Guests.Where(x => x.Id == id).FirstAsync();
+                var result = await context.Guests
+                                    .Where(x => x.Id == id).FirstAsync();
                 return result;
             };
 
@@ -68,7 +68,7 @@ namespace Server.Services
 
                 if (GuestExist > 0)
                 {
-                    throw new InvalidOperationException("Ya existe un invitado con esa identificación");
+                    throw new InvalidOperationException("Ya existe un huésped con esa identificación");
                 }
 
                 var GuestEntity = await GetOrCreateEntityAsync(context.Guests, x => x.Id == model.Id);
@@ -77,7 +77,6 @@ namespace Server.Services
                 Guest.Name = model.Name;
                 Guest.Phone = model.Phone;
                 Guest.Identification = model.Identification;
-                Guest.Birthday = model.Birthday;
                 Guest.CountryID = model.CountryID;
                 Guest.CitizenshipID = model.CitizenshipID;
 

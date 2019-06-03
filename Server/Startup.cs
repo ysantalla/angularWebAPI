@@ -81,7 +81,9 @@ namespace Server
                 });
             
                 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
 
             ConfigureCustomServices(services);
 
@@ -90,7 +92,7 @@ namespace Server
                 options.AddPolicy(EnabledCORS,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins("http://localhost:4201").AllowAnyHeader().AllowAnyMethod();
                     });
             });
 
@@ -128,13 +130,13 @@ namespace Server
             }
 
             app.UseAuthentication();
-            app.UseStaticFiles(new StaticFileOptions
+            /*app.UseStaticFiles(new StaticFileOptions
                 {
                     FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "../Client", "dist", "browser")),
                     RequestPath = ""
                 });
-
+            */
 
 
             app.UseMvc(routes =>

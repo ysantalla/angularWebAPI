@@ -1,0 +1,86 @@
+<section class="page-container">
+
+  <header class="page-header-container">
+    <mat-icon>room_service</mat-icon>
+    <div class="page-header-title">Nueva reservación</div>
+  </header>
+
+  <div class="page-body-container">
+
+    <mat-horizontal-stepper [linear]="true" #stepper>
+
+      <mat-step [completed]="selectedInitialDate && selectedRoom !== ''">
+        <div class="new-reservation-step1">
+            <ng-template matStepLabel>Fecha Inicial y Cuarto</ng-template>
+
+            <div class="new-reservation-step1-calendar-container">
+              <div class="inside-stepper-label">Seleccione la fecha inicial</div>
+              <mat-calendar [selected]="selectedInitialDate"
+                            (selectedChange)="onSelectInitialDate($event)">
+              </mat-calendar>
+            </div>
+
+            <div class="new-reservation-step1-rooms-container">
+              <div class="inside-stepper-label">Seleccione la habitación</div>
+              <div class="new-reservation-step1-rooms-table-container mat-elevation-z8">
+                  <table mat-table  [dataSource]="freeRoomsDataSource">
+                      <ng-container matColumnDef="number">
+                          <th mat-header-cell *matHeaderCellDef>Número</th>
+                          <td mat-cell *matCellDef="let x">
+                            {{x.room.number}}
+                          </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="capacity">
+                          <th mat-header-cell *matHeaderCellDef>Capacidad</th>
+                          <td mat-cell *matCellDef="let x">
+                            {{x.room.capacity}}
+                          </td>
+                        </ng-container>
+
+                      <ng-container matColumnDef="vpn">
+                          <th mat-header-cell *matHeaderCellDef>Valor por noche</th>
+                          <td mat-cell *matCellDef="let x">
+                            {{x.room.vpn}}
+                          </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="free-days">
+                          <th mat-header-cell *matHeaderCellDef>Días disponibles</th>
+                          <td mat-cell *matCellDef="let x">
+                            {{x.freeDays === 1000000 ? 'siempre' : x.freeDays}}
+                          </td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="freeRoomsDisplayedColumns; sticky: true"></tr>
+                      <tr mat-row *matRowDef="let row; columns: freeRoomsDisplayedColumns"
+                          [class.selected-row]="selectionFreeRooms.isSelected(row)"
+                          [class.unselected-row]="!selectionFreeRooms.isSelected(row)"
+                          [class.selectionable-row]="true"
+                          (click)="onSelectionFreeRoomsChange(row)">
+                      </tr>
+                  </table>
+
+                  <mat-paginator  class="sticky-paginator"
+                                  [length]="(freeRoomsDataSource.connectCount() | async)"
+                                  [pageSize]="20">
+                  </mat-paginator>
+              </div>
+            </div>
+        </div>
+      </mat-step>
+
+      <mat-step [completed]="false">
+          <ng-template matStepLabel>Huespedes</ng-template>
+          Step 2
+      </mat-step>
+
+      <mat-step [completed]="false">
+          <ng-template matStepLabel>Paso 3</ng-template>
+          Step 3
+      </mat-step>
+
+    </mat-horizontal-stepper>
+  </div>
+
+</section>

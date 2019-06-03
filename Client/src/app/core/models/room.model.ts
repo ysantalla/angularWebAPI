@@ -3,6 +3,8 @@ import { OrderBy } from './orderby.model';
 import { BaseFilter } from './base-filter';
 import { HttpParams } from '@angular/common/http';
 import { isNullOrUndefined } from 'util';
+import { IFilter } from '../services/core';
+import { ModelUtil } from './util';
 
 export class Room {
   constructor(public id: number,
@@ -38,6 +40,22 @@ export class RoomFilter extends BaseFilter {
     if ( !isNullOrUndefined(this.VPN) ) {
       hp = hp.set('filter.VPN', this.VPN.toString());
     }
+    return hp;
+  }
+}
+
+export class FreeRoom {
+  constructor(public room: Room,
+              public freeDays: number) {}
+}
+
+export class FreeRoomFilter implements IFilter {
+  util = new ModelUtil();
+
+  constructor(public initialDate: Date) {}
+
+  public SetHttpParams(hp: HttpParams): HttpParams {
+    hp = hp.set('initialDate', this.util.DateToString(this.initialDate));
     return hp;
   }
 }

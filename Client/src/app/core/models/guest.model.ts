@@ -6,17 +6,16 @@ import { isNullOrUndefined } from 'util';
 import { Country } from './country.model';
 import { Citizenship } from './citizenship.model';
 
-export class Guest {
-  constructor(public id: number,
-              public name: string,
-              public phone: string,
-              public identification: string,
-              public birthday: string,
-              public countryID: number,
-              public country: Country,
-              public citizenshipID: number,
-              public citizenship: Citizenship,
-              ) {}
+export interface Guest {
+    id: number;
+    name?: string;
+    phone?: string;
+    identification?: string;
+    birthday?: string;
+    countryID?: number;
+    country?: Country;
+    citizenshipID?: number;
+    citizenship?: Citizenship;
 }
 
 export class GuestFilter extends BaseFilter {
