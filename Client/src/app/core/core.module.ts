@@ -14,13 +14,12 @@ import { ApiInterceptor } from './interceptors/api.interceptor';
 import {
   LocalStorageService,
   AuthService,
-  ApiCrudService,
   ApiReservationService,
   ApiAgencyService,
   ApiGuestService,
   ApiRoomService,
+  ApiFreeRoomService,
 } from './services/core';
-import { Reservation, ReservationFilter } from './models/core';
 
 
 @NgModule({
@@ -42,6 +41,7 @@ import { Reservation, ReservationFilter } from './models/core';
     ApiGuestService,
     ApiReservationService,
     ApiRoomService,
+    ApiFreeRoomService,
   ],
   declarations: []
 })

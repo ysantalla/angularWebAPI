@@ -1,3 +1,4 @@
+using System;
 using Server.Models;
 using Server.Services.Interfaces;
 using Server.ViewModels;
@@ -20,7 +21,7 @@ namespace Server.Controllers
         
         public RoomController(UserManager<ApplicationUser> userManager, 
                               IRoomService RoomService,
-                              ILogger<RoomController> logger) 
+                              ILogger<RoomController> logger)
             : base(userManager)
         {
             this._RoomService = RoomService;
@@ -45,7 +46,7 @@ namespace Server.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Room), 200)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager")]
         [AllowAnonymous]
         public async Task<IActionResult> Retrieve([FromRoute] long id)
         {
@@ -94,7 +95,7 @@ namespace Server.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<Room>), 200)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager")]
         [AllowAnonymous]
         public async Task<IActionResult> List([FromQuery]GetListViewModel<RoomFilter> listModel)
         {
@@ -111,7 +112,7 @@ namespace Server.Controllers
         
         [HttpGet("count")]
         [ProducesResponseType(typeof(int), 200)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager")]
         [AllowAnonymous]
         public async Task<IActionResult> Count(RoomFilter filter)
         {
@@ -124,6 +125,22 @@ namespace Server.Controllers
             
             return Ok(result);
             
+        }
+
+        [HttpGet("free")]
+        [ProducesResponseType(typeof(List<FreeRoom>), 200)]
+        [Authorize(Roles = "Admin, Manager")]
+        [AllowAnonymous]
+        public async Task<IActionResult> List([FromQuery]DateTime initialDate)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _RoomService.ListFreeRoomsAsync(initialDate);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok(result);
         }
     }
 }

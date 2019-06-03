@@ -5,19 +5,7 @@ using System.Collections.Generic;
 
 namespace Server.Services.Interfaces
 {
-    public interface IGuestService
+    public interface IGuestService : ICrudService<Guest, GuestFilter>
     {
-         Task<ProcessResult> CreateAsync(Guest model);
-         
-         Task<ProcessResult<Guest>> RetrieveAsync(long id);
-
-         Task<ProcessResult> UpdateAsync(long id, Guest model);
-
-         Task<ProcessResult> DeleteAsync(long id);
-
-         Task<ProcessResult<List<Guest>>> ListAsync(GetListViewModel<GuestFilter> listModel);
-         
-         Task<ProcessResult<int>> CountAsync(GuestFilter filter);
-   
     }
 }

@@ -276,8 +276,6 @@ namespace server.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Birthday");
-
                     b.Property<long>("CitizenshipID");
 
                     b.Property<long>("CountryID");
@@ -307,6 +305,19 @@ namespace server.Migrations
                     b.ToTable("Guests");
                 });
 
+            modelBuilder.Entity("Server.Models.GuestReservation", b =>
+                {
+                    b.Property<long>("GuestId");
+
+                    b.Property<long>("ReservationId");
+
+                    b.HasKey("GuestId", "ReservationId");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("GuestReservations");
+                });
+
             modelBuilder.Entity("Server.Models.Invoice", b =>
                 {
                     b.Property<long>("Id")
@@ -328,7 +339,7 @@ namespace server.Migrations
 
                     b.Property<DateTime>("ModifyDate");
 
-                    b.Property<string>("Number");
+                    b.Property<double>("Number");
 
                     b.HasKey("Id");
 
@@ -346,6 +357,10 @@ namespace server.Migrations
 
                     b.Property<long>("AgencyID");
 
+                    b.Property<bool>("CheckIn");
+
+                    b.Property<bool>("CheckOut");
+
                     b.Property<DateTime>("CreateDate");
 
                     b.Property<long>("CreatorId");
@@ -353,8 +368,6 @@ namespace server.Migrations
                     b.Property<string>("Details");
 
                     b.Property<DateTime>("EndDate");
-
-                    b.Property<long>("GuestID");
 
                     b.Property<int>("HVersion");
 
@@ -364,15 +377,11 @@ namespace server.Migrations
 
                     b.Property<DateTime>("ModifyDate");
 
-                    b.Property<long>("PackageID");
-
                     b.Property<long>("RoomID");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AgencyID");
-
-                    b.HasIndex("GuestID");
 
                     b.HasIndex("RoomID");
 
@@ -393,8 +402,6 @@ namespace server.Migrations
                     b.Property<long>("CreatorId");
 
                     b.Property<string>("Description");
-
-                    b.Property<bool>("Enable");
 
                     b.Property<int>("HVersion");
 
@@ -469,6 +476,19 @@ namespace server.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Server.Models.GuestReservation", b =>
+                {
+                    b.HasOne("Server.Models.Guest", "Guest")
+                        .WithMany("GuestReservations")
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Reservation", "Reservation")
+                        .WithMany("GuestReservations")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Server.Models.Invoice", b =>
                 {
                     b.HasOne("Server.Models.Currency", "Currency")
@@ -487,11 +507,6 @@ namespace server.Migrations
                     b.HasOne("Server.Models.Agency", "Agency")
                         .WithMany()
                         .HasForeignKey("AgencyID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Server.Models.Guest", "Guest")
-                        .WithMany()
-                        .HasForeignKey("GuestID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Server.Models.Room", "Room")

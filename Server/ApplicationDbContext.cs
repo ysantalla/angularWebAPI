@@ -26,9 +26,12 @@ namespace Server
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Agency> Agencies { get; set; }
 
+        public DbSet<GuestReservation> GuestReservations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<GuestReservation>().HasKey(gr => new { gr.GuestId, gr.ReservationId });
         }
     }
 }

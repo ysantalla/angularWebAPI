@@ -5,19 +5,10 @@ using System.Collections.Generic;
 
 namespace Server.Services.Interfaces
 {
-    public interface IReservationService
+    public interface IReservationService : ICrudService<Reservation, ReservationFilter>
     {
-         Task<ProcessResult> CreateAsync(Reservation model);
-         
-         Task<ProcessResult<Reservation>> RetrieveAsync(long id);
+         Task<ProcessResult> AddGuestAsync(long reservationId, long guestId);
 
-         Task<ProcessResult> UpdateAsync(long id, Reservation model);
-
-         Task<ProcessResult> DeleteAsync(long id);
-
-         Task<ProcessResult<List<Reservation>>> ListAsync(GetListViewModel<ReservationFilter> listModel);
-         
-         Task<ProcessResult<int>> CountAsync(ReservationFilter filter);
-   
+         Task<ProcessResult> RemoveGuestAsync(long reservationId, long guestId);
     }
 }

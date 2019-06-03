@@ -24,17 +24,31 @@ namespace Server.Services
         {
             Func<Task> action = async () =>
             {
+                model.InitDate = new DateTime(model.InitDate.Year, model.InitDate.Month, model.InitDate.Day, 9, 0, 0);
+                model.EndDate = new DateTime(model.EndDate.Year, model.EndDate.Month, model.EndDate.Day, 8, 59, 59);
+
+                IQueryable<Reservation> q = context.Reservations;
+                q.Where(r => r.RoomID == model.RoomID && !(r.EndDate.CompareTo(model.InitDate) < 0 || model.EndDate.CompareTo(r.InitDate) < 0));
+                int cnt = await q.CountAsync();
+                if (cnt > 0)
+                {
+                    throw new InvalidOperationException("Existe un conflicto con otra reservación");
+                }
+
+                if ( model.EndDate < model.InitDate ) {
+                    throw new InvalidOperationException("La fecha de terminación no puede ser antes de la fecha de inicio");
+                }
 
                 var ReservationEntity = await GetOrCreateEntityAsync(context.Reservations, x => x.Id == model.Id);
                 var Reservation = ReservationEntity.result;
 
-                Reservation.GuestID = model.GuestID;
                 Reservation.Details = model.Details;
                 Reservation.InitDate = model.InitDate;
                 Reservation.EndDate = model.EndDate;
                 Reservation.AgencyID = model.AgencyID;
                 Reservation.RoomID = model.RoomID;
-                Reservation.PackageID = model.PackageID;
+                Reservation.CheckIn = model.CheckIn;
+                Reservation.CheckOut = model.CheckOut;
                 
                 await context.SaveChangesAsync();
             };
@@ -45,7 +59,9 @@ namespace Server.Services
         {
             Func<Task<Reservation>> action = async () =>
             {
-                var result = await context.Reservations.Where(x => x.Id == id).FirstAsync();
+                IQueryable<Reservation> q = context.Reservations;
+                q = SetIncludes(q);
+                var result = await q.Where(x => x.Id == id).FirstAsync();
                 return result;
             };
 
@@ -61,13 +77,13 @@ namespace Server.Services
                 var ReservationEntity = await GetOrCreateEntityAsync(context.Reservations, x => x.Id == model.Id);
                 var Reservation = ReservationEntity.result;
 
-                Reservation.GuestID = model.GuestID;
                 Reservation.Details = model.Details;
                 Reservation.InitDate = model.InitDate;
                 Reservation.EndDate = model.EndDate;
                 Reservation.AgencyID = model.AgencyID;
                 Reservation.RoomID = model.RoomID;
-                Reservation.PackageID = model.PackageID;
+                Reservation.CheckIn = model.CheckIn;
+                Reservation.CheckOut = model.CheckOut;
 
                 await context.SaveChangesAsync();
             };
@@ -122,10 +138,41 @@ namespace Server.Services
             return await Process.RunAsync(action);
         }
 
+        public async Task<ProcessResult> AddGuestAsync(long reservationId, long guestId) {
+            Func<Task> action = async () =>
+            {
+                var GuestReservationEntity = await GetOrCreateEntityAsync(
+                        context.GuestReservations,
+                        x => x.GuestId == guestId && x.ReservationId == reservationId
+                    );
+                var GuestReservation = GuestReservationEntity.result;
+
+                GuestReservation.GuestId = guestId;
+                GuestReservation.ReservationId = reservationId;
+                
+                await context.SaveChangesAsync();
+            };
+            return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult> RemoveGuestAsync(long reservationId, long guestId) {
+            Func<Task> action = async () =>
+            {
+                var o = await context.GuestReservations
+                        .Where(x => x.GuestId == guestId && x.ReservationId == reservationId)
+                        .SingleAsync();
+                context.Remove(o);
+                await context.SaveChangesAsync();
+            };
+
+            return await Process.RunAsync(action);
+        }
+
         private IQueryable<Reservation> SetIncludes(IQueryable<Reservation> q){
-            q = q.Include( s => s.Guest );
             q = q.Include( s => s.Agency );
             q = q.Include( s => s.Room );
+            q = q.Include( s => s.GuestReservations )
+                    .ThenInclude( gr => gr.Guest );
             return q;
         }
 
@@ -169,14 +216,27 @@ namespace Server.Services
                     s.Details.Contains(f.searchString)
                 );
             }
-            if (f.guestID > 0) {
-                q = q.Where( s => s.GuestID == f.guestID );
-            }
             if (f.agencyID > 0) {
                 q = q.Where( s => s.AgencyID == f.agencyID );
             }
             if (f.roomID > 0) {
                 q = q.Where( s => s.RoomID == f.roomID );
+            }
+            if ( f.checkInDate != DateTime.MinValue ) {
+                DateTime tmp = new DateTime(f.checkInDate.Year, f.checkInDate.Month, f.checkInDate.Day, 9, 0, 0);
+                q = q.Where( s => s.InitDate == tmp );
+            }
+            if ( f.checkOutDate != DateTime.MinValue ) {
+                DateTime tmp = new DateTime(f.checkOutDate.Year, f.checkOutDate.Month, f.checkOutDate.Day, 8, 59, 59);
+                q = q.Where( s => s.EndDate == tmp );
+            }
+            if ( f.checkInState != 0 ) {
+                bool tmp = (f.checkInState == 1 ? false : true);
+                q = q.Where( s => s.CheckIn == tmp );
+            }
+            if ( f.checkOutState != 0 ) {
+                bool tmp = (f.checkOutState == 1 ? false : true);
+                q = q.Where( s => s.CheckOut == tmp );
             }
             return q;
         }

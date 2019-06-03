@@ -154,10 +154,6 @@ namespace Server.Services
             if ( f == null ) {
                 return q;
             }
-            if (!String.IsNullOrEmpty(f.searchString))
-            {
-                q = q.Where(s => s.Number.Contains(f.searchString));
-            }
             if (f.guestID > 0) {
                 q = q.Where( s => s.GuestID == f.guestID );
             }

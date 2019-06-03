@@ -39,7 +39,6 @@ namespace Server.Controllers
             var result = await _ReservationService.CreateAsync(model);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
-            
             return Ok(result);
         }
 
@@ -124,6 +123,38 @@ namespace Server.Controllers
             
             return Ok(result);
             
+        }
+
+        [HttpPut("{id}/guests/{guestId}")]
+        [ProducesResponseType(typeof(int), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddGuest([FromRoute]long id, [FromRoute]long guestId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _ReservationService.AddGuestAsync(id, guestId);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}/guests/{guestId}")]
+        [ProducesResponseType(typeof(int), 200)]
+        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RemoveGuest([FromRoute]long id, [FromRoute]long guestId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);            
+
+            var result = await _ReservationService.RemoveGuestAsync(id, guestId);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            
+            return Ok(result);
         }
     }
 }

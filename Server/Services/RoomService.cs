@@ -38,7 +38,6 @@ namespace Server.Services
                 Room.Number = model.Number;
                 Room.Description = model.Description;
                 Room.Capacity = model.Capacity;
-                Room.Enable = model.Enable;
                 Room.BedCont = model.BedCont;
                 Room.VPN = model.VPN;
 
@@ -77,7 +76,6 @@ namespace Server.Services
                 Room.Number = model.Number;
                 Room.Description = model.Description;
                 Room.Capacity = model.Capacity;
-                Room.Enable = model.Enable;
                 Room.BedCont = model.BedCont;
                 Room.VPN = model.VPN;
 
@@ -132,6 +130,46 @@ namespace Server.Services
             };
 
             return await Process.RunAsync(action);
+        }
+
+        public async Task<ProcessResult<List<FreeRoom>>> ListFreeRoomsAsync(DateTime initialDate) {
+            initialDate = new DateTime(
+                initialDate.Year, initialDate.Month, initialDate.Day, 9, 0, 0
+            );
+            
+            
+            IQueryable<Room> q = context.Rooms;
+            List<Room> rooms = await q.OrderByDescending(o => o.Capacity).ToListAsync();
+
+            List<FreeRoom> frooms = new List<FreeRoom>();
+
+            for ( int i = 0; i < rooms.Count; i++ ) {
+                Room room = rooms[i];
+
+                var cnt = await context.Reservations.Where(
+                    o => o.RoomID == room.Id && initialDate < o.EndDate
+                ).CountAsync();
+
+                if ( cnt == 0 ) {
+                    frooms.Add( new FreeRoom(room, 1000000) );
+                }
+                else if ( cnt > 0 ) {
+                    Reservation r = await context.Reservations.Where(
+                        o => o.InitDate > initialDate || o.EndDate > initialDate
+                    ).FirstAsync();
+                
+                    if ( r.InitDate > initialDate ) {
+                        frooms.Add(new FreeRoom( room, r.InitDate.Subtract(initialDate).Days ));
+                    }
+                }
+            }
+
+            Func<Task<List<FreeRoom>>> action = async () =>
+            {
+                return frooms;
+            };
+
+            return await Process.RunAsync(action, frooms.Count);
         }
 
         private IQueryable<Room> SetIncludes(IQueryable<Room> q){

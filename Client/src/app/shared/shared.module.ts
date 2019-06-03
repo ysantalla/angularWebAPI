@@ -26,7 +26,11 @@ import {
   MatChipsModule,
   MatSelectModule,
   MatCheckboxModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatDividerModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatStepperModule,
 
 } from '@angular/material';
 
@@ -65,6 +69,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSortModule,
     MatDialogModule,
     MatAutocompleteModule,
+    MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatStepperModule,
 
     RouterModule,
     FormsModule,
@@ -99,6 +107,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatDialogModule,
     MatChipsModule,
     MatAutocompleteModule,
+    MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatStepperModule,
 
     LayoutComponent,
     SizePipe,

@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/theming';
-@import '~angular-calendar/css/angular-calendar.css';
+// @import '~angular-calendar/css/angular-calendar.css';
 
 @include mat-core();
 
@@ -152,3 +152,105 @@ div.container > div.loading, div.loading {
 /* Rules for using icons as white on a dark background.*/
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+
+.flex-columns { display: flex; flex-direction: column; }
+.flex-row { display: flex; flex-flow: row nowrap; }
+.flex-row-wrap { display: flex; flex-flow: row wrap; }
+
+.mat-table {
+  width: 100%;
+}
+
+.sticky-paginator {
+  bottom: 0px;
+  position: sticky;
+  z-index: 100;
+  border-top: 1px solid #e0e0e0;
+}
+
+.selectionable-row {
+  cursor: pointer;
+}
+.selected-row {
+  background-color: #d1d1d1;
+}
+.unselected-row:hover {
+  background-color: #f5f5f5;
+}
+
+/**********************************************************************************
+********************** Reception Module styles ************************************
+***********************************************************************************/
+.page-container {
+  padding: 20px 25px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.page-header-container {
+  display: flex;
+  flex-flow: row nowrap;
+  font-weight: 700;
+  font-size: 22px;
+  color: mat-color($primary);
+  align-items: center;
+
+  padding: 15px;
+
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+.page-header-title { margin-left: 15px; }
+
+.page-body-container {
+  display: flex;
+  flex-flow: column;
+
+  padding: 15px;
+}
+
+.check-layout-container,
+.new-reservation-step1 {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: center;
+  justify-content: center;
+}
+
+.check-calendar-container,
+.new-reservation-step1-calendar-container {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.check-reservations-container,
+.new-reservation-step1-rooms-container {
+  flex-grow: 1;
+  min-width: 400px;
+
+  padding-left: 20px;
+
+  display: flex;
+  flex-direction: column;
+}
+.check-reservations-container {
+  margin-top: 32px;
+}
+
+.check-table-container,
+.new-reservation-step1-rooms-table-container {
+  max-height: 450px;
+  overflow: auto;
+}
+
+.new-reservation-step1-rooms-table-container {
+  margin-top: 32px;
+}
+
+.inside-stepper-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, .7);
+}
