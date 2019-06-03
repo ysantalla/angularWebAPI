@@ -211,7 +211,7 @@ div.container > div.loading, div.loading {
 }
 
 .check-layout-container,
-.new-reservation-step1 {
+.new-reservation-step {
   display: flex;
   flex-flow: row wrap;
   align-content: center;
@@ -219,7 +219,7 @@ div.container > div.loading, div.loading {
 }
 
 .check-calendar-container,
-.new-reservation-step1-calendar-container {
+.new-reservation-step-calendar-container {
   width: 300px;
   display: flex;
   flex-direction: column;
@@ -254,3 +254,4 @@ div.container > div.loading, div.loading {
   font-weight: 500;
   color: rgba(0, 0, 0, .7);
 }
+

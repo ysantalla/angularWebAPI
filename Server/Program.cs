@@ -53,6 +53,7 @@ namespace Server
                     logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
                 .UseNLog()
+                // .UseUrls("http://localhost:5000/")
                 .Build();
     }
 }

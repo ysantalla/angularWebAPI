@@ -9,11 +9,11 @@
 
     <mat-horizontal-stepper [linear]="true" #stepper>
 
-      <mat-step [completed]="selectedInitialDate && selectedRoom !== ''">
-        <div class="new-reservation-step1">
-            <ng-template matStepLabel>Fecha Inicial y Cuarto</ng-template>
-
-            <div class="new-reservation-step1-calendar-container">
+      <!-- STEP 1 -->
+      <mat-step [completed]="(selectedInitialDate && (selectedRoom !== ''))">
+        <ng-template matStepLabel>Fecha Inicial y Cuarto</ng-template>
+        <div class="new-reservation-step">
+            <div class="new-reservation-step-calendar-container">
               <div class="inside-stepper-label">Seleccione la fecha inicial</div>
               <mat-calendar [selected]="selectedInitialDate"
                             (selectedChange)="onSelectInitialDate($event)">
@@ -70,14 +70,44 @@
         </div>
       </mat-step>
 
+      <!-- STEP 2 -->
       <mat-step [completed]="false">
-          <ng-template matStepLabel>Huespedes</ng-template>
-          Step 2
+          <ng-template matStepLabel>Fecha Final, Detalles y Agencia</ng-template>
+          <div class="new-reservation-step">
+
+              <div class="new-reservation-step-calendar-container">
+                <div class="inside-stepper-label">Seleccione la fecha final</div>
+                <mat-calendar [selected]="selectedFinalDate"
+                              [minDate]="minValidFinalDate"
+                              [maxDate]="maxValidFinalDate"
+                              [startAt]="selectedFinalDate"
+                              (selectedChange)="onSelectFinalDate($event)">
+                </mat-calendar>
+              </div>
+
+              <div class="flex-columns" style="flex-grow: 1; margin-left: 20px;">
+                <div class="new-reservation-agency-selector-container">
+                  <div class="inside-stepper-label">Seleccione la Agencia</div>
+                  <div  class="agency-select-container"
+                        style="margin-top: 32px; border-bottom: 1px solid rgba(0,0,0,.42);">
+                    <mat-select value="0">
+                      <mat-option value="0">Ninguna</mat-option>
+                      <mat-option *ngFor="let agency of agencies" [value]="agency.id">
+                        {{agency.name}}
+                      </mat-option>
+                    </mat-select>
+                  </div>
+                </div>
+              </div>
+          </div>
       </mat-step>
 
+      <!-- STEP 3 -->
       <mat-step [completed]="false">
           <ng-template matStepLabel>Paso 3</ng-template>
-          Step 3
+          <div class="new-reservation-step3">
+            Step3
+          </div>
       </mat-step>
 
     </mat-horizontal-stepper>
