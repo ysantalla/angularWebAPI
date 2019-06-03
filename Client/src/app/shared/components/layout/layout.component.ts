@@ -31,6 +31,8 @@ import { Menu } from '@app/core/models/menu.model';
 
         <app-nav-menu [items]="adminMenu" *ngIf="isAdmin$.asObservable() | async"></app-nav-menu>
 
+        <app-nav-menu [items]="managerMenu" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
+
       </mat-sidenav>
       <mat-sidenav-content>
         <mat-toolbar class="navbar" color="primary">
@@ -176,6 +178,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   dashboard: Menu;
   adminMenu: Menu;
+  managerMenu: Menu;
 
   envName = env.envName;
   appName = env.appName;
@@ -220,7 +223,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         {
           heading: 'Administrar Ciudadanía',
           link: '/admin/citizenhips/',
-          icon: 'public'
+          icon: 'assistant_photo'
         },
         {
           heading: 'Administrar Agencias',
@@ -233,14 +236,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
           icon: 'hotel'
         },
         {
+          heading: 'Administrar Monedas',
+          link: '/admin/currency',
+          icon: 'monetization_on'
+        }
+      ]
+    };
+    this.managerMenu = {
+      heading: 'Recepcionista',
+      icon: 'local_activity',
+      pages: [
+        {
           heading: 'Administrar Reservaciones',
           link: '/admin/reservations',
           icon: 'room_service'
-        },
-        {
-          heading: 'Administrar de Monedas',
-          link: '/admin/currency',
-          icon: 'monetization_on'
         }
       ]
     };

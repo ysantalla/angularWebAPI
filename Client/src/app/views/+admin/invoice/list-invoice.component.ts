@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmComponent } from '@app/shared/components/confirm/confirm.component';
 
 @Component({
-  selector: 'app-list-room',
+  selector: 'app-list-country',
   template: `
     <div *ngIf="loading">
       <mat-progress-bar color="warn"></mat-progress-bar>
@@ -31,7 +31,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               <input
                 matInput
                 type="text"
-                placeholder="Filtrado por número de cuarto"
+                placeholder="Filtrado por nombre de país"
                 formControlName="name"
               />
             </mat-form-field>
@@ -71,11 +71,11 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             mat-raised-button
             color="primary"
             type="button"
-            routerLink="/admin/room/add"
+            routerLink="/admin/country/add"
             aria-label="add"
           >
             <mat-icon>add</mat-icon>
-            <span> Cuarto </span>
+            <span> País </span>
           </button>
 
 
@@ -97,7 +97,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
       <div class="table-container">
 
         <table mat-table [dataSource]="data" class="table"
-              matSort matSortActive="number" matSortDisableClear matSortDirection="asc">
+              matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
 
           <!-- Id Column -->
           <ng-container matColumnDef="id">
@@ -107,58 +107,12 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <td mat-cell *matCellDef="let row">{{row.id}}</td>
           </ng-container>
 
-          <!-- Id Column -->
-          <ng-container matColumnDef="number">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              Número
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+              Nombre
             </th>
-            <td mat-cell *matCellDef="let row">{{row.number}}</td>
-          </ng-container>
-
-
-          <!-- Description Column -->
-          <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              Descripción
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.description}}</td>
-          </ng-container>
-
-          <!-- Capacity Column -->
-          <ng-container matColumnDef="capacity">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              Capacidad
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.capacity}}</td>
-          </ng-container>
-
-          <!-- Enable Column -->
-          <ng-container matColumnDef="enable" >
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              Disponible
-            </th>
-            <td mat-cell *matCellDef="let row">
-              <mat-chip-list>
-                <mat-chip *ngIf="row.enable" color="primary">Habilitado</mat-chip>
-                <mat-chip *ngIf="!row.enable" color="warn">Deshabilitado</mat-chip>
-              </mat-chip-list>
-            </td>
-          </ng-container>
-
-          <!-- BedCont Column -->
-          <ng-container matColumnDef="bedcont">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              Camas
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.bedCont}}</td>
-          </ng-container>
-
-          <!-- BedCont Column -->
-          <ng-container matColumnDef="VPN">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              Valor x Noche
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.vpn}}</td>
+            <td mat-cell *matCellDef="let row">{{row.name}}</td>
           </ng-container>
 
           <!-- edit Column -->
@@ -167,7 +121,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               Editar
             </th>
             <td mat-cell *matCellDef="let row">
-              <a mat-button color="accent" [routerLink]="['/admin','room', 'edit', row.id]">
+              <a mat-button color="accent" [routerLink]="['/admin','country', 'edit', row.id]">
                 <mat-icon>edit</mat-icon>
               </a>
             </td>
@@ -255,8 +209,8 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
     }
   `]
 })
-export class ListRoomComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'number', 'description', 'capacity', 'bedcont', 'VPN', 'enable', 'edit', 'delete'];
+export class ListCountryComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['id', 'name', 'edit', 'delete'];
 
   data: any[] = [];
 
@@ -303,13 +257,13 @@ export class ListRoomComponent implements OnInit, OnDestroy {
 
             } else {
               const params = new HttpParams()
-                .set('filter.searchString', this.searchForm.value.name || '')
-                .set('paginator.offset', (this.paginator.pageIndex * this.paginator.pageSize).toString())
-                .set('paginator.limit', this.paginator.pageSize.toString())
-                .set('orderBy.by', this.sort.active)
-                .set('orderBy.desc', (this.sort.direction === 'desc').toString());
+              .set('filter.searchString', this.searchForm.value.name || '')
+              .set('paginator.offset', (this.paginator.pageIndex * this.paginator.pageSize).toString())
+              .set('paginator.limit', this.paginator.pageSize.toString())
+              .set('orderBy.by', this.sort.active)
+              .set('orderBy.desc', (this.sort.direction === 'desc').toString());
 
-              return this.httpClient.get<any>(`${env.serverUrl}/rooms`, {params: params});
+              return this.httpClient.get<any>(`${env.serverUrl}/countries`, {params: params});
             }
           }),
           map(data => {
@@ -346,8 +300,8 @@ export class ListRoomComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       data: {
-        message: `¿Está seguro que desea eliminar el cuarto "${
-          item.number
+        message: `¿Está seguro que desea eliminar el país "${
+          item.name
         }"?`
       }
     });
@@ -355,7 +309,7 @@ export class ListRoomComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loading = true;
-        this.httpClient.delete(`${env.serverUrl}/rooms/${item.id}`).subscribe(data => {
+        this.httpClient.delete(`${env.serverUrl}/countries/${item.id}`).subscribe(data => {
 
           this.load$.next('');
 
