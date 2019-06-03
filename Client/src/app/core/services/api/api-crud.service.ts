@@ -2,13 +2,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { isNullOrUndefined } from 'util';
 import { map, catchError } from 'rxjs/operators';
-import { ApiListService, ListAndCount, IFilter } from './api-list.service';
+import { IApiListService, ListAndCount, IFilter, ApiListService } from './api-list.service';
 import { ApiBaseService } from './api-base.service';
 
 export class ApiCrudService<T extends ObjectWithID, TF extends IFilter>
-                extends ApiBaseService implements ApiListService<T, TF> {
+                extends ApiBaseService implements IApiListService<T, TF> {
+  private apiList: ApiListService<T, TF>;
+
   constructor(http: HttpClient) {
     super(http);
+    this.apiList = new ApiListService<T, TF>(this.http);
   }
 
   public Create(o: T): Observable<any> {
@@ -28,18 +31,8 @@ export class ApiCrudService<T extends ObjectWithID, TF extends IFilter>
   }
 
   public List(f?: TF): Observable<ListAndCount<T>> {
-    let hp = new HttpParams();
-    if (!isNullOrUndefined(f)) {
-      hp = f.SetHttpParams(hp);
-    }
-    return this.http.get<any>(this.url, {params: hp})
-    .pipe(
-      map( res => {
-        this.he(res);
-        return { list: res.value, cnt: res.countItems };
-      }),
-      catchError( (e) => this.he(e) ),
-    );
+    this.apiList.SetURL(this.url);
+    return this.apiList.List(f);
   }
 
   public Count(f: TF): Observable<number> {

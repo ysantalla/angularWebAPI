@@ -1,7 +1,7 @@
 import {CollectionViewer, DataSource} from '@angular/cdk/collections';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { ApiListService } from '../services/core';
-import { ObjectWithID, IFilter } from '../services/api/core';
+import { IApiListService } from '../services/core';
+import { IFilter } from '../services/api/core';
 
 export class CustomDataSource<T, TF extends IFilter> implements DataSource<T> {
     private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -10,7 +10,7 @@ export class CustomDataSource<T, TF extends IFilter> implements DataSource<T> {
     private collectionSubject = new BehaviorSubject<T[]>([]);
     private countSubject = new BehaviorSubject<number>(0);
 
-    constructor(private api: ApiListService<T, TF>) {}
+    constructor(private api: IApiListService<T, TF>) {}
 
     setData(collection: T[], count: number): void {
       this.collectionSubject.next(collection);
