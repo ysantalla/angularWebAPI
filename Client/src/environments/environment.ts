@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  serverUrl: 'http://localhost:5000/api',
+  serverUrl: 'http://10.2.68.199:5000/api',
   envName: 'Development',
   appName: 'Hostal APP'
 };

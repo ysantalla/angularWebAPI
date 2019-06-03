@@ -139,19 +139,6 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <td mat-cell *matCellDef="let row">{{row.capacity}}</td>
           </ng-container>
 
-          <!-- Enable Column -->
-          <ng-container matColumnDef="enable">
-            <th mat-header-cell *matHeaderCellDef>
-              Disponible
-            </th>
-            <td mat-cell *matCellDef="let row">
-              <mat-chip-list>
-                <mat-chip *ngIf="row.enable" color="primary">Habilitado</mat-chip>
-                <mat-chip *ngIf="!row.enable" color="warn">Deshabilitado</mat-chip>
-              </mat-chip-list>
-            </td>
-          </ng-container>
-
           <!-- BedCont Column -->
           <ng-container matColumnDef="bedcont">
             <th mat-header-cell *matHeaderCellDef>
@@ -263,7 +250,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
   `]
 })
 export class ListRoomComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'number', 'description', 'capacity', 'bedcont', 'VPN', 'enable', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'number', 'description', 'capacity', 'bedcont', 'VPN', 'edit', 'delete'];
 
   data: any[] = [];
 
