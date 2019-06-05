@@ -85,15 +85,6 @@ import { environment as env } from '@env/environment';
                   />
                 </mat-form-field>
 
-                <div class="full-width">
-                  <mat-checkbox
-                        type="checkbox"
-                        placeholder="Disponible"
-                        formControlName="enable"
-                        [labelPosition]="'before'"
-                      > Disponible
-                  </mat-checkbox>
-                </div>
 
               </mat-card-content>
               <mat-card-actions>
@@ -157,7 +148,6 @@ export class EditRoomComponent implements OnInit {
         number: data.value.number,
         description: data.value.description,
         capacity: data.value.capacity,
-        enable: data.value.enable,
         bedCont: data.value.bedCont,
         VPN: data.value.vpn
       });
@@ -177,7 +167,6 @@ export class EditRoomComponent implements OnInit {
         number: this.editForm.value.number,
         description: this.editForm.value.description,
         capacity: this.editForm.value.capacity,
-        enable: this.editForm.value.enable,
         bedCont: this.editForm.value.bedCont,
         VPN: this.editForm.value.VPN,
       }).subscribe((data: any) => {

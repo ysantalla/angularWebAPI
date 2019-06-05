@@ -74,6 +74,21 @@ namespace Server.Services
 
             Func<Task> action = async () =>
             {
+                model.InitDate = new DateTime(model.InitDate.Year, model.InitDate.Month, model.InitDate.Day, 9, 0, 0);
+                model.EndDate = new DateTime(model.EndDate.Year, model.EndDate.Month, model.EndDate.Day, 8, 59, 59);
+
+                IQueryable<Reservation> q = context.Reservations;
+                q.Where(r => (r.Id != model.Id) && (r.RoomID == model.RoomID) && !(r.EndDate.CompareTo(model.InitDate) < 0 || model.EndDate.CompareTo(r.InitDate) < 0));
+                int cnt = await q.CountAsync();
+                if (cnt > 0)
+                {
+                    throw new InvalidOperationException("Existe un conflicto con otra reservación");
+                }
+
+                if ( model.EndDate < model.InitDate ) {
+                    throw new InvalidOperationException("La fecha de terminación no puede ser antes de la fecha de inicio");
+                }
+
                 var ReservationEntity = await GetOrCreateEntityAsync(context.Reservations, x => x.Id == model.Id);
                 var Reservation = ReservationEntity.result;
 

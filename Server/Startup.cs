@@ -92,7 +92,7 @@ namespace Server
                 options.AddPolicy(EnabledCORS,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4201").AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
                     });
             });
 

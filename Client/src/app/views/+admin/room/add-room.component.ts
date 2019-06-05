@@ -85,12 +85,6 @@ import { environment as env } from '@env/environment';
                 />
               </mat-form-field>
 
-              <mat-checkbox class="full-width"
-                formControlName="enable">
-                Disponible
-              </mat-checkbox>
-
-
               </mat-card-content>
               <mat-card-actions>
                 <button mat-raised-button color="primary" type="submit" [disabled]="!createForm.valid" aria-label="create">
@@ -133,7 +127,6 @@ export class AddRoomComponent implements OnInit {
     this.createForm = this.formBuilder.group({
       number: ['', Validators.required],
       description: ['', Validators.required],
-      enable: [false, Validators.required],
       capacity: [1, [Validators.required, Validators.min(1)]],
       bedCont: [1, [Validators.required, Validators.min(1)]],
       VPN: [1, [Validators.required, Validators.min(1)]]
@@ -149,7 +142,6 @@ export class AddRoomComponent implements OnInit {
       this.httpClient.post(`${env.serverUrl}/rooms`, {
         number: this.createForm.value.number,
         description: this.createForm.value.description,
-        enable: this.createForm.value.enable,
         capacity: this.createForm.value.capacity,
         bedCont: this.createForm.value.bedCont,
         VPN: this.createForm.value.VPN

@@ -1,3 +1,4 @@
+import { EditCheckInComponent } from './check-in/edit-checkin.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReservationsComponent } from './reservations/reservations.component';
@@ -26,11 +27,15 @@ import { NewReservationResolver } from './new-reservation/new-reservation.resolv
     CheckInComponent,
     CheckOutComponent,
     ReservationDialogComponent,
-    NewReservationComponent
+    NewReservationComponent,
+    EditCheckInComponent
   ],
   providers: [
     CheckInResolver,
     NewReservationResolver,
-  ]
+  ],
+  entryComponents: [
+    EditCheckInComponent
+  ],
 })
 export class ReceptionModule { }

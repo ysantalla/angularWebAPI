@@ -327,7 +327,7 @@ export class ListAgencyComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       data: {
-        message: `¿Está seguro que desea eliminar el país "${
+        message: `¿Está seguro que desea eliminar la agencia "${
           item.name
         }"?`
       }
