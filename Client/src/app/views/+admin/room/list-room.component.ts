@@ -109,23 +109,16 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
 
           <!-- Id Column -->
           <ng-container matColumnDef="number">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
               Número
             </th>
             <td mat-cell *matCellDef="let row">{{row.number}}</td>
           </ng-container>
 
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-              Nombre
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.name}}</td>
-          </ng-container>
 
           <!-- Description Column -->
           <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
               Descripción
             </th>
             <td mat-cell *matCellDef="let row">{{row.description}}</td>
@@ -133,28 +126,15 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
 
           <!-- Capacity Column -->
           <ng-container matColumnDef="capacity">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
               Capacidad
             </th>
             <td mat-cell *matCellDef="let row">{{row.capacity}}</td>
           </ng-container>
 
-          <!-- Enable Column -->
-          <ng-container matColumnDef="enable">
-            <th mat-header-cell *matHeaderCellDef>
-              Disponible
-            </th>
-            <td mat-cell *matCellDef="let row">
-              <mat-chip-list>
-                <mat-chip *ngIf="row.enable" color="primary">Habilitado</mat-chip>
-                <mat-chip *ngIf="!row.enable" color="warn">Deshabilitado</mat-chip>
-              </mat-chip-list>
-            </td>
-          </ng-container>
-
           <!-- BedCont Column -->
           <ng-container matColumnDef="bedcont">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
               Camas
             </th>
             <td mat-cell *matCellDef="let row">{{row.bedCont}}</td>
@@ -162,7 +142,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
 
           <!-- BedCont Column -->
           <ng-container matColumnDef="VPN">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
               Valor x Noche
             </th>
             <td mat-cell *matCellDef="let row">{{row.vpn}}</td>
@@ -263,7 +243,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
   `]
 })
 export class ListRoomComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'number', 'description', 'capacity', 'bedcont', 'VPN', 'enable', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'number', 'description', 'capacity', 'bedcont', 'VPN', 'edit', 'delete'];
 
   data: any[] = [];
 

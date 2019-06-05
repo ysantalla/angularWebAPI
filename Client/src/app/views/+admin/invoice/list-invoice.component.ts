@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmComponent } from '@app/shared/components/confirm/confirm.component';
 
 @Component({
-  selector: 'app-list-agency',
+  selector: 'app-list-country',
   template: `
     <div *ngIf="loading">
       <mat-progress-bar color="warn"></mat-progress-bar>
@@ -31,7 +31,7 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
               <input
                 matInput
                 type="text"
-                placeholder="Filtrado"
+                placeholder="Filtrado por nombre de país"
                 formControlName="name"
               />
             </mat-form-field>
@@ -71,11 +71,11 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             mat-raised-button
             color="primary"
             type="button"
-            routerLink="/admin/agency/add"
+            routerLink="/admin/country/add"
             aria-label="add"
           >
             <mat-icon>add</mat-icon>
-            <span> Agencia </span>
+            <span> País </span>
           </button>
 
 
@@ -115,37 +115,13 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
             <td mat-cell *matCellDef="let row">{{row.name}}</td>
           </ng-container>
 
-          <!-- Email Column -->
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-              Correo
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.email}}</td>
-          </ng-container>
-
-          <!-- Phone Column -->
-          <ng-container matColumnDef="phone">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-              Teléfono
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.phone}}</td>
-          </ng-container>
-
-          <!-- Represent Column -->
-          <ng-container matColumnDef="represent">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-              Representante
-            </th>
-            <td mat-cell *matCellDef="let row">{{row.represent}}</td>
-          </ng-container>
-
           <!-- edit Column -->
           <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>
               Editar
             </th>
             <td mat-cell *matCellDef="let row">
-              <a mat-button color="accent" [routerLink]="['/admin','agency', 'edit', row.id]">
+              <a mat-button color="accent" [routerLink]="['/admin','country', 'edit', row.id]">
                 <mat-icon>edit</mat-icon>
               </a>
             </td>
@@ -233,8 +209,8 @@ import { ConfirmComponent } from '@app/shared/components/confirm/confirm.compone
     }
   `]
 })
-export class ListAgencyComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'name', 'phone', 'email', 'represent', 'edit', 'delete'];
+export class ListCountryComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['id', 'name', 'edit', 'delete'];
 
   data: any[] = [];
 
@@ -280,9 +256,6 @@ export class ListAgencyComponent implements OnInit, OnDestroy {
               );
 
             } else {
-
-              const desc = this.sort.direction === 'desc' ? 'true' : 'false';
-
               const params = new HttpParams()
               .set('filter.searchString', this.searchForm.value.name || '')
               .set('paginator.offset', (this.paginator.pageIndex * this.paginator.pageSize).toString())
@@ -290,7 +263,7 @@ export class ListAgencyComponent implements OnInit, OnDestroy {
               .set('orderBy.by', this.sort.active)
               .set('orderBy.desc', (this.sort.direction === 'desc').toString());
 
-              return this.httpClient.get<any>(`${env.serverUrl}/agencies`, {params: params});
+              return this.httpClient.get<any>(`${env.serverUrl}/countries`, {params: params});
             }
           }),
           map(data => {
@@ -327,7 +300,7 @@ export class ListAgencyComponent implements OnInit, OnDestroy {
   onDelete(item: any): void {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       data: {
-        message: `¿Está seguro que desea eliminar la agencia "${
+        message: `¿Está seguro que desea eliminar el país "${
           item.name
         }"?`
       }
@@ -336,7 +309,7 @@ export class ListAgencyComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loading = true;
-        this.httpClient.delete(`${env.serverUrl}/agencies/${item.id}`).subscribe(data => {
+        this.httpClient.delete(`${env.serverUrl}/countries/${item.id}`).subscribe(data => {
 
           this.load$.next('');
 

@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/theming';
-// @import '~angular-calendar/css/angular-calendar.css';
 
 @include mat-core();
 
@@ -99,6 +98,7 @@ div.container > div.loading, div.loading {
   background-color: white;
   padding: 3px 3px 7px 7px;
 }
+
 
 /*Define the @font-face Material Icons*/
 @font-face {

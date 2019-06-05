@@ -111,6 +111,7 @@ export class LoginComponent implements OnInit {
         }, (error: HttpErrorResponse) => {
           this.loading = false;
           this.loginForm.enable();
+          console.log(error);
           this.snackBar.open(error.error, 'X', {duration: 3000});
         });
 

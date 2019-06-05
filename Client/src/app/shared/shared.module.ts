@@ -31,6 +31,7 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatStepperModule,
+  MatSlideToggleModule,
 
 } from '@angular/material';
 
@@ -111,6 +112,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatDatepickerModule,
     MatNativeDateModule,
     MatStepperModule,
+    MatSlideToggleModule,
 
     LayoutComponent,
     SizePipe,

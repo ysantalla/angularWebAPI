@@ -31,6 +31,8 @@ import { Menu } from '@app/core/models/menu.model';
 
         <app-nav-menu [items]="adminMenu" *ngIf="isAdmin$.asObservable() | async"></app-nav-menu>
 
+        <app-nav-menu [items]="managerMenu" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
+
         <app-nav-menu [items]="reservations" *ngIf="isLoggedIn$ | async"></app-nav-menu>
 
         <app-nav-menu [items]="newReservation" *ngIf="isLoggedIn$ | async"></app-nav-menu>
@@ -184,6 +186,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   dashboard: Menu;
   adminMenu: Menu;
+  managerMenu: Menu;
   reservations: Menu;
   checkIn: Menu;
   checkOut: Menu;
@@ -260,7 +263,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         {
           heading: 'Administrar Ciudadanía',
           link: '/admin/citizenhips/',
-          icon: 'public'
+          icon: 'assistant_photo'
         },
         {
           heading: 'Administrar Agencias',
@@ -273,14 +276,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
           icon: 'hotel'
         },
         {
+          heading: 'Administrar Monedas',
+          link: '/admin/currency',
+          icon: 'monetization_on'
+        }
+      ]
+    };
+    this.managerMenu = {
+      heading: 'Recepcionista',
+      icon: 'local_activity',
+      pages: [
+        {
           heading: 'Administrar Reservaciones',
           link: '/admin/reservations',
           icon: 'room_service'
-        },
-        {
-          heading: 'Administrar de Monedas',
-          link: '/admin/currency',
-          icon: 'monetization_on'
         }
       ]
     };
