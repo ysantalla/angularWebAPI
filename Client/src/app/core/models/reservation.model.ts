@@ -14,12 +14,19 @@ export class Reservation {
   initDate?: Date;
   endDate?: Date;
   guests: Guest[];
+  guestReservations?: GuestReservations[];
   agencyID?: number;
   agency?: Agency;
   roomID?: number;
   room?: Room;
   checkIn?: boolean;
   checkOut?: boolean;
+}
+
+export class  GuestReservations {
+  guest: Guest;
+  reservationId: number;
+  guestId: number;
 }
 
 export class ReservationFilter extends BaseFilter {

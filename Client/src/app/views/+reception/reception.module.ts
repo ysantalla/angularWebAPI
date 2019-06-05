@@ -1,3 +1,4 @@
+import { CheckOutResolver } from './check-out/check-out.resolver';
 import { EditCheckInComponent } from './check-in/edit-checkin.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -13,6 +14,8 @@ import { CheckInResolver } from './check-in/check-in.resolver';
 import { ReservationDialogComponent } from './reservation-dialog/reservation-dialog.component';
 import { NewReservationComponent } from './new-reservation/new-reservation.component';
 import { NewReservationResolver } from './new-reservation/new-reservation.resolver';
+import { GuestComponent } from './guest/guest.component';
+import { EditCheckOutComponent } from './check-out/edit-checkout.component';
 
 @NgModule({
   imports: [
@@ -28,14 +31,18 @@ import { NewReservationResolver } from './new-reservation/new-reservation.resolv
     CheckOutComponent,
     ReservationDialogComponent,
     NewReservationComponent,
-    EditCheckInComponent
+    EditCheckInComponent,
+    EditCheckOutComponent,
+    GuestComponent
   ],
   providers: [
     CheckInResolver,
+    CheckOutResolver,
     NewReservationResolver,
   ],
   entryComponents: [
-    EditCheckInComponent
+    EditCheckInComponent,
+    EditCheckOutComponent
   ],
 })
 export class ReceptionModule { }

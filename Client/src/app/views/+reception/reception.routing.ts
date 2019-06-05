@@ -7,6 +7,7 @@ import { ServerTimeResolver } from '../common/server-time.resolver';
 import { CheckInResolver } from './check-in/check-in.resolver';
 import { NewReservationComponent } from './new-reservation/new-reservation.component';
 import { NewReservationResolver } from './new-reservation/new-reservation.resolver';
+import { CheckOutResolver } from './check-out/check-out.resolver';
 
 export const ReceptionRoutes: Routes = [
   {
@@ -30,6 +31,9 @@ export const ReceptionRoutes: Routes = [
     canActivate: [AuthGuard],
     canLoad: [AuthGuard],
     data: { title: 'Check-Out', },
+    resolve: {
+      CheckOutPageData: CheckOutResolver,
+    }
   },
   {
     path: 'new-reservation',
