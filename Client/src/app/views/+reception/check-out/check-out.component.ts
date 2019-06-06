@@ -57,6 +57,7 @@ export class CheckOutComponent implements OnInit, AfterViewInit {
       null,
       this.selectedDate,
       null, null,
+      null, null,
       new Paginator(
         this.paginator.pageIndex * this.paginator.pageSize,
         this.paginator.pageSize

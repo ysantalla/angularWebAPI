@@ -22,6 +22,7 @@ export class CheckInResolver implements Resolve<CheckInPageData> {
       this.apiR.List(new ReservationFilter(
         null,
         serverTime,
+        null, null,
         null, null, null,
         new Paginator(0, pageSize),
         null

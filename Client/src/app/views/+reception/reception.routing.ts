@@ -1,3 +1,8 @@
+import { EmigrationReservationResolver } from './emigration-report/emigration-reservation.resolver';
+import { EmigrationReportComponent } from './emigration-report/emigration-report.component';
+import { ReportReservationResolver } from './reservation-report/report-reservation.resolver';
+
+import { ReservationReportComponent } from './reservation-report/reservation-report.component';
 import { Routes } from '@angular/router';
 import { ReservationsComponent } from './reservations/reservations.component';
 import { AuthGuard } from '@app/core/guards/core';
@@ -51,5 +56,23 @@ export const ReceptionRoutes: Routes = [
     canActivate: [AuthGuard],
     canLoad: [AuthGuard],
     data: { title: 'Reservaciones', },
+  },
+  {
+    path: 'reservation-report',
+    component: ReservationReportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Reporte de Reservaciones' },
+    resolve: {
+      reportReservation: ReportReservationResolver,
+    }
+  },
+  {
+    path: 'emigration-report',
+    component: EmigrationReportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Reporte de Emigración' },
+    resolve: {
+      reportReservation: EmigrationReservationResolver,
+    }
   },
 ];

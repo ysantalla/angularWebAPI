@@ -7,7 +7,7 @@ import { MatPaginator, MatSnackBar, MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { tap, filter } from 'rxjs/operators';
 import { EditCheckInComponent } from './edit-checkin.component';
-import { AutofillMonitor } from '@angular/cdk/text-field';
+
 
 @Component({
   selector: 'app-check-in',
@@ -58,6 +58,7 @@ export class CheckInComponent implements OnInit, AfterViewInit {
       null,
       this.selectedDate,
       null, null, null,
+      null, null,
       new Paginator(
         this.paginator.pageIndex * this.paginator.pageSize,
         this.paginator.pageSize

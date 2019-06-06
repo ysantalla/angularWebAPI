@@ -187,6 +187,7 @@ const routes: Routes = [
       filter: new ReservationFilter(
         '',
         null, null, null, null,
+        null, null,
         new Paginator(0, 20),
         null
       )

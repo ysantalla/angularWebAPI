@@ -1,3 +1,5 @@
+import { EmigrationReservationResolver } from './emigration-report/emigration-reservation.resolver';
+import { EmigrationReportComponent } from './emigration-report/emigration-report.component';
 import { CheckOutResolver } from './check-out/check-out.resolver';
 import { EditCheckInComponent } from './check-in/edit-checkin.component';
 import { NgModule } from '@angular/core';
@@ -16,6 +18,8 @@ import { NewReservationComponent } from './new-reservation/new-reservation.compo
 import { NewReservationResolver } from './new-reservation/new-reservation.resolver';
 import { GuestComponent } from './guest/guest.component';
 import { EditCheckOutComponent } from './check-out/edit-checkout.component';
+import { ReservationReportComponent } from './reservation-report/reservation-report.component';
+import { ReportReservationResolver } from './reservation-report/report-reservation.resolver';
 
 @NgModule({
   imports: [
@@ -33,12 +37,16 @@ import { EditCheckOutComponent } from './check-out/edit-checkout.component';
     NewReservationComponent,
     EditCheckInComponent,
     EditCheckOutComponent,
-    GuestComponent
+    GuestComponent,
+    ReservationReportComponent,
+    EmigrationReportComponent
   ],
   providers: [
     CheckInResolver,
     CheckOutResolver,
     NewReservationResolver,
+    ReportReservationResolver,
+    EmigrationReservationResolver
   ],
   entryComponents: [
     EditCheckInComponent,
