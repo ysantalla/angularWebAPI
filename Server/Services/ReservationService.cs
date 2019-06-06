@@ -72,8 +72,6 @@ namespace Server.Services
         {
             model.Id = id;
 
-            Console.WriteLine("model.Id =" + model.Id.ToString());
-            
             Func<Task> action = async () =>
             {
                 model.InitDate = new DateTime(model.InitDate.Year, model.InitDate.Month, model.InitDate.Day, 9, 0, 0);

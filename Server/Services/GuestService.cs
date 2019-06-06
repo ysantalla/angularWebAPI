@@ -170,6 +170,9 @@ namespace Server.Services
             {
                 q = q.Where(s => s.Name.Contains(f.searchString));
             }
+            if (f.identification != "") {
+                q = q.Where(s => s.Identification == f.identification);
+            }
             if (f.countryID != 0) {
                 q = q.Where(s => s.CountryID == f.countryID);
             }

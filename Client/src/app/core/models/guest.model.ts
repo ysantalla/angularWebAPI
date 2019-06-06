@@ -11,7 +11,6 @@ export interface Guest {
     name?: string;
     phone?: string;
     identification?: string;
-    birthday?: string;
     countryID?: number;
     country?: Country;
     citizenshipID?: number;
@@ -22,6 +21,7 @@ export class GuestFilter extends BaseFilter {
   constructor(public searchString: string,
               public countryID: number,
               public citizenshipID: number,
+              public identification: string,
               p: Paginator,
               ob: OrderBy) {
     super(p, ob);
@@ -32,6 +32,9 @@ export class GuestFilter extends BaseFilter {
 
     if ( !isNullOrUndefined(this.searchString) && this.searchString !== '' ) {
       hp = hp.set('filter.searchString', this.searchString);
+    }
+    if ( !isNullOrUndefined(this.identification) && this.identification !== '' ) {
+      hp = hp.set('filter.identification', this.identification);
     }
     if ( !isNullOrUndefined(this.countryID) ) {
       hp = hp.set('countryID', this.countryID.toString());

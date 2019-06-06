@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Server.Controllers
 {
-    [Route("api/citizenhips")]
+    [Route("api/citizenships")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<string>), 400)]
     public class CitizenshipController : BaseController

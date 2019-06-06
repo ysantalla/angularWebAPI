@@ -32,9 +32,11 @@ import {
   MatNativeDateModule,
   MatStepperModule,
   MatSlideToggleModule,
+  MatTabsModule,
 
 } from '@angular/material';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { SizePipe } from './pipes/size.pipe';
@@ -42,7 +44,6 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CustomMatPaginatorIntl } from './class/mat-paginator-intl';
 import { ConfirmComponent } from './components/confirm/confirm.component';
 import { GuestSelectorComponent } from './components/guest-selector/guest-selector.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -74,6 +75,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatDatepickerModule,
     MatNativeDateModule,
     MatStepperModule,
+    MatTabsModule,
 
     RouterModule,
     FormsModule,
@@ -113,18 +115,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatNativeDateModule,
     MatStepperModule,
     MatSlideToggleModule,
+    MatTabsModule,
 
     LayoutComponent,
     SizePipe,
     ConfirmComponent,
-    GuestSelectorComponent
+    GuestSelectorComponent,
   ],
   declarations: [
     LayoutComponent,
     NavMenuComponent,
     SizePipe,
     ConfirmComponent,
-    GuestSelectorComponent
+    GuestSelectorComponent,
   ],
   providers: [
     {provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl}

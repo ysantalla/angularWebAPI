@@ -6,119 +6,300 @@
   </header>
 
   <div class="page-body-container">
+      <form [formGroup]="form" >
+        <input #initialDateControl formControlName="initialDate" type="datetime"
+                [value]="this.selectedInitialDate">
+        <input #roomIdControl formControlName="roomId" type="number"
+                [value]="this.selectedRoom">
+        <input #finalDateControl formControlName="finalDate" type="datetime"
+                [value]="this.selectedFinalDate">
+        <input #agencyIdControl formControlName="agencyId" type="number"
+                [value]="this.selectedAgencyId">
+        <input #detailsControl formControlName="details" type="text"
+                [value]="this.details">
+      </form>
+      <div *ngIf="false">
+        <div>{{'detailsControl: ' + detailsControl.value}}</div><br>
+      </div>
 
-    <mat-horizontal-stepper [linear]="true" #stepper>
+      <mat-horizontal-stepper [linear]="true" #stepper>
 
-      <!-- STEP 1 -->
-      <mat-step [completed]="(selectedInitialDate && (selectedRoom !== ''))">
-        <ng-template matStepLabel>Fecha Inicial y Cuarto</ng-template>
-        <div class="new-reservation-step">
-            <div class="new-reservation-step-calendar-container">
-              <div class="inside-stepper-label">Seleccione la fecha inicial</div>
-              <mat-calendar [selected]="selectedInitialDate"
-                            (selectedChange)="onSelectInitialDate($event)">
-              </mat-calendar>
-            </div>
-
-            <div class="new-reservation-step1-rooms-container">
-              <div class="inside-stepper-label">Seleccione la habitación</div>
-              <div class="new-reservation-step1-rooms-table-container mat-elevation-z8">
-                  <table mat-table  [dataSource]="freeRoomsDataSource">
-                      <ng-container matColumnDef="number">
-                          <th mat-header-cell *matHeaderCellDef>Número</th>
-                          <td mat-cell *matCellDef="let x">
-                            {{x.room.number}}
-                          </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="capacity">
-                          <th mat-header-cell *matHeaderCellDef>Capacidad</th>
-                          <td mat-cell *matCellDef="let x">
-                            {{x.room.capacity}}
-                          </td>
-                        </ng-container>
-
-                      <ng-container matColumnDef="vpn">
-                          <th mat-header-cell *matHeaderCellDef>Valor por noche</th>
-                          <td mat-cell *matCellDef="let x">
-                            {{x.room.vpn}}
-                          </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="free-days">
-                          <th mat-header-cell *matHeaderCellDef>Días disponibles</th>
-                          <td mat-cell *matCellDef="let x">
-                            {{x.freeDays === 1000000 ? 'siempre' : x.freeDays}}
-                          </td>
-                      </ng-container>
-
-                      <tr mat-header-row *matHeaderRowDef="freeRoomsDisplayedColumns; sticky: true"></tr>
-                      <tr mat-row *matRowDef="let row; columns: freeRoomsDisplayedColumns"
-                          [class.selected-row]="selectionFreeRooms.isSelected(row)"
-                          [class.unselected-row]="!selectionFreeRooms.isSelected(row)"
-                          [class.selectionable-row]="true"
-                          (click)="onSelectionFreeRoomsChange(row)">
-                      </tr>
-                  </table>
-
-                  <mat-paginator  class="sticky-paginator"
-                                  [length]="(freeRoomsDataSource.connectCount() | async)"
-                                  [pageSize]="20">
-                  </mat-paginator>
-              </div>
-            </div>
-        </div>
-      </mat-step>
-
-      <!-- STEP 2 -->
-      <mat-step [completed]="false">
-          <ng-template matStepLabel>Fecha Final, Detalles y Agencia</ng-template>
+        <!-- STEP 1 -->
+        <!--mat-step [completed]="(selectedInitialDate && (selectedRoom > 0))"-->
+        <mat-step [completed]="validStep1()">
+          <ng-template matStepLabel>Fecha Inicial y Habitación</ng-template>
           <div class="new-reservation-step">
-
               <div class="new-reservation-step-calendar-container">
-                <div class="inside-stepper-label">Seleccione la fecha final</div>
-                <mat-calendar [selected]="selectedFinalDate"
-                              [minDate]="minValidFinalDate"
-                              [maxDate]="maxValidFinalDate"
-                              [startAt]="selectedFinalDate"
-                              (selectedChange)="onSelectFinalDate($event)">
+                <div class="inside-stepper-label">Seleccione la fecha inicial</div>
+                <mat-calendar [selected]="selectedInitialDate"
+                              (selectedChange)="onSelectInitialDate($event)">
                 </mat-calendar>
               </div>
 
-              <div class="flex-columns" style="flex-grow: 1; margin-left: 20px;">
+              <div class="new-reservation-step1-rooms-container
+                          new-reservation-right-container">
+                <div class="inside-stepper-label">Seleccione la habitación</div>
+                <div class="new-reservation-step1-rooms-table-container mat-elevation-z8">
+                    <table mat-table  [dataSource]="freeRoomsDataSource">
+                        <ng-container matColumnDef="number">
+                            <th mat-header-cell *matHeaderCellDef>Número</th>
+                            <td mat-cell *matCellDef="let x">
+                              {{x.room.number}}
+                            </td>
+                        </ng-container>
 
-                <div class="new-reservation-agency-selector-container">
-                  <div class="inside-stepper-label">Seleccione la Agencia</div>
-                  <div  class="agency-select-container"
-                        style="margin-top: 32px; border-bottom: 1px solid rgba(0,0,0,.42);">
-                    <mat-select value="0">
-                      <mat-option value="0">Ninguna</mat-option>
-                      <mat-option *ngFor="let agency of agencies" [value]="agency.id">
-                        {{agency.name}}
-                      </mat-option>
-                    </mat-select>
+                        <ng-container matColumnDef="capacity">
+                            <th mat-header-cell *matHeaderCellDef>Capacidad</th>
+                            <td mat-cell *matCellDef="let x">
+                              {{x.room.capacity}}
+                            </td>
+                          </ng-container>
+
+                        <ng-container matColumnDef="vpn">
+                            <th mat-header-cell *matHeaderCellDef>Valor por noche</th>
+                            <td mat-cell *matCellDef="let x">
+                              {{x.room.vpn}}
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="free-days">
+                            <th mat-header-cell *matHeaderCellDef>Días disponibles</th>
+                            <td mat-cell *matCellDef="let x">
+                              {{x.freeDays === 1000000 ? 'siempre' : x.freeDays}}
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="freeRoomsDisplayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: freeRoomsDisplayedColumns"
+                            [class.selected-row]="selectionFreeRooms.isSelected(row)"
+                            [class.unselected-row]="!selectionFreeRooms.isSelected(row)"
+                            [class.selectionable-row]="true"
+                            (click)="onSelectionFreeRoomsChange(row)">
+                        </tr>
+                    </table>
+
+                    <mat-paginator  class="sticky-paginator"
+                                    [length]="(freeRoomsDataSource.connectCount() | async)"
+                                    [pageSize]="20">
+                    </mat-paginator>
+                </div>
+              </div>
+          </div>
+        </mat-step>
+
+        <!-- STEP 2 -->
+        <mat-step [completed]="validStep2()">
+            <ng-template matStepLabel>Fecha Final, Detalles y Agencia</ng-template>
+            <div class="new-reservation-step">
+
+                <div class="new-reservation-step-calendar-container">
+                  <div class="inside-stepper-label">Seleccione la fecha final</div>
+                  <mat-calendar [selected]="selectedFinalDate"
+                                [minDate]="minValidFinalDate"
+                                [maxDate]="maxValidFinalDate"
+                                [startAt]="selectedFinalDate"
+                                (selectedChange)="onSelectFinalDate($event)">
+                  </mat-calendar>
+                </div>
+
+                <div class="flex-columns new-reservation-right-container">
+
+                  <div class="new-reservation-agency-selector-container">
+                      <div class="inside-stepper-label">Seleccione la Agencia</div>
+                      <mat-form-field class="full-width">
+                        <mat-select [(value)]="selectedAgencyId">
+                          <mat-option value="0">Ninguna</mat-option>
+                          <mat-option *ngFor="let agency of agencies" [value]="agency.id">
+                            {{agency.name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
                   </div>
+
+                  <div class="new-reservation-details-container">
+                      <div class="inside-stepper-label">Detalles</div>
+                      <mat-form-field class="full-width">
+                        <input matInput #detailsView maxlength="250" placeholder=""
+                              [value]="this.details"
+                              (keyup)="this.details = detailsView.value">
+                        <mat-hint align="end">{{detailsView.value.length}} / 250</mat-hint>
+                      </mat-form-field>
+                  </div>
+                </div>
+            </div>
+        </mat-step>
+
+        <!-- STEP 3 -->
+        <mat-step [completed]="validStep3()">
+            <ng-template matStepLabel>Huéspedes</ng-template>
+            <div class="new-reservation-step">
+              <div class="new-reservation-guest-selector">
+                <div class="inside-stepper-label">Seleccione los huéspedes</div>
+                <div  class="full-width"
+                      style=" display: flex; flex-flow: row wrap;
+                              justify-content: center;
+                              margin-top: 25px;">
+                  <mat-card class="guest-list-container">
+                    <div class="inside-stepper-label"
+                         >Huéspedes</div>
+                    <div *ngFor="let guest of selectedGuests"
+                          style="display: flex; flex-flow: row nowrap;
+                                 padding: 10px;
+                                 border-bottom: 1px solid #d1d1d1;">
+
+                      <div style="flex-grow: 1;">
+                        <div class="guest-passaport">{{guest.identification}}</div>
+                        <div class="guest-name">{{guest.name}}</div>
+                      </div>
+                      <div style="width: 25px;">
+                        <button mat-icon-button aria-label="unselected guest"
+                                color="warn"
+                                (click)="onUnselectGuest(guest.id)">
+                          <mat-icon>clear</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                    <div *ngIf="selectedGuests.length === 0"
+                          style="padding: 40px;">
+                      No hay ningún huésped seleccionado
+                    </div>
+                  </mat-card>
+
+                  <mat-card class="search-and-create-tabs-panel">
+                    <mat-tab-group mat-stretch-tabs>
+
+                        <mat-tab label="Buscar Huésped">
+                            <div class="guest-search-container" style="margin-top: 8px;">
+                                <mat-form-field class="guest-mat-form-field">
+                                    <input matInput #guestSearch placeholder="Identificación" (keyup)="this.searchedGuest = null">
+                                </mat-form-field>
+                                <button mat-raised-button color="primary"
+                                        style="margin-left: 8px;"
+                                        [disabled]="guestSearch.value == ''"
+                                        (click)="onSearchGuest(guestSearch.value)">
+                                    <mat-icon aria-hidden="false" aria-label="Search guest">search</mat-icon>
+                                </button>
+                            </div>
+
+                            <table  class="guest-info-table full-width"
+                                    *ngIf="this.searchedGuest">
+                                <tr>
+                                  <td class="guest-info-table-labels">Identificación:</td>
+                                  <td class="guest-info-table-values">{{searchedGuest.identification}}</td>
+                                </tr>
+                                <tr>
+                                  <td class="guest-info-table-labels">Nombre:</td>
+                                  <td class="guest-info-table-values">{{searchedGuest.name}}</td>
+                                </tr>
+                                <tr>
+                                  <td class="guest-info-table-labels">País:</td>
+                                  <td class="guest-info-table-values">{{searchedGuest.country.name}}</td>
+                                </tr>
+                                <tr>
+                                  <td class="guest-info-table-labels">Ciudadanía:</td>
+                                  <td class="guest-info-table-values">{{searchedGuest.citizenship.name}}</td>
+                                </tr>
+                                <tr>
+                                  <td class="guest-info-table-labels">Teléfono:</td>
+                                  <td class="guest-info-table-values">{{searchedGuest.phone}}</td>
+                                </tr>
+                                <tr>
+                                  <td></td>
+                                  <td>
+                                      <div class="select-guest-button-container" *ngIf="this.searchedGuest">
+                                          <button mat-raised-button color="accent"
+                                                  style="margin-left: 8px;"
+                                                  (click)="onSelectGuest()">
+                                              <mat-icon aria-hidden="false">arrow_back</mat-icon>
+                                              Seleccionar
+                                          </button>
+                                      </div>
+                                  </td>
+                                </tr>
+                            </table>
+
+                            <div class="guest-info-table guest-info-table-empty" *ngIf="this.searchedGuest == null">
+                              <div>No hay resultados</div>
+                            </div>
+
+                        </mat-tab>
+
+                        <mat-tab label="Nuevo Huéspued">
+                          <div  class="full-width"
+                                style="display: flex;
+                                       flex-direction: columns;
+                                       align-items: center;
+                                       margin-top: 8px;
+                                       ">
+
+                            <form [formGroup]="newGuestForm" style="max-width: 400px;">
+                              <mat-form-field class="full-width">
+                                <input  matInput formControlName="identificationControl"
+                                        placeholder="Identificación" required>
+                              </mat-form-field>
+
+                              <mat-form-field class="full-width">
+                                <input  matInput formControlName="nameControl"
+                                        placeholder="Nombre" required>
+                              </mat-form-field>
+
+                              <mat-form-field class="full-width">
+                                <input  matInput formControlName="phoneControl"
+                                        placeholder="Teléfono" required>
+                              </mat-form-field>
+
+                              <mat-form-field class="full-width">
+                                <mat-select formControlName="countryControl">
+                                  <mat-option *ngFor="let country of countries" [value]="country.id">
+                                    {{country.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+
+                              <mat-form-field class="full-width">
+                                <mat-select formControlName="citizenshipControl">
+                                  <mat-option *ngFor="let citizenship of citizenships" [value]="citizenship.id">
+                                    {{citizenship.name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+
+                              <button mat-raised-button color="primary"
+                                      [disabled]="newGuestForm.invalid || disableRegisterButton"
+                                      (click)="onRegisterGuest()">
+                                  <mat-icon aria-hidden="false"
+                                            aria-label="register guest">add</mat-icon>
+                                  Registrar Huésped
+                              </button>
+                            </form>
+                          </div>
+                        </mat-tab>
+
+                    </mat-tab-group>
+                  </mat-card>
                 </div>
               </div>
 
-              <div class="new-reservation-details-container">
-                  <div class="inside-stepper-label">Detalles</div>
-                  <div class="details-control">
+            </div>
+        </mat-step>
 
-                  </div>
-              </div>
-          </div>
-      </mat-step>
+        <mat-step [completed]="true">
+            <ng-template matStepLabel>Fin</ng-template>
+            <div class="new-reservation-step">
 
-      <!-- STEP 3 -->
-      <mat-step [completed]="false">
-          <ng-template matStepLabel>Paso 3</ng-template>
-          <div class="new-reservation-step3">
-            Step3
-          </div>
-      </mat-step>
 
-    </mat-horizontal-stepper>
+                <button mat-raised-button
+                        color="primary"
+                        mat- aria-label="create reservation"
+                        [disabled]="this.form.invalid || disableCreateReservationButton"
+                        (click)="onCreateReservation()">
+                  <mat-icon>add</mat-icon> Registrar reservación
+                </button>
+            </div>
+        </mat-step>
+
+      </mat-horizontal-stepper>
+
   </div>
 
 </section>
