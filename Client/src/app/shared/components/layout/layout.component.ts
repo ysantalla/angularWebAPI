@@ -290,6 +290,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
           heading: 'Administrar Reservaciones',
           link: '/admin/reservations',
           icon: 'room_service'
+        },
+        {
+          heading: 'Reporte de Reservación',
+          link: '/reception/reservation-report',
+          icon: 'list'
+        },
+        {
+          heading: 'Reporte de Emigración',
+          link: '/reception/emigration-report',
+          icon: 'list'
         }
       ]
     };

@@ -5,15 +5,15 @@ import { map, catchError } from 'rxjs/operators';
 import {
   ApiReservationService,
 } from '@app/core/services/core';
-import { Reservation, ReservationFilter, Paginator } from '@app/core/models/core';
+import { Reservation, ReservationFilter, Paginator, OrderBy } from '@app/core/models/core';
 
 
 @Injectable()
-export class CheckInResolver implements Resolve<CheckInPageData> {
+export class ReportReservationResolver implements Resolve<RangePageData> {
 
   constructor(private apiR: ApiReservationService) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<CheckInPageData> {
+  resolve(route: ActivatedRouteSnapshot): Observable<RangePageData> {
     const serverTime = new Date();
     console.log('CheckInResolver: serverTime = ', serverTime);
     const pageSize = 20;
@@ -21,11 +21,11 @@ export class CheckInResolver implements Resolve<CheckInPageData> {
     return forkJoin ([
       this.apiR.List(new ReservationFilter(
         null,
-        serverTime,
-        null, null,
-        null, null, null,
+        null,
+        null,
+        null, null, null, null,
         new Paginator(0, pageSize),
-        null
+        new OrderBy('id', true)
       )),
     ])
     .pipe(
@@ -42,7 +42,7 @@ export class CheckInResolver implements Resolve<CheckInPageData> {
   }
 }
 
-export interface CheckInPageData {
+export interface RangePageData {
   rcollection?: Reservation[];
   count?: number;
   pageSize?: number;

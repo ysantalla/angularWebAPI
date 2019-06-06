@@ -5,15 +5,15 @@ import { map, catchError } from 'rxjs/operators';
 import {
   ApiReservationService,
 } from '@app/core/services/core';
-import { Reservation, ReservationFilter, Paginator } from '@app/core/models/core';
+import { Reservation, ReservationFilter, Paginator, OrderBy } from '@app/core/models/core';
 
 
 @Injectable()
-export class CheckInResolver implements Resolve<CheckInPageData> {
+export class EmigrationReservationResolver implements Resolve<RangePageData> {
 
   constructor(private apiR: ApiReservationService) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<CheckInPageData> {
+  resolve(route: ActivatedRouteSnapshot): Observable<RangePageData> {
     const serverTime = new Date();
     console.log('CheckInResolver: serverTime = ', serverTime);
     const pageSize = 20;
@@ -21,18 +21,30 @@ export class CheckInResolver implements Resolve<CheckInPageData> {
     return forkJoin ([
       this.apiR.List(new ReservationFilter(
         null,
-        serverTime,
-        null, null,
-        null, null, null,
+        null,
+        null,
+        null, null, 1, null,
         new Paginator(0, pageSize),
-        null
+        new OrderBy('id', true)
       )),
     ])
     .pipe(
         map( ([resApiR]) => {
+          const list = [];
+
+          resApiR.list.map((reservation: any) => {
+              reservation.guestReservations.map(guest => {
+              list.push({
+                guest: guest.guest,
+                initDate: reservation.initDate,
+                endDate: reservation.endDate,
+              });
+            });
+          });
+
           return {
-            rcollection: resApiR.list,
-            count: resApiR.cnt,
+            rcollection: list,
+            count: list.length,
             serverTime: serverTime,
             pageSize: pageSize
           };
@@ -42,7 +54,7 @@ export class CheckInResolver implements Resolve<CheckInPageData> {
   }
 }
 
-export interface CheckInPageData {
+export interface RangePageData {
   rcollection?: Reservation[];
   count?: number;
   pageSize?: number;

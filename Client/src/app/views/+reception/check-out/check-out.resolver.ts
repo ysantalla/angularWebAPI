@@ -9,11 +9,11 @@ import { Reservation, ReservationFilter, Paginator } from '@app/core/models/core
 
 
 @Injectable()
-export class CheckInResolver implements Resolve<CheckInPageData> {
+export class CheckOutResolver implements Resolve<CheckOutPageData> {
 
   constructor(private apiR: ApiReservationService) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<CheckInPageData> {
+  resolve(route: ActivatedRouteSnapshot): Observable<CheckOutPageData> {
     const serverTime = new Date();
     console.log('CheckInResolver: serverTime = ', serverTime);
     const pageSize = 20;
@@ -21,9 +21,10 @@ export class CheckInResolver implements Resolve<CheckInPageData> {
     return forkJoin ([
       this.apiR.List(new ReservationFilter(
         null,
+        null,
         serverTime,
         null, null,
-        null, null, null,
+        null, null,
         new Paginator(0, pageSize),
         null
       )),
@@ -42,7 +43,7 @@ export class CheckInResolver implements Resolve<CheckInPageData> {
   }
 }
 
-export interface CheckInPageData {
+export interface CheckOutPageData {
   rcollection?: Reservation[];
   count?: number;
   pageSize?: number;

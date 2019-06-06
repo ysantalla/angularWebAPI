@@ -1,7 +1,7 @@
-import { ApiReservationService } from './../../../core/services/api/api-reservation.service';
+import { ApiReservationService } from '../../../core/services/api/api-reservation.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Room } from './../../../core/models/room.model';
-import { ApiRoomService } from './../../../core/services/api/api-room.service';
+import { Room } from '../../../core/models/room.model';
+import { ApiRoomService } from '../../../core/services/api/api-room.service';
 import { Reservation, Agency } from '@app/core/models/core';
 import {Component, Inject, OnInit} from '@angular/core';
 import { MAT_DIALOG_DATA, MatSnackBar, MatDialogRef } from '@angular/material';
@@ -9,8 +9,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
 
+
 @Component({
-  selector: 'app-edit-checkin',
+  selector: 'app-edit-checkout',
   template: `
     <form [formGroup]="editForm" #f="ngForm" (ngSubmit)="onEdit()" class="form">
       <mat-toolbar color="primary">
@@ -22,31 +23,22 @@ import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
 
         <h2 class="mat-h2"> Entrada: {{data.initDate | date:'medium'}} <-----> Salida: {{data.endDate | date:'medium'}}</h2>
 
-        <mat-form-field class="full-width">
-          <textarea matInput required formControlName="details" placeholder="Detalles"></textarea>
-        </mat-form-field>
+        <h3 class="mat-h3">Agencia: {{data.agency.name}} <-----> Cuarto: {{data.room.number}}</h3>
 
-        <mat-form-field class="half-width">
-          <mat-select placeholder="Cambie la agencia" formControlName="agency" required>
-            <mat-option *ngFor="let agency of (agencies | async)?.list" [value]="agency.id">{{agency.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <h3 class="mat-h3">{{data.details}}</h3>
 
-        <mat-form-field class="half-width">
-          <mat-select placeholder="Cambie el cuarto" formControlName="room" required>
-            <mat-option *ngFor="let room of (rooms | async)?.list" [value]="room.id">{{room.number}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-
-        <mat-slide-toggle formControlName="checkIn"
+        <mat-slide-toggle formControlName="checkOut"
           class="example-margin">
-          checkin
+          checkout
         </mat-slide-toggle>
 
+        <br />
+        <br />
+        <br />
+
         <mat-chip-list class="mat-chip-list-stacked" aria-label="">
-          <mat-chip *ngFor="let item of data.guestReservations" selected color="accent">
-            {{item.guest.name}}
+          <mat-chip *ngFor="let item of data.guestReservations">
+            {{item.guest.name}} --- {{item.guest.identification}}
           </mat-chip>
         </mat-chip-list>
 
@@ -77,42 +69,27 @@ import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
 
   `]
 })
-export class EditCheckInComponent implements OnInit {
+export class EditCheckOutComponent implements OnInit {
 
   editForm: FormGroup;
-
   loading = false;
-
-  agencies: Observable<ListAndCount<Agency>>;
-  rooms: Observable<ListAndCount<Room>>;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Reservation,
     private formBuilder: FormBuilder,
-    private apiAgency: ApiAgencyService,
-    private apiRoom: ApiRoomService,
     private api: ApiReservationService,
     private snackBar: MatSnackBar,
-    private dialogRef: MatDialogRef<EditCheckInComponent>,
+    private dialogRef: MatDialogRef<EditCheckOutComponent>,
   ) { }
 
   ngOnInit() {
 
-    this.agencies = this.apiAgency.List();
-    this.rooms = this.apiRoom.List();
-
     this.editForm = this.formBuilder.group({
-      details: ['', Validators.required],
-      agency: ['', Validators.required],
-      room: ['', Validators.required],
-      checkIn: ['']
+      checkOut: ['']
     });
 
     this.editForm.patchValue({
-      details: this.data.details,
-      agency: this.data.agencyID,
-      room: this.data.roomID,
-      checkIn: this.data.checkIn
+      checkOut: this.data.checkOut
     });
 
   }
@@ -123,23 +100,13 @@ export class EditCheckInComponent implements OnInit {
 
     if (this.editForm.valid) {
       this.editForm.disable();
+      this.data.checkOut = this.editForm.value.checkOut;
 
-      const reservation  = new Reservation();
-      reservation.checkIn = this.editForm.value.checkIn;
-      reservation.id = this.data.id;
-
-      reservation.details = this.editForm.value.details;
-      reservation.agencyID = this.editForm.value.agency;
-      reservation.endDate = this.data.endDate;
-      reservation.initDate = this.data.initDate;
-
-      reservation.roomID = this.editForm.value.room;
-
-      this.api.Update(reservation).subscribe(data => {
+      this.api.Update(this.data).subscribe(data => {
         if (data.succeeded) {
           let message = 'chequeada';
 
-          if (!this.editForm.value.checkIn) {
+          if (!this.editForm.value.checkOut) {
             message = 'no chequeda';
           }
           this.snackBar.open(`Reservación ${message}`, 'X', {duration: 3000});

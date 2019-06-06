@@ -245,12 +245,21 @@ namespace Server.Services
                 DateTime tmp = new DateTime(f.checkOutDate.Year, f.checkOutDate.Month, f.checkOutDate.Day, 8, 59, 59);
                 q = q.Where( s => s.EndDate == tmp );
             }
+            if ( f.InDate != DateTime.MinValue ) {
+                DateTime tmp = new DateTime(f.InDate.Year, f.InDate.Month, f.InDate.Day, 9, 0, 0);
+                q = q.Where( s => s.InitDate >= tmp );
+            }
+            if ( f.OutDate != DateTime.MinValue ) {
+                DateTime tmp = new DateTime(f.OutDate.Year, f.OutDate.Month, f.OutDate.Day, 8, 59, 59);
+                q = q.Where( s => s.EndDate <= tmp );
+            }
             if ( f.checkInState != 0 ) {
-                bool tmp = (f.checkInState == 1 ? false : true);
+                bool tmp = (f.checkInState == 1 ? true : false);
                 q = q.Where( s => s.CheckIn == tmp );
             }
+
             if ( f.checkOutState != 0 ) {
-                bool tmp = (f.checkOutState == 1 ? false : true);
+                bool tmp = (f.checkOutState == 1 ? true : false);
                 q = q.Where( s => s.CheckOut == tmp );
             }
             return q;

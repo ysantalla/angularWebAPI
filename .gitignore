@@ -15,4 +15,5 @@
 dist
 node_modules
 package-lock.json
+Server/appsettings.json
  

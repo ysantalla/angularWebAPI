@@ -14,6 +14,7 @@ export class Reservation {
   initDate?: Date;
   endDate?: Date;
   guests: Guest[];
+  guestReservations?: GuestReservations[];
   agencyID?: number;
   agency?: Agency;
   roomID?: number;
@@ -22,14 +23,22 @@ export class Reservation {
   checkOut?: boolean;
 }
 
+export class  GuestReservations {
+  guest: Guest;
+  reservationId: number;
+  guestId: number;
+}
+
 export class ReservationFilter extends BaseFilter {
   util = new ModelUtil();
 
   constructor(public searchString: string,
               public checkInDate: Date,
               public checkOutDate: Date,
-              public checkInState: string,
-              public checkOutState: string,
+              public InDate: Date,
+              public OutDate: Date,
+              public checkInState: any,
+              public checkOutState: any,
               p: Paginator,
               ob: OrderBy) {
     super(p, ob);
@@ -46,6 +55,13 @@ export class ReservationFilter extends BaseFilter {
     }
     if ( !isNullOrUndefined(this.checkOutDate) ) {
       hp = hp.set('filter.checkOutDate', this.util.DateToString(this.checkOutDate));
+    }
+
+    if ( !isNullOrUndefined(this.InDate)) {
+      hp = hp.set('filter.InDate', this.util.DateToString(this.InDate));
+    }
+    if ( !isNullOrUndefined(this.OutDate) ) {
+      hp = hp.set('filter.OutDate', this.util.DateToString(this.OutDate));
     }
     if ( !isNullOrUndefined(this.checkInState) && this.checkInState !== '' ) {
       hp = hp.set('filter.checkInState', this.checkInState);
