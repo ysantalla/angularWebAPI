@@ -1,13 +1,9 @@
 import { ApiReservationService } from '../../../core/services/api/api-reservation.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Room } from '../../../core/models/room.model';
-import { ApiRoomService } from '../../../core/services/api/api-room.service';
-import { Reservation, Agency } from '@app/core/models/core';
-import {Component, Inject, OnInit} from '@angular/core';
-import { MAT_DIALOG_DATA, MatSnackBar, MatDialogRef } from '@angular/material';
+import { Reservation, Guest } from '@app/core/models/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import { MAT_DIALOG_DATA, MatSnackBar, MatDialogRef, MatTableDataSource, MatPaginator } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
 
 
 @Component({
@@ -15,7 +11,7 @@ import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
   template: `
     <form [formGroup]="editForm" #f="ngForm" (ngSubmit)="onEdit()" class="form">
       <mat-toolbar color="primary">
-        <h2 mat-dialog-title>Editar Reservación</h2>
+        <h2 mat-dialog-title>Editar estado</h2>
       </mat-toolbar>
       <div style="overflow: inset!important;">
 
@@ -32,15 +28,38 @@ import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
           checkout
         </mat-slide-toggle>
 
-        <br />
+
         <br />
         <br />
 
-        <mat-chip-list class="mat-chip-list-stacked" aria-label="">
-          <mat-chip *ngFor="let item of data.guestReservations">
-            {{item.guest.name}} --- {{item.guest.identification}}
-          </mat-chip>
-        </mat-chip-list>
+        <table mat-table [dataSource]="dataSource">
+
+          <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.guest.name}} </td>
+          </ng-container>
+
+          <!-- Identification Column -->
+          <ng-container matColumnDef="identification">
+            <th mat-header-cell *matHeaderCellDef> Identificación </th>
+            <td mat-cell *matCellDef="let element"> {{element.guest.identification}} </td>
+          </ng-container>
+
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef> Teléfono </th>
+            <td mat-cell *matCellDef="let element"> {{element.guest.phone}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['name', 'identification', 'phone']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name', 'identification', 'phone'];"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5]" [length]="data.guestReservations.length"></mat-paginator>
 
       </div>
       <mat-dialog-actions>
@@ -74,6 +93,10 @@ export class EditCheckOutComponent implements OnInit {
   editForm: FormGroup;
   loading = false;
 
+  dataSource = new MatTableDataSource<Guest>();
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Reservation,
     private formBuilder: FormBuilder,
@@ -91,6 +114,10 @@ export class EditCheckOutComponent implements OnInit {
     this.editForm.patchValue({
       checkOut: this.data.checkOut
     });
+
+    this.dataSource.data = this.data.guestReservations;
+
+    this.dataSource.paginator = this.paginator;
 
   }
 

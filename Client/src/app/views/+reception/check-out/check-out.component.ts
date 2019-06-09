@@ -69,7 +69,8 @@ export class CheckOutComponent implements OnInit, AfterViewInit {
   onShowSettings(reservation: Reservation): void {
     console.log('onShowSetting: reservationID =', reservation);
     const dialogRef = this.dialog.open(EditCheckOutComponent, {
-      data: reservation
+      data: reservation,
+      width: '90%'
     });
 
     dialogRef.afterClosed().subscribe(result => {

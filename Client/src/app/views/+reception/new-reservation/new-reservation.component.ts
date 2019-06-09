@@ -1,15 +1,16 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CustomDataSource } from '@app/core/datasources/custom-datasource';
 import {
   FreeRoom, FreeRoomFilter,
   Agency, Guest, GuestFilter,
-  Paginator, Citizenship, Country, Reservation
+  Paginator, Citizenship, Country, Reservation, Room
 } from '@app/core/models/core';
 import {
   ApiFreeRoomService, ApiAgencyService,
   ApiGuestService, ApiCountryService, ApiCitizenshipService, ApiReservationService
 } from '@app/core/services/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel} from '@angular/cdk/collections';
 import { MatStepper, MatSnackBar } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -18,7 +19,16 @@ import { isNullOrUndefined } from 'util';
 @Component({
   selector: 'app-new-reservation',
   templateUrl: 'new-reservation.component.html',
-  styles: []
+  styles: [`
+    .reservation-container {
+      font-weight: 700;
+      font-size: 22px;
+      color: #00695c;
+      align-items: center;
+      padding: 15px;
+      box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+  }
+  `]
 })
 export class NewReservationComponent implements OnInit {
 
@@ -39,6 +49,9 @@ export class NewReservationComponent implements OnInit {
 
   details = '';
 
+  agency: Agency;
+  room: Room;
+
   selectedGuests: Guest[] = [];
 
   searchedGuest: Guest = null;
@@ -55,6 +68,7 @@ export class NewReservationComponent implements OnInit {
   disableCreateReservationButton = false;
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private apiFreeRooms: ApiFreeRoomService,
               private apiAgencies: ApiAgencyService,
               private apiGuests: ApiGuestService,
@@ -76,7 +90,7 @@ export class NewReservationComponent implements OnInit {
       );
       this.freeRoomsDataSource.setData(rd.freeRoomsListAndCount.list, rd.freeRoomsListAndCount.cnt);
       this.agencies = rd.agenciesListAndCount.list;
-      this.selectedAgencyId = this.agencies[0].id;
+      this.agency = this.agencies[0];
       this.details = 'Viaje por turismo';
 
       this.countries = rd.countriesListAndCount.list;
@@ -88,7 +102,7 @@ export class NewReservationComponent implements OnInit {
       initialDate: [this.selectedInitialDate, Validators.required],
       roomId: [this.selectedRoom, Validators.required],
       finalDate: [this.selectedFinalDate, Validators.required],
-      agencyId: [this.selectedAgencyId, Validators.required],
+      agencyId: [this.agency, Validators.required],
       details: [this.details, Validators.required],
     });
 
@@ -116,6 +130,8 @@ export class NewReservationComponent implements OnInit {
       this.selectedRoom = 0;
     } else {
       this.selectedRoom = this.selectionFreeRooms.selected[0].room.id;
+
+      this.room = this.selectionFreeRooms.selected[0].room;
 
       // Valid values for final dates depend of selectedInititalDate value
       this.minValidFinalDate = new Date(this.selectedInitialDate);
@@ -185,6 +201,7 @@ export class NewReservationComponent implements OnInit {
     for ( let i = 0; i < this.selectedGuests.length; i++ ) {
       if ( this.selectedGuests[i].id === this.searchedGuest.id ) {
         ok = false;
+        this.snackBar.open('Este húesped se encuentra seleccionado', 'X', {duration: 3000});
         return;
       }
     }
@@ -261,7 +278,7 @@ export class NewReservationComponent implements OnInit {
       details: this.details,
       initDate: this.selectedInitialDate,
       endDate: this.selectedFinalDate,
-      agencyID: this.selectedAgencyId,
+      agencyID: this.agency.id,
       roomID: this.selectedRoom,
       checkIn: false,
       checkOut: false,
@@ -278,6 +295,9 @@ export class NewReservationComponent implements OnInit {
           );
         }
         this.disableCreateReservationButton = false;
+        this.router.navigate(['reception', 'reservations']);
+      }, (error: HttpErrorResponse) => {
+        this.snackBar.open(error.error, 'X', {duration: 3000});
       }
     );
   }

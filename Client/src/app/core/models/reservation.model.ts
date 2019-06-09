@@ -13,8 +13,8 @@ export class Reservation {
   details?: string;
   initDate?: Date;
   endDate?: Date;
-  guests: Guest[];
-  guestReservations?: GuestReservations[];
+  guests?: Guest[];
+  guestReservations?: Guest[];
   agencyID?: number;
   agency?: Agency;
   roomID?: number;

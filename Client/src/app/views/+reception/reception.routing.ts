@@ -5,14 +5,13 @@ import { ReportReservationResolver } from './reservation-report/report-reservati
 import { ReservationReportComponent } from './reservation-report/reservation-report.component';
 import { Routes } from '@angular/router';
 import { ReservationsComponent } from './reservations/reservations.component';
-import { AuthGuard } from '@app/core/guards/core';
 import { CheckInComponent } from './check-in/check-in.component';
 import { CheckOutComponent } from './check-out/check-out.component';
-import { ServerTimeResolver } from '../common/server-time.resolver';
 import { CheckInResolver } from './check-in/check-in.resolver';
 import { NewReservationComponent } from './new-reservation/new-reservation.component';
 import { NewReservationResolver } from './new-reservation/new-reservation.resolver';
 import { CheckOutResolver } from './check-out/check-out.resolver';
+import { RoleGuard } from '@app/core/guards/core';
 
 export const ReceptionRoutes: Routes = [
   {
@@ -23,9 +22,8 @@ export const ReceptionRoutes: Routes = [
   {
     path: 'check-in',
     component: CheckInComponent,
-    canActivate: [AuthGuard],
-    canLoad: [AuthGuard],
-    data: { title: 'Check-In', },
+    canActivate: [RoleGuard],
+    data: { title: 'Check-In', expectedRole: ['Manager']},
     resolve: {
       CheckInPageData: CheckInResolver,
     }
@@ -33,9 +31,8 @@ export const ReceptionRoutes: Routes = [
   {
     path: 'check-out',
     component: CheckOutComponent,
-    canActivate: [AuthGuard],
-    canLoad: [AuthGuard],
-    data: { title: 'Check-Out', },
+    canActivate: [RoleGuard],
+    data: { title: 'Check-Out', expectedRole: ['Manager']},
     resolve: {
       CheckOutPageData: CheckOutResolver,
     }
@@ -43,9 +40,8 @@ export const ReceptionRoutes: Routes = [
   {
     path: 'new-reservation',
     component: NewReservationComponent,
-    canActivate: [AuthGuard],
-    canLoad: [AuthGuard],
-    data: { title: 'Nueva Reservación', },
+    canActivate: [RoleGuard],
+    data: { title: 'Nueva Reservación', expectedRole: ['Manager']},
     resolve: {
       NewReservationPageData: NewReservationResolver,
     }
@@ -53,15 +49,14 @@ export const ReceptionRoutes: Routes = [
   {
     path: 'reservations',
     component: ReservationsComponent,
-    canActivate: [AuthGuard],
-    canLoad: [AuthGuard],
-    data: { title: 'Reservaciones', },
+    canActivate: [RoleGuard],
+    data: { title: 'Reservaciones', expectedRole: ['Manager']},
   },
   {
     path: 'reservation-report',
     component: ReservationReportComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Reporte de Reservaciones' },
+    canActivate: [RoleGuard],
+    data: { title: 'Reporte de Reservaciones', expectedRole: ['Manager']},
     resolve: {
       reportReservation: ReportReservationResolver,
     }
@@ -69,8 +64,8 @@ export const ReceptionRoutes: Routes = [
   {
     path: 'emigration-report',
     component: EmigrationReportComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Reporte de Emigración' },
+    canActivate: [RoleGuard],
+    data: { title: 'Reporte de Emigración', expectedRole: ['Manager']},
     resolve: {
       reportReservation: EmigrationReservationResolver,
     }

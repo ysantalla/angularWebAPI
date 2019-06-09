@@ -1,0 +1,203 @@
+<section class="page-container">
+    <form [formGroup]="editForm" #f="ngForm" (ngSubmit)="onEdit()" class="form">
+        <mat-toolbar color="primary">
+          <h2 mat-dialog-title>Editar Reservación</h2>
+        </mat-toolbar>
+        <div style="overflow: inset!important;">
+
+          <br />
+
+          <h2 class="mat-h2"> Entrada: {{data.initDate | date:'medium'}} <-----> Salida: {{data.endDate | date:'medium'}}</h2>
+
+          <mat-form-field class="full-width">
+            <textarea matInput required formControlName="details" placeholder="Detalles"></textarea>
+          </mat-form-field>
+
+          <mat-form-field class="half-width">
+            <mat-select placeholder="Cambie la agencia" formControlName="agency" required>
+              <mat-option *ngFor="let agency of (agencies | async)?.list" [value]="agency.id">{{agency.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="half-width">
+            <mat-select placeholder="Cambie el cuarto" formControlName="room" required>
+              <mat-option *ngFor="let room of (rooms | async)?.list" [value]="room.id">{{room.number}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <mat-slide-toggle formControlName="checkIn"
+            class="example-margin">
+            checkin
+          </mat-slide-toggle>
+
+          <div class="container">
+
+            <div class="item">
+              <table mat-table [dataSource]="dataSource">
+                <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Name </th>
+                  <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <!-- Identification Column -->
+                <ng-container matColumnDef="identification">
+                  <th mat-header-cell *matHeaderCellDef> Identificación </th>
+                  <td mat-cell *matCellDef="let element"> {{element.identification}} </td>
+                </ng-container>
+
+                <!-- Phone Column -->
+                <ng-container matColumnDef="phone">
+                  <th mat-header-cell *matHeaderCellDef> Teléfono </th>
+                  <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+                </ng-container>
+
+                <!-- Delete Column -->
+                <ng-container matColumnDef="delete">
+                  <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button type="button"  mat-raised-button color="warn"
+                                    (click)="deleteGuest(data.id, element.id)" >
+                      <mat-icon>clear</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['name', 'identification', 'phone', 'delete']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['name', 'identification', 'phone', 'delete'];"></tr>
+              </table>
+
+              <mat-paginator [pageSizeOptions]="[5]" [length]="data.guestReservations.length"></mat-paginator>
+            </div>
+            <div class="item">
+
+              <mat-tab-group>
+                <mat-tab label="Buscar Huésped">
+                    <div class="guest-search-container" style="margin-top: 8px;">
+                        <mat-form-field class="guest-mat-form-field">
+                            <input matInput #guestSearch placeholder="Identificación" (keyup)="this.searchedGuest = null">
+                        </mat-form-field>
+                        <button type="button" mat-raised-button color="primary"
+                                style="margin-left: 8px;"
+                                [disabled]="guestSearch.value == ''"
+                                (click)="onSearchGuest(guestSearch.value)">
+                            <mat-icon aria-hidden="false" aria-label="Search guest">search</mat-icon>
+                        </button>
+                    </div>
+
+                    <table  class="guest-info-table full-width"
+                            *ngIf="this.searchedGuest">
+                        <tr>
+                          <td class="guest-info-table-labels">Identificación:</td>
+                          <td class="guest-info-table-values">{{searchedGuest.identification}}</td>
+                        </tr>
+                        <tr>
+                          <td class="guest-info-table-labels">Nombre:</td>
+                          <td class="guest-info-table-values">{{searchedGuest.name}}</td>
+                        </tr>
+                        <tr>
+                          <td class="guest-info-table-labels">País:</td>
+                          <td class="guest-info-table-values">{{searchedGuest.country.name}}</td>
+                        </tr>
+                        <tr>
+                          <td class="guest-info-table-labels">Ciudadanía:</td>
+                          <td class="guest-info-table-values">{{searchedGuest.citizenship.name}}</td>
+                        </tr>
+                        <tr>
+                          <td class="guest-info-table-labels">Teléfono:</td>
+                          <td class="guest-info-table-values">{{searchedGuest.phone}}</td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td>
+                              <div class="select-guest-button-container" *ngIf="this.searchedGuest">
+                                  <button type="button" mat-raised-button color="accent"
+                                          style="margin-left: 8px;"
+                                          (click)="onSelectGuest()">
+                                      <mat-icon aria-hidden="false">arrow_back</mat-icon>
+                                      Seleccionar
+                                  </button>
+                              </div>
+                          </td>
+                        </tr>
+                    </table>
+
+                    <div class="guest-info-table guest-info-table-empty" *ngIf="this.searchedGuest == null">
+                      <div>No hay resultados</div>
+                    </div>
+
+                </mat-tab>
+
+                <mat-tab label="Nuevo Huéspued">
+                  <div  class="full-width"
+                        style="display: flex;
+                                flex-direction: columns;
+                                align-items: center;
+                                margin-top: 8px;
+                                ">
+
+                    <form [formGroup]="newGuestForm" style="max-width: 400px;">
+                      <mat-form-field class="full-width">
+                        <input  matInput formControlName="identificationControl"
+                                placeholder="Identificación" required>
+                      </mat-form-field>
+
+                      <mat-form-field class="full-width">
+                        <input  matInput formControlName="nameControl"
+                                placeholder="Nombre" required>
+                      </mat-form-field>
+
+                      <mat-form-field class="full-width">
+                        <input  matInput formControlName="phoneControl"
+                                placeholder="Teléfono" required>
+                      </mat-form-field>
+
+                      <mat-form-field class="full-width">
+                        <mat-select formControlName="countryControl">
+                          <mat-option *ngFor="let country of (countries | async)?.list" [value]="country.id">
+                            {{country.name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+
+                      <mat-form-field class="full-width">
+                        <mat-select formControlName="citizenshipControl">
+                          <mat-option *ngFor="let citizenship of (citizenships | async)?.list" [value]="citizenship.id">
+                            {{citizenship.name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+
+                      <button mat-raised-button color="primary"
+                              [disabled]="newGuestForm.invalid || disableRegisterButton"
+                              (click)="onRegisterGuest()">
+                          <mat-icon aria-hidden="false"
+                                    aria-label="register guest">add</mat-icon>
+                          Registrar Huésped
+                      </button>
+                    </form>
+                  </div>
+                </mat-tab>
+
+              </mat-tab-group>
+            </div>
+          </div>
+        </div>
+        <mat-dialog-actions>
+          <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+          <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid" aria-label="edit">
+            <mat-icon>mode_edit</mat-icon>
+            <span>Reservación</span>
+          </button>
+
+          <button mat-button mat-dialog-close>Cancelar</button>
+
+
+        </mat-dialog-actions>
+      </form>
+
+</section>

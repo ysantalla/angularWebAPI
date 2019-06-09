@@ -107,9 +107,9 @@
                   <div class="new-reservation-agency-selector-container">
                       <div class="inside-stepper-label">Seleccione la Agencia</div>
                       <mat-form-field class="full-width">
-                        <mat-select [(value)]="selectedAgencyId">
+                        <mat-select [(value)]="agency">
                           <mat-option value="0">Ninguna</mat-option>
-                          <mat-option *ngFor="let agency of agencies" [value]="agency.id">
+                          <mat-option *ngFor="let agency of agencies" [value]="agency">
                             {{agency.name}}
                           </mat-option>
                         </mat-select>
@@ -285,17 +285,70 @@
 
         <mat-step [completed]="true">
             <ng-template matStepLabel>Fin</ng-template>
-            <div class="new-reservation-step">
+              <div class="reservation-container">
+                <h2 class="mat-h2">¿Estás seguro que la información es correcta?</h2>
 
+                <mat-grid-list cols="2" rowHeight="60">
+                  <mat-grid-tile><h3 class="mat-h3">Fecha de Entrada:</h3></mat-grid-tile>
+                  <mat-grid-tile><h4 class="mat-h4"> {{selectedInitialDate | date: 'medium'}} </h4></mat-grid-tile>
+                  <mat-grid-tile><h3 class="mat-h3">Fecha de Salida:</h3></mat-grid-tile>
+                  <mat-grid-tile><h4 class="mat-h4"> {{selectedFinalDate | date: 'medium'}} </h4></mat-grid-tile>
+                  <mat-grid-tile><h3 class="mat-h3">Estado de la entrada:</h3></mat-grid-tile>
+                  <mat-grid-tile><h4 class="mat-h4">No chequeda</h4></mat-grid-tile>
+                  <mat-grid-tile><h3 class="mat-h3">Estado de la salida:</h3></mat-grid-tile>
+                  <mat-grid-tile><h4 class="mat-h4">No chequeda</h4></mat-grid-tile>
+                  <mat-grid-tile><h3 class="mat-h3">Número de cuarto:</h3></mat-grid-tile>
+                  <mat-grid-tile *ngIf="room"><h4 class="mat-h4"> {{room.number}}</h4></mat-grid-tile>
+                  <mat-grid-tile><h3 class="mat-h3">Nomber de la Agencia:</h3></mat-grid-tile>
+                  <mat-grid-tile *ngIf="agency"><h4 class="mat-h4"> {{agency.name}}</h4></mat-grid-tile>
+                  <mat-grid-tile><h3 class="mat-h3">Detalles de la reservación:</h3></mat-grid-tile>
+                  <mat-grid-tile><h4 class="mat-h4"> {{details}}</h4></mat-grid-tile>
 
-                <button mat-raised-button
-                        color="primary"
-                        mat- aria-label="create reservation"
-                        [disabled]="this.form.invalid || disableCreateReservationButton"
-                        (click)="onCreateReservation()">
-                  <mat-icon>add</mat-icon> Registrar reservación
-                </button>
-            </div>
+                </mat-grid-list>
+
+                <h1 class="mat-h1">Huéspedes:</h1>
+
+                <mat-divider></mat-divider>
+
+                <mat-grid-list *ngFor="let guest of selectedGuests"  cols="5" rowHeight="60px">
+                  <mat-grid-tile
+                      [colspan]="2"
+                      [rowspan]="1">
+                      <h2 class="mat-h2">Nombre: {{guest.name}}</h2>
+                  </mat-grid-tile>
+                  <mat-grid-tile
+                      [colspan]="1"
+                      [rowspan]="1">
+                      <h2 class="mat-h2">Identificación: {{guest.identification}}</h2>
+                  </mat-grid-tile>
+                  <mat-grid-tile
+                      [colspan]="1"
+                      [rowspan]="1">
+                      <h2 class="mat-h2">Ciudadanía: {{guest.citizenship.name}}</h2>
+                  </mat-grid-tile>
+                  <mat-grid-tile
+                      [colspan]="1"
+                      [rowspan]="1">
+                      <h2 class="mat-h2">Teléfono: {{guest.phone}}</h2>
+                  </mat-grid-tile>
+                  <mat-divider></mat-divider>
+
+                </mat-grid-list>
+
+                <mat-divider></mat-divider>
+
+                <br />
+
+                <div class="item">
+                  <button mat-raised-button
+                          color="primary"
+                          mat- aria-label="create reservation"
+                          [disabled]="this.form.invalid || disableCreateReservationButton"
+                          (click)="onCreateReservation()">
+                    <mat-icon>add</mat-icon> Registrar reservación
+                  </button>
+                </div>
+              </div>
         </mat-step>
 
       </mat-horizontal-stepper>

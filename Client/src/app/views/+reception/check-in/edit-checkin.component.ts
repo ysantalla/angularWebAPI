@@ -1,69 +1,15 @@
-import { ApiReservationService } from './../../../core/services/api/api-reservation.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Room } from './../../../core/models/room.model';
-import { ApiRoomService } from './../../../core/services/api/api-room.service';
-import { Reservation, Agency } from '@app/core/models/core';
-import {Component, Inject, OnInit} from '@angular/core';
-import { MAT_DIALOG_DATA, MatSnackBar, MatDialogRef } from '@angular/material';
+import { Reservation, Agency, Guest, Country, Citizenship, Paginator, GuestFilter, Room } from '@app/core/models/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import { MAT_DIALOG_DATA, MatSnackBar, MatDialogRef, MatPaginator, MatTableDataSource } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
+import { ListAndCount, ApiAgencyService, ApiRoomService, ApiReservationService, ApiGuestService, ApiCountryService, ApiCitizenshipService } from '@app/core/services/core';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-edit-checkin',
-  template: `
-    <form [formGroup]="editForm" #f="ngForm" (ngSubmit)="onEdit()" class="form">
-      <mat-toolbar color="primary">
-        <h2 mat-dialog-title>Editar Reservación</h2>
-      </mat-toolbar>
-      <div style="overflow: inset!important;">
-
-        <br />
-
-        <h2 class="mat-h2"> Entrada: {{data.initDate | date:'medium'}} <-----> Salida: {{data.endDate | date:'medium'}}</h2>
-
-        <mat-form-field class="full-width">
-          <textarea matInput required formControlName="details" placeholder="Detalles"></textarea>
-        </mat-form-field>
-
-        <mat-form-field class="half-width">
-          <mat-select placeholder="Cambie la agencia" formControlName="agency" required>
-            <mat-option *ngFor="let agency of (agencies | async)?.list" [value]="agency.id">{{agency.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="half-width">
-          <mat-select placeholder="Cambie el cuarto" formControlName="room" required>
-            <mat-option *ngFor="let room of (rooms | async)?.list" [value]="room.id">{{room.number}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-
-        <mat-slide-toggle formControlName="checkIn"
-          class="example-margin">
-          checkin
-        </mat-slide-toggle>
-
-        <mat-chip-list class="mat-chip-list-stacked" aria-label="">
-          <mat-chip *ngFor="let item of data.guestReservations" selected color="accent">
-            {{item.guest.name}}
-          </mat-chip>
-        </mat-chip-list>
-
-      </div>
-      <mat-dialog-actions>
-        <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-        <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid" aria-label="edit">
-          <mat-icon>mode_edit</mat-icon>
-          <span>Reservación</span>
-        </button>
-
-        <button mat-button mat-dialog-close>Cancelar</button>
-
-
-      </mat-dialog-actions>
-    </form>
-  `,
+  templateUrl: './edit-checkin.component.html',
   styles: [`
     .full-width {
       width: 100%;
@@ -74,24 +20,49 @@ import { ListAndCount, ApiAgencyService } from '@app/core/services/core';
       margin: 1%;
     }
 
+    .container {
+      width: 100%;
+    }
+
+    .item {
+      width: 50%;
+      padding: 10px;
+    }
+
 
   `]
 })
 export class EditCheckInComponent implements OnInit {
 
   editForm: FormGroup;
+  newGuestForm: FormGroup;
 
   loading = false;
 
   agencies: Observable<ListAndCount<Agency>>;
   rooms: Observable<ListAndCount<Room>>;
 
+  countries: Observable<ListAndCount<Country>>;
+  citizenships: Observable<ListAndCount<Citizenship>>;
+
+  disableRegisterButton = false;
+  selectedGuests: Guest[] = [];
+
+  searchedGuest: Guest = null;
+  dataSource = new MatTableDataSource<Guest>();
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Reservation,
     private formBuilder: FormBuilder,
     private apiAgency: ApiAgencyService,
     private apiRoom: ApiRoomService,
+    private apiReservation: ApiReservationService,
     private api: ApiReservationService,
+    private apiCountry: ApiCountryService,
+    private apiCitizenship: ApiCitizenshipService,
+    private apiGuests: ApiGuestService,
     private snackBar: MatSnackBar,
     private dialogRef: MatDialogRef<EditCheckInComponent>,
   ) { }
@@ -100,6 +71,9 @@ export class EditCheckInComponent implements OnInit {
 
     this.agencies = this.apiAgency.List();
     this.rooms = this.apiRoom.List();
+
+    this.citizenships = this.apiCitizenship.List();
+    this.countries = this.apiCountry.List();
 
     this.editForm = this.formBuilder.group({
       details: ['', Validators.required],
@@ -115,6 +89,25 @@ export class EditCheckInComponent implements OnInit {
       checkIn: this.data.checkIn
     });
 
+    this.newGuestForm = this.formBuilder.group({
+      identificationControl: ['', Validators.required],
+      nameControl: ['', Validators.required],
+      countryControl: ['', Validators.required],
+      citizenshipControl: ['', Validators.required],
+      phoneControl: ['', Validators.required],
+    });
+
+    this.selectedGuests = this.data.guestReservations.map((data: any) => {
+      return {
+        id: data.guest.id,
+        name: data.guest.name,
+        phone: data.guest.phone,
+        identification: data.guest.identification
+      };
+    });
+
+    this.dataSource.data = this.selectedGuests;
+    this.dataSource.paginator = this.paginator;
   }
 
   onEdit(): void {
@@ -149,9 +142,108 @@ export class EditCheckInComponent implements OnInit {
         }
       }, (error: HttpErrorResponse
         ) => {
+          this.editForm.enable();
         this.snackBar.open(error.error, 'X', {duration: 3000});
       });
     }
+  }
+
+  deleteGuest(reservationId: number, guestId: number): void {
+
+    if (this.selectedGuests.length === 1) {
+      this.snackBar.open('Error tiene que haber al menos un huésped en la reservación', 'X', {duration: 3000});
+    } else if (this.selectedGuests.length > 1) {
+      this.apiReservation.DeleteGuestByReservationId(reservationId, guestId).subscribe(data => {
+        if (data.succeeded) {
+          this.snackBar.open('Huésped eliminado correctamente', 'X', {duration: 3000});
+          this.selectedGuests = this.selectedGuests.filter((x: Guest) => x.id !== guestId);
+          this.dataSource.data = this.selectedGuests;
+        }
+      }, (error: HttpErrorResponse) => {
+        this.snackBar.open(error.error, 'X', {duration: 3000});
+      });
+    } else {
+      this.snackBar.open('Opss!!! Error', 'X', {duration: 3000});
+    }
+  }
+
+  onSearchGuest(identification: string): void {
+    console.log('onSearchGuest: ', identification);
+
+    this.searchedGuest = null;
+    this.apiGuests.List(
+      new GuestFilter(
+        '', null, null, identification, new Paginator(0, 10), null
+      )
+    ).subscribe(
+      (guests) => {
+        if ( guests.cnt === 1 ) {
+          this.searchedGuest = guests.list[0];
+        }
+      }
+    );
+  }
+
+  onSelectGuest(): void {
+    if ( isNullOrUndefined(this.searchedGuest) ) {
+        this.snackBar.open('Error huésped seleccionado no puede ser null', 'X', {duration: 3000});
+        this.searchedGuest = null;
+        return;
+    }
+
+    if (this.selectedGuests.some((x: any) => x.id === this.searchedGuest.id))  {
+      this.snackBar.open('Este huésped se encuentra seleccionado', 'X', {duration: 3000});
+      this.searchedGuest = null;
+    } else {
+      this.apiReservation.PutGuestByReservationId(this.data.id, this.searchedGuest.id).subscribe(data => {
+        if (data.succeeded) {
+          this.snackBar.open('Huésped seleccionado correctamente', 'X', {duration: 3000});
+          this.selectedGuests.push(this.searchedGuest);
+          this.dataSource.data = this.selectedGuests;
+          this.searchedGuest = null;
+        }
+      }, (error: HttpErrorResponse) => {
+        this.snackBar.open(error.error, 'X', {duration: 3000});
+        this.searchedGuest = null;
+      });
+    }
+  }
+
+  onRegisterGuest(): void {
+    if ( this.newGuestForm.invalid ) {
+      return;
+    }
+
+    this.disableRegisterButton = true;
+
+    const gf = this.newGuestForm.value;
+
+    const guest: Guest = {
+      id: 0,
+      identification: gf.identificationControl,
+      name: gf.nameControl,
+      phone: gf.phoneControl,
+      countryID: gf.countryControl,
+      citizenshipID: gf.citizenshipControl
+    };
+
+    this.apiGuests.Create(guest).subscribe(
+      (data) => {
+        if (data.succeeded) {
+          this.snackBar.open(
+            'El huésped fue registrado satisfactoriamente',
+            'X',
+            {duration: 3000}
+          );
+          this.disableRegisterButton = false;
+          this.newGuestForm.reset();
+        }
+        this.disableRegisterButton = false;
+      },
+      (_) => {
+        this.disableRegisterButton = false;
+      }
+    );
   }
 
 }
