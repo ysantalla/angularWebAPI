@@ -49,8 +49,56 @@ namespace Server.Services
                 Reservation.RoomID = model.RoomID;
                 Reservation.CheckIn = model.CheckIn;
                 Reservation.CheckOut = model.CheckOut;
-                
-                await context.SaveChangesAsync();
+
+                await context.SaveChangesAsync();         
+
+               
+            };
+            return await Process.RunAsync(action);
+        }
+
+         public async Task<ProcessResult> CreateReservationAsync(Reservation model, IList<Guest> guestModel)
+        {
+            Func<Task> action = async () =>
+            {
+                model.InitDate = new DateTime(model.InitDate.Year, model.InitDate.Month, model.InitDate.Day, 9, 0, 0);
+                model.EndDate = new DateTime(model.EndDate.Year, model.EndDate.Month, model.EndDate.Day, 8, 59, 59);
+
+                if ( model.EndDate < model.InitDate ) {
+                    throw new InvalidOperationException("La fecha de terminación no puede ser antes de la fecha de inicio");
+                }
+
+                IQueryable<Reservation> q = context.Reservations;
+                q = q.Where(r => r.RoomID == model.RoomID && !(r.EndDate.CompareTo(model.InitDate) < 0 || model.EndDate.CompareTo(r.InitDate) < 0));
+                int cnt = await q.CountAsync();
+                if (cnt > 0)
+                {
+                    throw new InvalidOperationException("Existe un conflicto con otra reservación");
+                }
+
+                var ReservationEntity = await GetOrCreateEntityAsync(context.Reservations, x => x.Id == model.Id);
+                var Reservation = ReservationEntity.result;
+
+                Reservation.Details = model.Details;
+                Reservation.InitDate = model.InitDate;
+                Reservation.EndDate = model.EndDate;
+                Reservation.AgencyID = model.AgencyID;
+                Reservation.RoomID = model.RoomID;
+                Reservation.CheckIn = model.CheckIn;
+                Reservation.CheckOut = model.CheckOut;
+
+                foreach (var item in guestModel)
+                {
+                    GuestReservation gr = new GuestReservation();
+
+                    gr.GuestId = item.Id;
+                    gr.ReservationId = Reservation.Id;
+
+                    await context.GuestReservations.AddAsync(gr);
+                    
+                }              
+               
+                await context.SaveChangesAsync();                 
             };
             return await Process.RunAsync(action);
         }

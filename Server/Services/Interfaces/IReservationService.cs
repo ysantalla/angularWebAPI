@@ -9,6 +9,8 @@ namespace Server.Services.Interfaces
     {
          Task<ProcessResult> AddGuestAsync(long reservationId, long guestId);
 
+         Task<ProcessResult> CreateReservationAsync(Reservation model, IList<Guest> guestModel);
+
          Task<ProcessResult> RemoveGuestAsync(long reservationId, long guestId);
     }
 }

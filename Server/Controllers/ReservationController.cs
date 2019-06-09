@@ -31,12 +31,22 @@ namespace Server.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [Authorize(Roles = "Admin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Create([FromBody]Reservation model)
+        public async Task<IActionResult> Create([FromBody]ReservationViewModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);            
+                return BadRequest(ModelState);     
 
-            var result = await _ReservationService.CreateAsync(model);
+            Reservation reservation = new Reservation();
+
+            reservation.AgencyID = model.agencyID;
+            reservation.RoomID = model.roomID;
+            reservation.InitDate = model.InitDate;
+            reservation.EndDate = model.EndDate;
+            reservation.Details = model.Details;
+            reservation.CheckIn = model.CheckIn;
+            reservation.CheckOut = model.CheckOut;    
+
+            var result = await _ReservationService.CreateReservationAsync(reservation, model.guests);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
             return Ok(result);
