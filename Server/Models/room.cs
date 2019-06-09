@@ -16,6 +16,8 @@ namespace Server.Models
         public int BedCont { get; set; }
 
         public double VPN { get; set; }
+        public long CurrencyID {get; set;}
+        public Currency Currency { get; set; }
 
     }
 

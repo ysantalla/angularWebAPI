@@ -40,6 +40,7 @@ namespace Server.Services
                 Room.Capacity = model.Capacity;
                 Room.BedCont = model.BedCont;
                 Room.VPN = model.VPN;
+                Room.CurrencyID = model.CurrencyID;
 
                 await context.SaveChangesAsync();
             };
@@ -78,6 +79,7 @@ namespace Server.Services
                 Room.Capacity = model.Capacity;
                 Room.BedCont = model.BedCont;
                 Room.VPN = model.VPN;
+                Room.CurrencyID = model.CurrencyID;
 
                 await context.SaveChangesAsync();
             };
@@ -143,29 +145,30 @@ namespace Server.Services
 
             List<FreeRoom> frooms = new List<FreeRoom>();
 
-            for ( int i = 0; i < rooms.Count; i++ ) {
-                Room room = rooms[i];
-
-                var cnt = await context.Reservations.Where(
-                    o => o.RoomID == room.Id && initialDate < o.EndDate
-                ).CountAsync();
-
-                if ( cnt == 0 ) {
-                    frooms.Add( new FreeRoom(room, 1000000) );
-                }
-                else if ( cnt > 0 ) {
-                    Reservation r = await context.Reservations.Where(
-                        o => o.InitDate > initialDate || o.EndDate > initialDate
-                    ).FirstAsync();
-                
-                    if ( r.InitDate > initialDate ) {
-                        frooms.Add(new FreeRoom( room, r.InitDate.Subtract(initialDate).Days ));
-                    }
-                }
-            }
+            
 
             Func<Task<List<FreeRoom>>> action = async () =>
             {
+                for ( int i = 0; i < rooms.Count; i++ ) {
+                    Room room = rooms[i];
+
+                    var cnt = await context.Reservations.Where(
+                        o => o.RoomID == room.Id && initialDate < o.EndDate
+                    ).CountAsync();
+
+                    if ( cnt == 0 ) {
+                        frooms.Add( new FreeRoom(room, 1000000) );
+                    }
+                    else if ( cnt > 0 ) {
+                        Reservation r = await context.Reservations.Where(
+                            o => o.InitDate > initialDate || o.EndDate > initialDate
+                        ).FirstAsync();
+                    
+                        if ( r.InitDate > initialDate ) {
+                            frooms.Add(new FreeRoom( room, r.InitDate.Subtract(initialDate).Days ));
+                        }
+                    }
+                }
                 return frooms;
             };
 
@@ -173,6 +176,7 @@ namespace Server.Services
         }
 
         private IQueryable<Room> SetIncludes(IQueryable<Room> q){
+            q = q.Include(s => s.Currency);
             return q;
         }
 
@@ -193,6 +197,9 @@ namespace Server.Services
                 }
                 else if ( ob.by == "VPN" ) {
                     q = q.OrderBy(s => s.VPN);
+                }
+                else if ( ob.by == "currencyId" ) {
+                    q = q.OrderBy(s => s.CurrencyID);
                 } 
                 else {
                     q = q.OrderBy(s => s.Id);
@@ -210,7 +217,10 @@ namespace Server.Services
                 }
                 else if ( ob.by == "VPN" ) {
                     q = q.OrderByDescending(s => s.VPN);
-                } 
+                }
+                else if ( ob.by == "currencyId" ) {
+                    q = q.OrderByDescending(s => s.CurrencyID);
+                }
                 else {
                     q = q.OrderByDescending(s => s.Id);
                 }
@@ -237,6 +247,9 @@ namespace Server.Services
             }
             if (f.VPN > 0) {
                 q = q.Where( s => s.VPN == f.VPN );
+            }
+            if (f.CurrencyId != 0) {
+                q = q.Where( s => s.CurrencyID == f.CurrencyId );
             }
             return q;
         }

@@ -11,5 +11,8 @@ namespace Server.ViewModels
         public int BedCont { get; set; }
 
         public double VPN { get; set; }
+
+        public long CurrencyId { get; set; }
+
     }
 }

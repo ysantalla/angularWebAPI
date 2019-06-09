@@ -166,6 +166,7 @@ namespace Server
             services.AddTransient<ICitizenshipService, CitizenshipService>();
             services.AddTransient<ICurrencyService, CurrencyService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IGuestService, GuestService>();
             services.AddTransient<IAgencyService, AgencyService>();
             services.AddTransient<IInvoiceService, InvoiceService>();
