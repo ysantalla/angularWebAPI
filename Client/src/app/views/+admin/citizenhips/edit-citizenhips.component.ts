@@ -92,7 +92,7 @@ export class EditCitizenhipsComponent implements OnInit {
 
     this.loading = true;
 
-    this.httpClient.get(`${env.serverUrl}/citizenhips/${this.itemId}`).subscribe((data: any) => {
+    this.httpClient.get(`${env.serverUrl}/citizenships/${this.itemId}`).subscribe((data: any) => {
       this.loading = false;
 
       this.editForm.patchValue({
@@ -109,7 +109,7 @@ export class EditCitizenhipsComponent implements OnInit {
     if (this.editForm.valid) {
       this.editForm.disable();
 
-      this.httpClient.patch(`${env.serverUrl}/citizenhips/${this.itemId}`, {
+      this.httpClient.patch(`${env.serverUrl}/citizenships/${this.itemId}`, {
         name: this.editForm.value.name
       }).subscribe((data: any) => {
 

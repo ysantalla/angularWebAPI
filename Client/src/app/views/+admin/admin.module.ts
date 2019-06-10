@@ -30,12 +30,7 @@ import { RoomResolver } from './resolvers/room.resolver';
 import { EditCitizenhipsComponent } from './citizenhips/edit-citizenhips.component';
 import { AddCitizenhipsComponent } from './citizenhips/add-citizenhips.component';
 import { ListCitizenhipsComponent } from './citizenhips/list-citizenhips.component';
-import {
-  ListReservationComponent,
-  ReservationListResolver,
-  AddReservationComponent,
-  AddReservationResolver
-} from './reservation/core';
+
 import {
   Paginator,
   ReservationFilter
@@ -178,33 +173,6 @@ const routes: Routes = [
     component: EditCitizenhipsComponent,
     data: {title: 'Editar Ciudadanía', expectedRole: ['Admin']},
     canActivate: [RoleGuard],
-  },
-  {
-    path: 'reservations',
-    component: ListReservationComponent,
-    data: {
-      title: 'Listado de Reservaciones', expectedRole: ['Admin'],
-      filter: new ReservationFilter(
-        '',
-        null, null, null, null,
-        null, null,
-        new Paginator(0, 20),
-        null
-      )
-    },
-    canActivate: [RoleGuard],
-    resolve: {
-      data: ReservationListResolver
-    }
-  },
-  {
-    path: 'reservations/add',
-    component: AddReservationComponent,
-    data: {title: 'Adicionar Reservación', expectedRole: ['Admin']},
-    canActivate: [RoleGuard],
-    resolve: {
-      resolverData: AddReservationResolver
-    }
   }
 ];
 
@@ -222,8 +190,7 @@ const routes: Routes = [
     ListCountryComponent, AddCountryComponent, EditCountryComponent,
     ListCurrencyComponent, AddCurrencyComponent, EditCurrencyComponent,
     ListCitizenhipsComponent, AddCitizenhipsComponent, EditCitizenhipsComponent,
-    ListRoomComponent, AddRoomComponent, EditRoomComponent,
-    ListReservationComponent, AddReservationComponent
+    ListRoomComponent, AddRoomComponent, EditRoomComponent
   ],
   providers: [
     UserResolver,
@@ -231,8 +198,6 @@ const routes: Routes = [
     CountryResolver,
     RoomResolver,
     CitizenhipsResolver,
-    ReservationListResolver,
-    AddReservationResolver,
     CurrencyResolver
   ]
 })

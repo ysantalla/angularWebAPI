@@ -12,6 +12,9 @@ import { NewReservationComponent } from './new-reservation/new-reservation.compo
 import { NewReservationResolver } from './new-reservation/new-reservation.resolver';
 import { CheckOutResolver } from './check-out/check-out.resolver';
 import { RoleGuard } from '@app/core/guards/core';
+import { ReservationsResolver } from './reservations/reservations.resolver';
+import { InvoiceResolver } from './invoice/invoice.resolver';
+import { InvoiceComponent } from './invoice/invoice.component';
 
 export const ReceptionRoutes: Routes = [
   {
@@ -51,6 +54,9 @@ export const ReceptionRoutes: Routes = [
     component: ReservationsComponent,
     canActivate: [RoleGuard],
     data: { title: 'Reservaciones', expectedRole: ['Manager']},
+    resolve: {
+      ReservationsResolver: ReservationsResolver
+    }
   },
   {
     path: 'reservation-report',
@@ -70,4 +76,13 @@ export const ReceptionRoutes: Routes = [
       reportReservation: EmigrationReservationResolver,
     }
   },
+  {
+    path: 'invoice',
+    component: InvoiceComponent,
+    canActivate: [RoleGuard],
+    data: { title: 'Reporte Facturas', expectedRole: ['Manager']},
+    resolve: {
+      invoice: InvoiceResolver,
+    }
+  }
 ];

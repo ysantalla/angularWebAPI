@@ -115,6 +115,10 @@ export class EditCheckOutComponent implements OnInit {
       checkOut: this.data.checkOut
     });
 
+    if (this.data.checkOut || this.data.checkIn === false) {
+      this.editForm.disable();
+    }
+
     this.dataSource.data = this.data.guestReservations;
 
     this.dataSource.paginator = this.paginator;

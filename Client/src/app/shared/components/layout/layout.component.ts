@@ -33,13 +33,13 @@ import { Menu } from '@app/core/models/menu.model';
 
         <app-nav-menu [items]="managerMenu" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
 
-        <app-nav-menu [items]="reservations" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+        <app-nav-menu [items]="reservations" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
 
-        <app-nav-menu [items]="newReservation" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+        <app-nav-menu [items]="newReservation" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
 
-        <app-nav-menu [items]="checkIn" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+        <app-nav-menu [items]="checkIn" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
 
-        <app-nav-menu [items]="checkOut" *ngIf="isLoggedIn$ | async"></app-nav-menu>
+        <app-nav-menu [items]="checkOut" *ngIf="isManager$.asObservable() | async"></app-nav-menu>
 
         </mat-sidenav>
       <mat-sidenav-content>
@@ -287,11 +287,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       icon: 'local_activity',
       pages: [
         {
-          heading: 'Administrar Reservaciones',
-          link: '/admin/reservations',
-          icon: 'room_service'
-        },
-        {
           heading: 'Reporte de Reservación',
           link: '/reception/reservation-report',
           icon: 'list'
@@ -299,6 +294,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
         {
           heading: 'Reporte de Emigración',
           link: '/reception/emigration-report',
+          icon: 'list'
+        },
+        {
+          heading: 'Reporte Facturas',
+          link: '/reception/invoice',
           icon: 'list'
         }
       ]

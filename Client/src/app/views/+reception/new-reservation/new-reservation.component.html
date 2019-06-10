@@ -298,7 +298,7 @@
                   <mat-grid-tile><h3 class="mat-h3">Estado de la salida:</h3></mat-grid-tile>
                   <mat-grid-tile><h4 class="mat-h4">No chequeda</h4></mat-grid-tile>
                   <mat-grid-tile><h3 class="mat-h3">Número de cuarto:</h3></mat-grid-tile>
-                  <mat-grid-tile *ngIf="room"><h4 class="mat-h4"> {{room.number}}</h4></mat-grid-tile>
+                  <mat-grid-tile *ngIf="room"><h4 class="mat-h4">No. {{room.number}} <----> Capacidad: {{room.capacity}}</h4></mat-grid-tile>
                   <mat-grid-tile><h3 class="mat-h3">Nomber de la Agencia:</h3></mat-grid-tile>
                   <mat-grid-tile *ngIf="agency"><h4 class="mat-h4"> {{agency.name}}</h4></mat-grid-tile>
                   <mat-grid-tile><h3 class="mat-h3">Detalles de la reservación:</h3></mat-grid-tile>

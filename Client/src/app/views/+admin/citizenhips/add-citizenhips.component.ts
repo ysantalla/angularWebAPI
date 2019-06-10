@@ -92,7 +92,7 @@ export class AddCitizenhipsComponent implements OnInit {
     if (this.createForm.valid) {
       this.createForm.disable();
 
-      this.httpClient.post(`${env.serverUrl}/citizenhips`, {
+      this.httpClient.post(`${env.serverUrl}/citizenships`, {
         name: this.createForm.value.name
       }).subscribe((data: any) => {
 

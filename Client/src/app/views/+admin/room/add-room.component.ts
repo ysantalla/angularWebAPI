@@ -1,3 +1,4 @@
+import { Currency } from './../../../core/models/currency.model';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
@@ -5,6 +6,8 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { environment as env } from '@env/environment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -85,6 +88,14 @@ import { environment as env } from '@env/environment';
                 />
               </mat-form-field>
 
+              <mat-form-field class="full-width">
+                <mat-select placeholder="Escoja un tipo de moneda" formControlName="currency" required>
+                  <mat-option *ngFor="let currency of currencies | async" [value]="currency.id">
+                    {{currency.name}} --- {{currency.symbol}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
               </mat-card-content>
               <mat-card-actions>
                 <button mat-raised-button color="primary" type="submit" [disabled]="!createForm.valid" aria-label="create">
@@ -108,12 +119,18 @@ import { environment as env } from '@env/environment';
     .full-width {
       width: 100%;
     }
+
+    .item {
+      width: 70%;
+    }
   `]
 })
 export class AddRoomComponent implements OnInit {
 
   createForm: FormGroup;
   loading = false;
+
+  currencies: Observable<Currency[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -129,8 +146,16 @@ export class AddRoomComponent implements OnInit {
       description: ['', Validators.required],
       capacity: [1, [Validators.required, Validators.min(1)]],
       bedCont: [1, [Validators.required, Validators.min(1)]],
-      VPN: [1, [Validators.required, Validators.min(1)]]
+      VPN: [1, [Validators.required, Validators.min(1)]],
+      currency: ['', Validators.required]
     });
+
+    this.currencies = this.httpClient.get<Currency[]>(`${env.serverUrl}/currencies`).pipe(map((data: any) => {
+      if (data.value) {
+        return data.value;
+      }
+      return [];
+    }));
   }
 
   onCreateRoom(): void {
@@ -144,7 +169,8 @@ export class AddRoomComponent implements OnInit {
         description: this.createForm.value.description,
         capacity: this.createForm.value.capacity,
         bedCont: this.createForm.value.bedCont,
-        VPN: this.createForm.value.VPN
+        VPN: this.createForm.value.VPN,
+        currencyID: this.createForm.value.currency
       }).subscribe((data: any) => {
 
         if (data.succeeded) {

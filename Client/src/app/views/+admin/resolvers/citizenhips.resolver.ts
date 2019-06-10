@@ -12,6 +12,6 @@ export class CitizenhipsResolver implements Resolve<any[]> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<any[]> {
     return this.httpClient.get<any>(
-      `${env.serverUrl}/citizenhips?filter.SearchString=&paginator.offset=0&paginator.limit=20&orderBy.by=name&orderBy.desc=false`);
+      `${env.serverUrl}/citizenships?filter.searchString=&paginator.offset=0&paginator.limit=20&orderBy.by=name&orderBy.desc=false`);
   }
 }

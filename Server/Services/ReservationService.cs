@@ -18,6 +18,7 @@ namespace Server.Services
                               ApplicationDbContext context)
             : base(userManager, contextAccessor, context)
         {
+
         }
 
         public async Task<ProcessResult> CreateAsync(Reservation model)
@@ -96,7 +97,7 @@ namespace Server.Services
 
                     await context.GuestReservations.AddAsync(gr);
                     
-                }              
+                }                           
                
                 await context.SaveChangesAsync();                 
             };
@@ -147,6 +148,52 @@ namespace Server.Services
                 Reservation.RoomID = model.RoomID;
                 Reservation.CheckIn = model.CheckIn;
                 Reservation.CheckOut = model.CheckOut;
+
+                var invoiceCount = await context.Invoices.Where(x => x.ReservationID == Reservation.Id).CountAsync();   
+
+                var InvoiceEntity = await GetOrCreateEntityAsync(context.Invoices, x => x.ReservationID == Reservation.Id);
+                var Invoice = InvoiceEntity.result;             
+
+                if (model.CheckIn && model.CheckOut) {
+
+                    if (invoiceCount > 0) {
+                        Invoice.State = Models.Enums.State.Pagada;
+                    } else {                        
+
+                        var Room = await context.Rooms.Where(x => x.Id == model.RoomID).FirstAsync();
+
+                        Invoice.State = Models.Enums.State.Pagada;
+                        Invoice.Number = Room.VPN;
+                        Invoice.CurrencyID = Room.CurrencyID;
+                        Invoice.ReservationID = Reservation.Id;
+                        Invoice.Date = Reservation.EndDate;
+
+                        await context.AddAsync(Invoice);
+                    }
+                }
+                else if (model.CheckIn == true && model.CheckOut == false) {
+
+                    if (invoiceCount > 0) {
+                        Invoice.State = Models.Enums.State.Chequeada;
+                        context.Update(Invoice);
+                    } else {
+
+                        var Room = await context.Rooms.Where(x => x.Id == model.RoomID).FirstAsync();
+
+                        Invoice.State = Models.Enums.State.Chequeada;
+                        Invoice.Number = Room.VPN;
+                        Invoice.CurrencyID = Room.CurrencyID;
+                        Invoice.ReservationID = Reservation.Id;
+                        Invoice.Date = Reservation.EndDate;
+
+                        await context.AddAsync(Invoice);
+                    }                
+                } 
+                else {
+                    if (invoiceCount > 0) {
+                        context.Remove(Invoice);
+                    }
+                } 
 
                 await context.SaveChangesAsync();
             };

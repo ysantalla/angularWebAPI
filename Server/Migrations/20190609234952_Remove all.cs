@@ -4,10 +4,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace server.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Removeall : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Agencies",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatorId = table.Column<long>(nullable: false),
+                    ModifierId = table.Column<long>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
+                    HVersion = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Represent = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Agencies", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -62,7 +83,6 @@ namespace server.Migrations
                     CreateDate = table.Column<DateTime>(nullable: false),
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -81,7 +101,6 @@ namespace server.Migrations
                     CreateDate = table.Column<DateTime>(nullable: false),
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -100,57 +119,12 @@ namespace server.Migrations
                     CreateDate = table.Column<DateTime>(nullable: false),
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Symbol = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Currencies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Packages",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatorId = table.Column<long>(nullable: false),
-                    ModifierId = table.Column<long>(nullable: false),
-                    CreateDate = table.Column<DateTime>(nullable: false),
-                    ModifyDate = table.Column<DateTime>(nullable: false),
-                    HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Packages", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Rooms",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatorId = table.Column<long>(nullable: false),
-                    ModifierId = table.Column<long>(nullable: false),
-                    CreateDate = table.Column<DateTime>(nullable: false),
-                    ModifyDate = table.Column<DateTime>(nullable: false),
-                    HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Number = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    Capacity = table.Column<int>(nullable: false),
-                    Enable = table.Column<bool>(nullable: false),
-                    BedCont = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -260,35 +234,6 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Agencies",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatorId = table.Column<long>(nullable: false),
-                    ModifierId = table.Column<long>(nullable: false),
-                    CreateDate = table.Column<DateTime>(nullable: false),
-                    ModifyDate = table.Column<DateTime>(nullable: false),
-                    HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Represent = table.Column<string>(nullable: true),
-                    CountryID = table.Column<long>(nullable: false),
-                    Email = table.Column<string>(nullable: true),
-                    Phone = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Agencies", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Agencies_Countries_CountryID",
-                        column: x => x.CountryID,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Guests",
                 columns: table => new
                 {
@@ -299,11 +244,9 @@ namespace server.Migrations
                     CreateDate = table.Column<DateTime>(nullable: false),
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Phone = table.Column<string>(nullable: true),
                     Identification = table.Column<string>(nullable: true),
-                    Birthday = table.Column<string>(nullable: true),
                     CountryID = table.Column<long>(nullable: false),
                     CitizenshipID = table.Column<long>(nullable: false)
                 },
@@ -325,7 +268,7 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Invoices",
+                name: "Rooms",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -335,25 +278,20 @@ namespace server.Migrations
                     CreateDate = table.Column<DateTime>(nullable: false),
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
                     Number = table.Column<string>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    GuestID = table.Column<long>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Capacity = table.Column<int>(nullable: false),
+                    BedCont = table.Column<int>(nullable: false),
+                    VPN = table.Column<double>(nullable: false),
                     CurrencyID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Invoices_Currencies_CurrencyID",
+                        name: "FK_Rooms_Currencies_CurrencyID",
                         column: x => x.CurrencyID,
                         principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Invoices_Guests_GuestID",
-                        column: x => x.GuestID,
-                        principalTable: "Guests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -369,14 +307,13 @@ namespace server.Migrations
                     CreateDate = table.Column<DateTime>(nullable: false),
                     ModifyDate = table.Column<DateTime>(nullable: false),
                     HVersion = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    GuestID = table.Column<long>(nullable: false),
                     Details = table.Column<string>(nullable: true),
                     InitDate = table.Column<DateTime>(nullable: false),
                     EndDate = table.Column<DateTime>(nullable: false),
+                    CheckIn = table.Column<bool>(nullable: false),
+                    CheckOut = table.Column<bool>(nullable: false),
                     AgencyID = table.Column<long>(nullable: false),
-                    RoomID = table.Column<long>(nullable: false),
-                    PackageID = table.Column<long>(nullable: false)
+                    RoomID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -388,18 +325,6 @@ namespace server.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reservations_Guests_GuestID",
-                        column: x => x.GuestID,
-                        principalTable: "Guests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Packages_PackageID",
-                        column: x => x.PackageID,
-                        principalTable: "Packages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Reservations_Rooms_RoomID",
                         column: x => x.RoomID,
                         principalTable: "Rooms",
@@ -407,10 +332,63 @@ namespace server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Agencies_CountryID",
-                table: "Agencies",
-                column: "CountryID");
+            migrationBuilder.CreateTable(
+                name: "GuestReservations",
+                columns: table => new
+                {
+                    GuestId = table.Column<long>(nullable: false),
+                    ReservationId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GuestReservations", x => new { x.GuestId, x.ReservationId });
+                    table.ForeignKey(
+                        name: "FK_GuestReservations_Guests_GuestId",
+                        column: x => x.GuestId,
+                        principalTable: "Guests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GuestReservations_Reservations_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatorId = table.Column<long>(nullable: false),
+                    ModifierId = table.Column<long>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
+                    HVersion = table.Column<int>(nullable: false),
+                    Number = table.Column<double>(nullable: false),
+                    CurrencyID = table.Column<long>(nullable: false),
+                    State = table.Column<int>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    ReservationID = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Currencies_CurrencyID",
+                        column: x => x.CurrencyID,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Reservations_ReservationID",
+                        column: x => x.ReservationID,
+                        principalTable: "Reservations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -450,6 +428,11 @@ namespace server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_GuestReservations_ReservationId",
+                table: "GuestReservations",
+                column: "ReservationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Guests_CitizenshipID",
                 table: "Guests",
                 column: "CitizenshipID");
@@ -465,9 +448,9 @@ namespace server.Migrations
                 column: "CurrencyID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Invoices_GuestID",
+                name: "IX_Invoices_ReservationID",
                 table: "Invoices",
-                column: "GuestID");
+                column: "ReservationID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_AgencyID",
@@ -475,19 +458,14 @@ namespace server.Migrations
                 column: "AgencyID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_GuestID",
-                table: "Reservations",
-                column: "GuestID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_PackageID",
-                table: "Reservations",
-                column: "PackageID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservations_RoomID",
                 table: "Reservations",
                 column: "RoomID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_CurrencyID",
+                table: "Rooms",
+                column: "CurrencyID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -508,10 +486,10 @@ namespace server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Invoices");
+                name: "GuestReservations");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
+                name: "Invoices");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -520,25 +498,25 @@ namespace server.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Currencies");
-
-            migrationBuilder.DropTable(
-                name: "Agencies");
-
-            migrationBuilder.DropTable(
                 name: "Guests");
 
             migrationBuilder.DropTable(
-                name: "Packages");
-
-            migrationBuilder.DropTable(
-                name: "Rooms");
+                name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "Citizenships");
 
             migrationBuilder.DropTable(
                 name: "Countries");
+
+            migrationBuilder.DropTable(
+                name: "Agencies");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
+
+            migrationBuilder.DropTable(
+                name: "Currencies");
         }
     }
 }

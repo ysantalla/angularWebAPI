@@ -5,6 +5,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 import { environment as env } from '@env/environment';
+import { Currency } from '@app/core/models/core';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -85,6 +88,14 @@ import { environment as env } from '@env/environment';
                   />
                 </mat-form-field>
 
+                <mat-form-field class="full-width">
+                  <mat-select placeholder="Escoja un tipo de moneda" formControlName="currency" required>
+                    <mat-option *ngFor="let currency of currencies | async" [value]="currency.id">
+                      {{currency.name}} --- {{currency.symbol}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
 
               </mat-card-content>
               <mat-card-actions>
@@ -117,6 +128,7 @@ export class EditRoomComponent implements OnInit {
   loading = false;
 
   itemId: string;
+  currencies: Observable<Currency[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -131,15 +143,22 @@ export class EditRoomComponent implements OnInit {
     this.editForm = this.formBuilder.group({
       number: ['', Validators.required],
       description: ['', Validators.required],
-      capacity: [false, [Validators.required, Validators.min(1)]],
+      capacity: [1, [Validators.required, Validators.min(1)]],
       bedCont: [1, [Validators.required, Validators.min(1)]],
       VPN: [1, [Validators.required, Validators.min(1)]],
-      enable: [false],
+      currency: ['', Validators.required]
     });
 
     this.itemId = this.activatedRoute.snapshot.params['id'];
 
     this.loading = true;
+
+    this.currencies = this.httpClient.get<Currency[]>(`${env.serverUrl}/currencies`).pipe(map((data: any) => {
+      if (data.value) {
+        return data.value;
+      }
+      return [];
+    }));
 
     this.httpClient.get(`${env.serverUrl}/rooms/${this.itemId}`).subscribe((data: any) => {
       this.loading = false;
@@ -149,7 +168,8 @@ export class EditRoomComponent implements OnInit {
         description: data.value.description,
         capacity: data.value.capacity,
         bedCont: data.value.bedCont,
-        VPN: data.value.vpn
+        VPN: data.value.vpn,
+        currency: data.value.currencyID
       });
 
     });
@@ -169,6 +189,7 @@ export class EditRoomComponent implements OnInit {
         capacity: this.editForm.value.capacity,
         bedCont: this.editForm.value.bedCont,
         VPN: this.editForm.value.VPN,
+        currencyID: this.editForm.value.currency
       }).subscribe((data: any) => {
 
         if (data.succeeded) {

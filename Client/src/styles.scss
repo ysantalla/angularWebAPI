@@ -3,8 +3,15 @@
 
 @include mat-core();
 
-$primary: mat-palette($mat-teal, 800, 200, 100);
-$accent: mat-palette($mat-indigo);
+/*
+  $primary: mat-palette($mat-teal, 800, 200, 100);
+  $accent: mat-palette($mat-indigo);
+  $warn:    mat-palette($mat-red);
+  $theme: mat-light-theme($primary, $accent, $warn);
+*/
+
+$primary: mat-palette($mat-indigo, 800, 300, 900);
+$accent: mat-palette($mat-light-blue);
 $warn:    mat-palette($mat-red);
 $theme: mat-light-theme($primary, $accent, $warn);
 

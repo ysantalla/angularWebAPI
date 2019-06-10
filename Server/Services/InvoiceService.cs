@@ -29,8 +29,9 @@ namespace Server.Services
 
                 Invoice.Number = model.Number;
                 Invoice.Date = model.Date;
-                Invoice.GuestID = model.GuestID;
+                Invoice.ReservationID = model.ReservationID;
                 Invoice.CurrencyID = model.CurrencyID;
+                Invoice.State = model.State;
 
                 await context.SaveChangesAsync();
             };
@@ -59,8 +60,9 @@ namespace Server.Services
 
                 Invoice.Number = model.Number;
                 Invoice.Date = model.Date;
-                Invoice.GuestID = model.GuestID;
+                Invoice.ReservationID = model.ReservationID;
                 Invoice.CurrencyID = model.CurrencyID;
+                Invoice.State = model.State;
 
                 await context.SaveChangesAsync();
             };
@@ -115,7 +117,7 @@ namespace Server.Services
         }
 
         private IQueryable<Invoice> SetIncludes(IQueryable<Invoice> q){
-            q = q.Include( s => s.Guest );
+            q = q.Include( s => s.Reservation );
             q = q.Include( s => s.Currency );
             return q;
         }
@@ -132,6 +134,9 @@ namespace Server.Services
                 else if ( ob.by == "date" ) {
                     q = q.OrderBy( s => s.Date );
                 }
+                else if ( ob.by == "state" ) {
+                    q = q.OrderBy( s => s.State );
+                }
                 else {
                     q = q.OrderBy(s => s.Id);
                 }
@@ -142,6 +147,9 @@ namespace Server.Services
                 }
                 else if ( ob.by == "date" ) {
                     q = q.OrderByDescending( s => s.Date );
+                }
+                else if ( ob.by == "state" ) {
+                    q = q.OrderByDescending( s => s.State );
                 } 
                 else {
                     q = q.OrderByDescending(s => s.Id);
@@ -154,11 +162,14 @@ namespace Server.Services
             if ( f == null ) {
                 return q;
             }
-            if (f.guestID > 0) {
-                q = q.Where( s => s.GuestID == f.guestID );
+            if (f.reservationID > 0) {
+                q = q.Where( s => s.ReservationID == f.reservationID );
             }
             if (f.currencyID > 0) {
                 q = q.Where( s => s.CurrencyID == f.currencyID );
+            }
+            if (f.Date != null) {
+                q = q.Where( s => s.Date > f.Date );
             }
             return q;
         }

@@ -5,6 +5,7 @@ import { HttpParams } from '@angular/common/http';
 import { isNullOrUndefined } from 'util';
 import { IFilter } from '../services/core';
 import { ModelUtil } from './util';
+import { Currency } from './currency.model';
 
 export class Room {
   constructor(public id: number,
@@ -12,7 +13,9 @@ export class Room {
               public capacity: number,
               public bedCont: number,
               public VPN: number,
-              public enable: boolean) {}
+              public enable: boolean,
+              public currencyID: number,
+              public currency: Currency) {}
 }
 
 export class RoomFilter extends BaseFilter {
@@ -36,6 +39,9 @@ export class RoomFilter extends BaseFilter {
     }
     if ( !isNullOrUndefined(this.bedCont) ) {
       hp = hp.set('filter.bedCont', this.bedCont.toString());
+    }
+    if ( !isNullOrUndefined(this.VPN) ) {
+      hp = hp.set('filter.VPN', this.VPN.toString());
     }
     if ( !isNullOrUndefined(this.VPN) ) {
       hp = hp.set('filter.VPN', this.VPN.toString());

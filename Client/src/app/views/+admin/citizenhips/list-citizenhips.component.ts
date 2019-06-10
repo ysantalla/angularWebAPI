@@ -263,7 +263,7 @@ export class ListCitizenhipsComponent implements OnInit, OnDestroy {
               .set('orderBy.by', this.sort.active)
               .set('orderBy.desc', (this.sort.direction === 'desc').toString());
 
-              return this.httpClient.get<any>(`${env.serverUrl}/citizenhips`, {params: params});
+              return this.httpClient.get<any>(`${env.serverUrl}/citizenships`, {params: params});
             }
           }),
           map(data => {

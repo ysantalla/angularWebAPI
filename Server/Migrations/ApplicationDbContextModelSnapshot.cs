@@ -331,8 +331,6 @@ namespace server.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<long>("GuestID");
-
                     b.Property<int>("HVersion");
 
                     b.Property<long>("ModifierId");
@@ -341,11 +339,15 @@ namespace server.Migrations
 
                     b.Property<double>("Number");
 
+                    b.Property<long>("ReservationID");
+
+                    b.Property<int>("State");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyID");
 
-                    b.HasIndex("GuestID");
+                    b.HasIndex("ReservationID");
 
                     b.ToTable("Invoices");
                 });
@@ -401,6 +403,8 @@ namespace server.Migrations
 
                     b.Property<long>("CreatorId");
 
+                    b.Property<long>("CurrencyID");
+
                     b.Property<string>("Description");
 
                     b.Property<int>("HVersion");
@@ -414,6 +418,8 @@ namespace server.Migrations
                     b.Property<double>("VPN");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CurrencyID");
 
                     b.ToTable("Rooms");
                 });
@@ -496,9 +502,9 @@ namespace server.Migrations
                         .HasForeignKey("CurrencyID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Server.Models.Guest", "Guest")
+                    b.HasOne("Server.Models.Reservation", "Reservation")
                         .WithMany()
-                        .HasForeignKey("GuestID")
+                        .HasForeignKey("ReservationID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -512,6 +518,14 @@ namespace server.Migrations
                     b.HasOne("Server.Models.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.Room", b =>
+                {
+                    b.HasOne("Server.Models.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

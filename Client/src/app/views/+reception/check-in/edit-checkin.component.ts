@@ -97,6 +97,13 @@ export class EditCheckInComponent implements OnInit {
       phoneControl: ['', Validators.required],
     });
 
+    if (this.data.checkIn) {
+      this.editForm.disable();
+      this.newGuestForm.disable();
+      this.disableRegisterButton = true;
+    }
+
+
     this.selectedGuests = this.data.guestReservations.map((data: any) => {
       return {
         id: data.guest.id,
