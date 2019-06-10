@@ -14,6 +14,7 @@ export class Invoice {
               public reservationID: number,
               public reservation: Reservation,
               public currencyID: number,
+              public state: number,
               public currency: Currency,
               ) {}
 }

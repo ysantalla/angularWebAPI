@@ -13,7 +13,7 @@ $accent: mat-palette($mat-light-blue);
   border-radius: 0px;
 }
 
-.item {
+.dashboard-card {
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -24,14 +24,4 @@ $accent: mat-palette($mat-light-blue);
 
 .dashboard-card-content {
   text-align: center;
-}
-
-.dashboard-card {
-  border-left: 6px solid mat-color($primary);
-}
-
-.item:hover > .dashboard-card {
-  background-color: rgba(0, 0, 0, 0.15);
-  z-index: 1;
-  cursor: pointer;
 }

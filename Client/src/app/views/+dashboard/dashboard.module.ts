@@ -4,14 +4,16 @@ import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '@app/shared/shared.module';
 
 import { IndexComponent } from './index/index.component';
-import { RoleGuard } from '@app/core/guards/role.guard';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { AuthGuard } from '@app/core/guards/core';
 
 
 const routes: Routes = [
   {
     path: '',
     component: IndexComponent,
-    data: {title: 'Escritorio', expectedRole: ['Admin', 'Manager']},
+    canActivate: [AuthGuard],
+    data: {title: 'Escritorio'},
   }
 ];
 
@@ -19,6 +21,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     SharedModule,
+    NgxChartsModule,
     RouterModule.forChild(routes),
   ],
   declarations: [IndexComponent]
